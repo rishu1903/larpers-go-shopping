@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+from src.profile import (
+    supporting_profile_tag,
+)
+
 from src.questions import (
     choose_candidate_attribute,
 )
@@ -42,6 +46,92 @@ QUESTION_TEXT = {
 }
 
 
+PROFILE_QUESTION_TEXT = {
+    "material":
+        (
+            "Material tends to matter in your "
+            "shopping preferences. Do you have "
+            "a preferred material for this item?"
+        ),
+
+    "size":
+        (
+            "Fit tends to matter in your shopping "
+            "preferences. Are there any sizing or "
+            "fit requirements I should prioritize?"
+        ),
+
+    "style":
+        (
+            "Style or fit tends to matter in your "
+            "shopping preferences. What style or "
+            "fit do you prefer here?"
+        ),
+
+    "use_case":
+        (
+            "How an item performs for its intended "
+            "use tends to matter in your preferences. "
+            "What will you mainly use it for?"
+        ),
+
+    "feature":
+        (
+            "Product qualities tend to matter in "
+            "your shopping preferences. Is there a "
+            "specific feature I should prioritize?"
+        ),
+}
+
+
+def _question_message(
+    state: SessionState,
+    attribute: str,
+    turn: int,
+) -> str:
+    """
+    Create customer-facing clarification text.
+
+    Early broad discovery remains unchanged.
+
+    Later questions may acknowledge an anonymized
+    aggregate preference dimension, but never invent
+    a concrete preference value.
+    """
+
+    if (
+        turn <= 3
+        or
+        attribute == "other"
+    ):
+
+        return QUESTION_TEXT[
+            attribute
+        ]
+
+    profile_tag = (
+        supporting_profile_tag(
+            state.user_profile,
+            attribute,
+        )
+    )
+
+    if (
+        profile_tag is not None
+        and
+        attribute
+        in PROFILE_QUESTION_TEXT
+    ):
+
+        return PROFILE_QUESTION_TEXT[
+            attribute
+        ]
+
+    return QUESTION_TEXT[
+        attribute
+    ]
+
+
 def choose_clarification(
     state: SessionState,
     turn: int,
@@ -54,8 +144,6 @@ def choose_clarification(
     Choose the next conversational action.
     """
 
-    # No point asking a question on the
-    # final allowed turn.
     if turn >= 10:
 
         return (
@@ -66,8 +154,6 @@ def choose_clarification(
             ),
         )
 
-    # Once broad clarification is exhausted,
-    # use remaining turns for exploration.
     if state.clarification_exhausted:
 
         return (
@@ -89,7 +175,9 @@ def choose_clarification(
 
     return (
         attribute,
-        QUESTION_TEXT[
-            attribute
-        ],
+        _question_message(
+            state=state,
+            attribute=attribute,
+            turn=turn,
+        ),
     )

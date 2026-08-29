@@ -4,7 +4,13 @@ import math
 import re
 from collections import Counter
 
-from src.state import SessionState
+from src.profile import (
+    attribute_affinity,
+)
+
+from src.state import (
+    SessionState,
+)
 
 
 TOKEN_RE = re.compile(
@@ -13,11 +19,6 @@ TOKEN_RE = re.compile(
 )
 
 
-# Candidate signals that can justify asking
-# a structured clarification question.
-#
-# These are deliberately lightweight and local.
-# We are not using an LLM to choose the question.
 ATTRIBUTE_VALUES: dict[
     str,
     tuple[str, ...],
@@ -113,10 +114,6 @@ ATTRIBUTE_VALUES: dict[
 }
 
 
-# Small priors.
-#
-# Materials and colors tend to be particularly
-# useful discriminators in this catalogue.
 QUESTION_PRIORITY = {
     "material": 1.20,
     "color": 1.10,
@@ -125,6 +122,34 @@ QUESTION_PRIORITY = {
     "use_case": 1.00,
     "feature": 0.90,
 }
+
+
+# --------------------------------------------------
+# PROFILE SAFETY GATE
+# --------------------------------------------------
+#
+# Historical profile information can influence
+# question choice only when another attribute is
+# already nearly as informative as the best one.
+#
+# Example:
+#
+#     color information = 1.00
+#     fit information   = 0.95
+#
+# and profile says fit matters:
+#
+#     fit may win.
+#
+# But:
+#
+#     material = 1.00
+#     style    = 0.30
+#
+# profile preference for style must NOT overpower
+# the much stronger current-session evidence.
+
+PROFILE_NEAR_TIE_RATIO = 0.90
 
 
 def _tokens(
@@ -136,7 +161,9 @@ def _tokens(
 
     return set(
         TOKEN_RE.findall(
-            str(text).lower()
+            str(
+                text
+            ).lower()
         )
     )
 
@@ -145,20 +172,16 @@ def _known_attributes(
     state: SessionState,
 ) -> set[str]:
     """
-    Infer which attribute families have already
-    been expressed by the customer.
+    Infer which attribute families are already
+    represented in current-session evidence.
 
-    We should not ask:
-
-        "What material do you want?"
-
-    if they have already told us:
-
-        "cotton"
+    Historical profile information does NOT count
+    as a known current preference.
     """
 
     text = " ".join(
         item.text
+
         for item
         in state.evidence
     )
@@ -167,7 +190,9 @@ def _known_attributes(
         text
     )
 
-    known: set[str] = set()
+    known: set[
+        str
+    ] = set()
 
     for (
         attribute,
@@ -176,9 +201,11 @@ def _known_attributes(
 
         if any(
             value in tokens
+
             for value
             in values
         ):
+
             known.add(
                 attribute
             )
@@ -194,14 +221,14 @@ def _attribute_information(
     Estimate how informative an attribute would
     be for separating the current candidates.
 
-    Higher score means:
+    Higher values mean:
 
-        - the attribute occurs in many candidates
-        - candidates contain different values
-        - the distribution is reasonably diverse
+        - good coverage across candidates
+        - multiple possible values
+        - reasonably diverse value distribution
 
-    We approximate information gain using
-    normalized entropy.
+    Normalized entropy approximates information
+    gain.
     """
 
     values = ATTRIBUTE_VALUES[
@@ -211,15 +238,15 @@ def _attribute_information(
     if not candidates:
         return 0.0
 
-    counts: Counter[str] = (
-        Counter()
-    )
+    counts: Counter[
+        str
+    ] = Counter()
 
     covered = 0
 
-    # Top 30 is enough to estimate ambiguity
-    # without analysing hundreds of candidates.
-    sample = candidates[:30]
+    sample = candidates[
+        :30
+    ]
 
     for candidate in sample:
 
@@ -232,8 +259,10 @@ def _attribute_information(
 
         found = [
             value
+
             for value
             in values
+
             if value in tokens
         ]
 
@@ -242,17 +271,16 @@ def _attribute_information(
 
         covered += 1
 
-        # Multi-material / multi-feature products
-        # may contribute multiple observed values.
         counts.update(
             found
         )
 
-    # No meaningful disagreement.
     if (
         covered < 2
-        or len(counts) < 2
+        or
+        len(counts) < 2
     ):
+
         return 0.0
 
     total = sum(
@@ -276,19 +304,25 @@ def _attribute_information(
         )
 
     max_entropy = math.log(
-        len(counts)
+        len(
+            counts
+        )
     )
 
     normalized_entropy = (
         entropy
         / max_entropy
+
         if max_entropy > 0
+
         else 0.0
     )
 
     coverage = (
         covered
-        / len(sample)
+        / len(
+            sample
+        )
     )
 
     return (
@@ -300,42 +334,140 @@ def _attribute_information(
     )
 
 
+def _profile_aware_choice(
+    state: SessionState,
+    scored: list[
+        tuple[
+            float,
+            str,
+        ]
+    ],
+) -> str:
+    """
+    Safely use the aggregate profile as a
+    near-tie breaker.
+
+    Candidate uncertainty remains primary.
+
+    Profile affinity can only choose between
+    attributes whose information score is at
+    least 90% of the strongest candidate-driven
+    question.
+
+    This prevents historical behaviour from
+    overriding the customer's current session.
+    """
+
+    scored.sort(
+        key=lambda item: (
+            -item[0],
+            item[1],
+        )
+    )
+
+    (
+        best_information,
+        best_attribute,
+    ) = scored[0]
+
+    affinities = (
+        attribute_affinity(
+            state.user_profile
+        )
+    )
+
+    if not affinities:
+        return best_attribute
+
+    threshold = (
+        best_information
+        * PROFILE_NEAR_TIE_RATIO
+    )
+
+    near_best = [
+        (
+            information,
+            attribute,
+        )
+
+        for (
+            information,
+            attribute,
+        ) in scored
+
+        if information >= threshold
+    ]
+
+    profile_supported = [
+        (
+            affinities.get(
+                attribute,
+                0.0,
+            ),
+            information,
+            attribute,
+        )
+
+        for (
+            information,
+            attribute,
+        ) in near_best
+
+        if (
+            affinities.get(
+                attribute,
+                0.0,
+            )
+            > 0.0
+        )
+    ]
+
+    if not profile_supported:
+        return best_attribute
+
+    profile_supported.sort(
+        key=lambda item: (
+            -item[0],
+            -item[1],
+            item[2],
+        )
+    )
+
+    return profile_supported[
+        0
+    ][2]
+
+
 def choose_candidate_attribute(
     state: SessionState,
     candidates: list[dict],
     turn: int,
 ) -> str:
     """
-    Choose the next clarification attribute.
+    Choose the next clarification dimension.
 
-    Policy
-    ------
+    Turns 1-3
+    ---------
 
-    Turns 1–3:
-        Broad discovery using `other`.
+    Keep broad discovery with `other`.
 
-        This rapidly collects the shopper's
-        important constraints.
+    Turn 4+
+    -------
 
-    Turn 4+:
-        If the session is still unresolved,
-        inspect the live candidate set and ask
-        about the attribute with the highest
-        estimated information gain.
+    1. Estimate candidate information gain.
+    2. Remove attributes already known/asked/
+       explicitly declined.
+    3. Find the strongest candidate-driven
+       clarification.
+    4. Allow the anonymized aggregate profile
+       to break only a near tie.
+    5. Fall back to `other` when no structured
+       attribute is useful.
 
-    We never ask an attribute that:
-
-        - the shopper already specified
-        - was already asked
-        - the shopper explicitly declined
-
-    If nothing looks informative enough,
-    fall back to `other`.
+    No target label or hidden simulator state
+    is available to this policy.
     """
 
-    # Early dialogue remains broad because it
-    # efficiently establishes the shopper's
-    # initial constraint set.
     if turn <= 3:
         return "other"
 
@@ -374,7 +506,6 @@ def choose_candidate_attribute(
             )
         )
 
-        # Avoid asking weak / arbitrary questions.
         if information > 0.10:
 
             scored.append(
@@ -387,11 +518,7 @@ def choose_candidate_attribute(
     if not scored:
         return "other"
 
-    scored.sort(
-        key=lambda item: (
-            -item[0],
-            item[1],
-        )
+    return _profile_aware_choice(
+        state=state,
+        scored=scored,
     )
-
-    return scored[0][1]
