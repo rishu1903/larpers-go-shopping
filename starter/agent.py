@@ -71,11 +71,11 @@ class Agent:
             ↓
         Relevance Reranking
             ↓
-        Clarification
+        Clarification Policy
             ↓
-        Adaptive Exploration
+        Candidate-aware Information Gain
             ↓
-        Lexical + Dense Semantic Recall
+        Adaptive Hybrid Exploration
     """
 
     def __init__(
@@ -105,12 +105,6 @@ class Agent:
             int,
         ] = {}
 
-        # The semantic asset maps embeddings
-        # to ASINs, not runtime SQLite rowids.
-        #
-        # This dictionary lets us efficiently
-        # convert semantic hits back into the
-        # current FTS table.
         self._asin_to_rowid: dict[
             str,
             int,
@@ -118,8 +112,6 @@ class Agent:
 
         self._build_index()
 
-        # Load the prebuilt 96-dimensional
-        # semantic representation.
         self.semantic = (
             SemanticRetriever()
         )
@@ -129,8 +121,7 @@ class Agent:
     ) -> None:
 
         cursor = (
-            self.connection
-            .cursor()
+            self.connection.cursor()
         )
 
         cursor.execute(
@@ -246,8 +237,8 @@ class Agent:
 
                     cursor.executemany(
                         (
-                            "INSERT INTO "
-                            "products VALUES "
+                            "INSERT INTO products "
+                            "VALUES "
                             "(?, ?, ?, ?, ?, ?, ?)"
                         ),
                         batch,
@@ -259,8 +250,8 @@ class Agent:
 
             cursor.executemany(
                 (
-                    "INSERT INTO "
-                    "products VALUES "
+                    "INSERT INTO products "
+                    "VALUES "
                     "(?, ?, ?, ?, ?, ?, ?)"
                 ),
                 batch,
@@ -301,34 +292,39 @@ class Agent:
             session_id
         ]
 
-        # --------------------------------------------------
-        # 1. UPDATE DIALOGUE STATE
-        # --------------------------------------------------
+        # ----------------------------------
+        # 1. UPDATE SESSION STATE
+        # ----------------------------------
 
         state.update(
             user_message=user_message,
             turn=turn,
         )
 
-        # --------------------------------------------------
-        # 2. HYBRID CANDIDATE RETRIEVAL
-        # --------------------------------------------------
+        # ----------------------------------
+        # 2. RETRIEVE CANDIDATES
+        # ----------------------------------
 
         candidates = (
             retrieve_candidates(
                 connection=(
                     self.connection
                 ),
+
                 state=state,
+
                 rating_numbers=(
                     self._rating_numbers
                 ),
+
                 asin_to_rowid=(
                     self._asin_to_rowid
                 ),
+
                 semantic=(
                     self.semantic
                 ),
+
                 exploration=(
                     state
                     .clarification_exhausted
@@ -338,17 +334,17 @@ class Agent:
 
         recommendations: list[
             dict
-        ]
+        ] = []
 
-        if not candidates:
+        question_candidates: list[
+            dict
+        ] = []
 
-            recommendations = []
+        if candidates:
 
-        else:
-
-            # --------------------------------------------------
-            # 3. SELECT RANKING POLICY
-            # --------------------------------------------------
+            # ----------------------------------
+            # 3. RANK CANDIDATES
+            # ----------------------------------
 
             if (
                 state
@@ -362,8 +358,6 @@ class Agent:
                     )
                 )
 
-                # Do not repeat products once
-                # the search enters exploration.
                 ranked = [
                     candidate
 
@@ -391,27 +385,32 @@ class Agent:
                     )
                 )
 
-            # --------------------------------------------------
+            # The dialogue layer only needs
+            # a small representative slice
+            # of the current ambiguity.
+            question_candidates = (
+                ranked[:30]
+            )
+
+            # ----------------------------------
             # 4. RETURN TOP K
-            # --------------------------------------------------
+            # ----------------------------------
 
             recommendations = [
                 {
                     "parent_asin":
-                        item[
+                        candidate[
                             "parent_asin"
                         ]
                 }
 
-                for item
-                in ranked[
-                    :top_k
-                ]
+                for candidate
+                in ranked[:top_k]
             ]
 
-        # --------------------------------------------------
-        # 5. REMEMBER PRODUCTS ALREADY SHOWN
-        # --------------------------------------------------
+        # ----------------------------------
+        # 5. REMEMBER SHOWN PRODUCTS
+        # ----------------------------------
 
         state.record_recommendations(
             [
@@ -424,15 +423,25 @@ class Agent:
             ]
         )
 
-        # --------------------------------------------------
-        # 6. CHOOSE NEXT CONVERSATIONAL ACTION
-        # --------------------------------------------------
+        # ----------------------------------
+        # 6. CHOOSE NEXT QUESTION
+        # ----------------------------------
 
-        ask_attribute, message = (
-            choose_clarification(
-                state,
-                turn,
-            )
+        (
+            ask_attribute,
+            message,
+        ) = choose_clarification(
+            state=state,
+            turn=turn,
+            candidates=(
+                question_candidates
+            ),
+        )
+
+        # Prevent repeating the same structured
+        # clarification later.
+        state.record_question(
+            ask_attribute
         )
 
         return {

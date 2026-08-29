@@ -5,20 +5,26 @@ import re
 
 
 _NO_PREFERENCE_RE = re.compile(
-    r"i don't have (?:an additional |a )?preference for ([a-z_]+)",
+    r"i don't have "
+    r"(?:an additional |a )?"
+    r"preference for ([a-z_]+)",
     re.IGNORECASE,
 )
+
 
 _ADDITIONAL_NO_PREFERENCE_RE = re.compile(
-    r"i don't have an additional preference for ([a-z_]+)",
+    r"i don't have an additional "
+    r"preference for ([a-z_]+)",
     re.IGNORECASE,
 )
 
 
-def _clean_customer_message(message: str) -> str:
+def _clean_customer_message(
+    message: str,
+) -> str:
     """
-    Remove simulator boilerplate while preserving
-    product-relevant evidence.
+    Remove simulator / conversation boilerplate
+    while preserving product evidence.
     """
 
     text = re.sub(
@@ -29,8 +35,6 @@ def _clean_customer_message(message: str) -> str:
 
     lowered = text.lower()
 
-    # These replies contain no new searchable
-    # product information.
     if lowered.startswith(
         "those options are not quite right yet"
     ):
@@ -66,7 +70,11 @@ def _clean_customer_message(message: str) -> str:
         ),
     )
 
-    for pattern, replacement in replacements:
+    for (
+        pattern,
+        replacement,
+    ) in replacements:
+
         text = re.sub(
             pattern,
             replacement,
@@ -98,32 +106,29 @@ class Evidence:
 class SessionState:
     user_profile: dict
 
-    # Persistent broad product category.
+    # Persistent product category.
     category_text: str = ""
 
-    # Active mutable customer evidence.
+    # Mutable product constraints.
     evidence: list[Evidence] = field(
         default_factory=list
     )
 
-    # Attributes the customer explicitly
-    # said they have no preference for.
+    # Attributes explicitly declined by
+    # the shopper.
     no_preference: set[str] = field(
+        default_factory=set
+    )
+
+    # Attributes the agent has already asked.
+    asked_attributes: set[str] = field(
         default_factory=set
     )
 
     override_seen: bool = False
 
-    # Once the customer explicitly says that
-    # there is no additional preference left
-    # to provide, the agent should stop asking
-    # the same question repeatedly and switch
-    # from exploitation to exploration.
     clarification_exhausted: bool = False
 
-    # Products already shown during this session.
-    # This allows later turns to surface new
-    # alternatives rather than repeating results.
     recommended_asins: set[str] = field(
         default_factory=set
     )
@@ -134,94 +139,134 @@ class SessionState:
         turn: int,
     ) -> None:
 
-        no_pref = _NO_PREFERENCE_RE.search(
-            user_message
+        # ----------------------------------
+        # NO-PREFERENCE TRACKING
+        # ----------------------------------
+
+        no_pref = (
+            _NO_PREFERENCE_RE.search(
+                user_message
+            )
         )
 
         if no_pref:
+
             self.no_preference.add(
-                no_pref.group(1).lower()
+                no_pref
+                .group(1)
+                .lower()
             )
 
-        # Important distinction:
+        additional_no_pref = (
+            _ADDITIONAL_NO_PREFERENCE_RE
+            .search(
+                user_message
+            )
+        )
+
+        # Important V6 distinction:
         #
-        # "I don't have a preference for X"
+        # "I don't have an additional
+        #  preference for MATERIAL"
         #
-        # does NOT necessarily mean the customer
-        # has nothing else to tell us.
+        # does NOT mean:
         #
-        # But:
+        # "I have no other preferences."
         #
-        # "I don't have an ADDITIONAL preference"
+        # We can still ask about color,
+        # style, size, etc.
         #
-        # means our broad clarification attempt
-        # has run out of useful information.
-        if _ADDITIONAL_NO_PREFERENCE_RE.search(
-            user_message
+        # Only a failed broad `other`
+        # clarification tells us that the
+        # shopper has nothing else useful
+        # to add.
+        if (
+            additional_no_pref
+            and
+            additional_no_pref
+            .group(1)
+            .lower()
+            == "other"
         ):
-            self.clarification_exhausted = True
+
+            self.clarification_exhausted = (
+                True
+            )
+
+        # ----------------------------------
+        # INTENT OVERRIDE
+        # ----------------------------------
 
         is_override = (
             "actually"
             in user_message.lower()
+
             and
+
             "ignore my earlier preference"
             in user_message.lower()
         )
 
         if is_override:
+
             self.override_seen = True
 
-            # An override represents a new intent
-            # state, so clarification may once again
-            # become useful.
-            self.clarification_exhausted = False
+            # New intent may make clarification
+            # productive again.
+            self.clarification_exhausted = (
+                False
+            )
 
-            # Remove mutable Turn-1 preference
-            # evidence while preserving:
+            # Remove only mutable Turn-1
+            # preference evidence.
             #
-            # - the separately stored category
-            # - useful evidence learned later
+            # category_text is stored separately
+            # and therefore survives.
             self.evidence = [
                 item
-                for item in self.evidence
+                for item
+                in self.evidence
                 if item.turn != 1
             ]
 
-        cleaned = _clean_customer_message(
-            user_message
+        # ----------------------------------
+        # POSITIVE PRODUCT EVIDENCE
+        # ----------------------------------
+
+        cleaned = (
+            _clean_customer_message(
+                user_message
+            )
         )
 
         if not cleaned:
             return
 
         if turn == 1:
-            # Example:
-            #
-            # "Shirts Polos. Button closure"
-            #
-            # Broad category:
-            #   Shirts Polos
-            #
-            # Mutable preference:
-            #   Button closure
 
-            head, separator, tail = (
-                cleaned.partition(".")
+            (
+                category,
+                separator,
+                remaining,
+            ) = cleaned.partition(
+                "."
             )
 
             self.category_text = (
-                head.strip()
+                category.strip()
             )
 
             if (
                 separator
-                and tail.strip()
+                and remaining.strip()
             ):
+
                 self.evidence.append(
                     Evidence(
                         turn=turn,
-                        text=tail.strip(),
+                        text=(
+                            remaining.strip()
+                        ),
                     )
                 )
 
@@ -234,36 +279,58 @@ class SessionState:
             )
         )
 
-    def active_text(self) -> str:
+    def active_text(
+        self,
+    ) -> str:
         """
-        Return the current category plus
-        all active product evidence.
+        Return current category + active
+        product constraints.
         """
 
-        parts = (
-            [self.category_text]
-            if self.category_text
-            else []
-        )
+        parts: list[str] = []
+
+        if self.category_text:
+            parts.append(
+                self.category_text
+            )
 
         parts.extend(
             item.text
-            for item in self.evidence
+            for item
+            in self.evidence
         )
 
-        return " ".join(parts)
+        return " ".join(
+            parts
+        )
 
     def record_recommendations(
         self,
         parent_asins: list[str],
     ) -> None:
         """
-        Remember products already shown
-        during this shopping session.
+        Track products previously shown.
         """
 
         self.recommended_asins.update(
-            str(parent_asin)
+            str(
+                parent_asin
+            )
             for parent_asin
             in parent_asins
         )
+
+    def record_question(
+        self,
+        attribute: str | None,
+    ) -> None:
+        """
+        Remember which structured questions
+        have already been asked.
+        """
+
+        if attribute:
+
+            self.asked_attributes.add(
+                attribute
+            )

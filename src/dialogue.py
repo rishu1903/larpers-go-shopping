@@ -1,32 +1,75 @@
 from __future__ import annotations
 
-from src.state import SessionState
+from src.questions import (
+    choose_candidate_attribute,
+)
+
+from src.state import (
+    SessionState,
+)
+
+
+QUESTION_TEXT = {
+    "material":
+        "Do you have a preferred material?",
+
+    "color":
+        "Do you have a preferred color?",
+
+    "size":
+        (
+            "Are there any sizing or fit "
+            "requirements I should prioritize?"
+        ),
+
+    "style":
+        "What style or fit do you prefer?",
+
+    "use_case":
+        "What will you mainly use it for?",
+
+    "feature":
+        (
+            "Is there a specific feature "
+            "that matters most?"
+        ),
+
+    "other":
+        (
+            "What else matters most to you "
+            "for this purchase?"
+        ),
+}
 
 
 def choose_clarification(
     state: SessionState,
     turn: int,
-) -> tuple[str | None, str]:
+    candidates: list[dict],
+) -> tuple[
+    str | None,
+    str,
+]:
     """
-    Decide whether another clarification
-    question is still useful.
+    Choose the next conversational action.
     """
 
-    # No benefit asking another question
-    # on the final allowed turn.
+    # No point asking a question on the
+    # final allowed turn.
     if turn >= 10:
+
         return (
             None,
-            "Here are the closest matches I found.",
+            (
+                "Here are the closest "
+                "matches I found."
+            ),
         )
 
-    # The customer has explicitly indicated
-    # that they have no additional preference.
-    #
-    # Stop repeating the same clarification
-    # question and use subsequent turns to
-    # explore alternative candidates instead.
+    # Once broad clarification is exhausted,
+    # use remaining turns for exploration.
     if state.clarification_exhausted:
+
         return (
             None,
             (
@@ -36,10 +79,17 @@ def choose_clarification(
             ),
         )
 
+    attribute = (
+        choose_candidate_attribute(
+            state=state,
+            candidates=candidates,
+            turn=turn,
+        )
+    )
+
     return (
-        "other",
-        (
-            "What else matters most to you "
-            "for this purchase?"
-        ),
+        attribute,
+        QUESTION_TEXT[
+            attribute
+        ],
     )
