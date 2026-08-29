@@ -7,7 +7,10 @@ from pathlib import Path
 
 from src.dialogue import choose_clarification
 from src.query import build_search_query
-from src.reranker import rerank_candidates
+from src.reranker import (
+    rerank_candidates,
+    rerank_for_exploration,
+)
 from src.state import SessionState
 
 
@@ -15,6 +18,7 @@ TOKEN_RE = re.compile(
     r"[a-z0-9]+",
     re.IGNORECASE,
 )
+
 
 STOPWORDS = {
     "a",
@@ -51,53 +55,77 @@ STOPWORDS = {
 }
 
 
-def _text(value: object) -> str:
+def _text(
+    value: object,
+) -> str:
     if value is None:
         return ""
 
-    if isinstance(value, dict):
+    if isinstance(
+        value,
+        dict,
+    ):
         return " ".join(
             f"{key} {item}"
-            for key, item in value.items()
+            for key, item
+            in value.items()
         )
 
-    if isinstance(value, list):
+    if isinstance(
+        value,
+        list,
+    ):
         return " ".join(
             str(item)
-            for item in value
+            for item
+            in value
         )
 
     return str(value)
 
 
-def _terms(text: str) -> list[str]:
+def _terms(
+    text: str,
+) -> list[str]:
     return [
         token.lower()
-        for token in TOKEN_RE.findall(text)
+        for token
+        in TOKEN_RE.findall(text)
         if (
             len(token) > 1
-            and token.lower() not in STOPWORDS
+            and token.lower()
+            not in STOPWORDS
         )
     ]
 
 
 class Agent:
     """
-    Stateful shopping-search agent with
-    BM25 recall and deterministic reranking.
+    Stateful shopping agent with:
+
+    - multi-turn memory
+    - intent override handling
+    - BM25 candidate retrieval
+    - relevance reranking
+    - popularity-aware exploitation
+    - long-tail exploration
     """
 
     def __init__(
         self,
-        catalog_path: str | Path = "data/catalog.jsonl",
+        catalog_path: str | Path = (
+            "data/catalog.jsonl"
+        ),
     ) -> None:
 
         self.catalog_path = Path(
             catalog_path
         )
 
-        self.connection = sqlite3.connect(
-            ":memory:"
+        self.connection = (
+            sqlite3.connect(
+                ":memory:"
+            )
         )
 
         self._sessions: dict[
@@ -105,11 +133,6 @@ class Agent:
             SessionState,
         ] = {}
 
-        # Keep popularity metadata outside the FTS index.
-        #
-        # rating_number is NOT used for retrieval.
-        # It is only used as a secondary tie-breaker
-        # after intent compatibility has been scored.
         self._rating_numbers: dict[
             str,
             int,
@@ -117,12 +140,17 @@ class Agent:
 
         self._build_index()
 
-    def _build_index(self) -> None:
+    def _build_index(
+        self,
+    ) -> None:
 
-        cursor = self.connection.cursor()
+        cursor = (
+            self.connection.cursor()
+        )
 
         cursor.execute(
-            "CREATE VIRTUAL TABLE products USING fts5("
+            "CREATE VIRTUAL TABLE "
+            "products USING fts5("
             "parent_asin UNINDEXED, "
             "title, "
             "categories, "
@@ -130,7 +158,8 @@ class Agent:
             "details, "
             "store, "
             "description, "
-            "tokenize='unicode61 remove_diacritics 2')"
+            "tokenize='unicode61 "
+            "remove_diacritics 2')"
         )
 
         batch: list[
@@ -156,7 +185,9 @@ class Agent:
                 )
 
                 parent_asin = str(
-                    product["parent_asin"]
+                    product[
+                        "parent_asin"
+                    ]
                 )
 
                 self._rating_numbers[
@@ -171,31 +202,37 @@ class Agent:
                 batch.append(
                     (
                         parent_asin,
+
                         _text(
                             product.get(
                                 "title"
                             )
                         ),
+
                         _text(
                             product.get(
                                 "categories"
                             )
                         ),
+
                         _text(
                             product.get(
                                 "features"
                             )
                         ),
+
                         _text(
                             product.get(
                                 "details"
                             )
                         ),
+
                         _text(
                             product.get(
                                 "store"
                             )
                         ),
+
                         _text(
                             product.get(
                                 "description"
@@ -204,21 +241,24 @@ class Agent:
                     )
                 )
 
-                if len(batch) >= 1000:
-
+                if (
+                    len(batch)
+                    >= 1000
+                ):
                     cursor.executemany(
                         "INSERT INTO products "
-                        "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                        "VALUES "
+                        "(?, ?, ?, ?, ?, ?, ?)",
                         batch,
                     )
 
                     batch.clear()
 
         if batch:
-
             cursor.executemany(
                 "INSERT INTO products "
-                "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                "VALUES "
+                "(?, ?, ?, ?, ?, ?, ?)",
                 batch,
             )
 
@@ -244,22 +284,36 @@ class Agent:
         top_k: int,
     ) -> dict:
 
-        if session_id not in self._sessions:
+        if (
+            session_id
+            not in self._sessions
+        ):
             raise RuntimeError(
-                "reset must be called before respond"
+                "reset must be called "
+                "before respond"
             )
 
         state = self._sessions[
             session_id
         ]
 
+        # ----------------------------------
+        # 1. UPDATE CONVERSATION STATE
+        # ----------------------------------
+
         state.update(
             user_message=user_message,
             turn=turn,
         )
 
-        search_query = build_search_query(
-            state
+        # ----------------------------------
+        # 2. BUILD SEARCH QUERY
+        # ----------------------------------
+
+        search_query = (
+            build_search_query(
+                state
+            )
         )
 
         unique_terms = list(
@@ -272,50 +326,76 @@ class Agent:
 
         expression = " OR ".join(
             f'"{term}"'
-            for term in unique_terms
+            for term
+            in unique_terms
         )
 
-        if not expression:
+        recommendations: list[
+            dict
+        ]
 
-            recommendations: list[
-                dict
-            ] = []
+        if not expression:
+            recommendations = []
 
         else:
 
-            # BM25 is now explicitly the
-            # candidate-generation stage.
+            # ----------------------------------
+            # 3. ADAPT RETRIEVAL DEPTH
+            # ----------------------------------
             #
-            # We retrieve 100 candidates,
-            # then let the second-stage
-            # reranker choose the best 10.
-            rows = self.connection.execute(
-                "SELECT "
-                "parent_asin, "
-                "title, "
-                "categories, "
-                "features, "
-                "details, "
-                "store, "
-                "description "
-                "FROM products "
-                "WHERE products MATCH ? "
-                "ORDER BY bm25("
-                "products, "
-                "0.0, "
-                "6.0, "
-                "4.0, "
-                "2.5, "
-                "2.5, "
-                "1.5, "
-                "1.0"
-                ") "
-                "LIMIT ?",
-                (
-                    expression,
-                    100,
-                ),
-            ).fetchall()
+            # Normal mode:
+            #
+            #     Top 100
+            #
+            # keeps precision high.
+            #
+            # Once clarification is exhausted:
+            #
+            #     Top 500
+            #
+            # gives exploration access to
+            # relevant long-tail candidates
+            # that BM25 initially ranked lower.
+
+            candidate_limit = (
+                500
+                if (
+                    state
+                    .clarification_exhausted
+                )
+                else 100
+            )
+
+            rows = (
+                self.connection.execute(
+                    "SELECT "
+                    "parent_asin, "
+                    "title, "
+                    "categories, "
+                    "features, "
+                    "details, "
+                    "store, "
+                    "description "
+                    "FROM products "
+                    "WHERE products MATCH ? "
+                    "ORDER BY bm25("
+                    "products, "
+                    "0.0, "
+                    "6.0, "
+                    "4.0, "
+                    "2.5, "
+                    "2.5, "
+                    "1.5, "
+                    "1.0"
+                    ") "
+                    "LIMIT ?",
+                    (
+                        expression,
+                        candidate_limit,
+                    ),
+                )
+                .fetchall()
+            )
 
             candidates = [
                 {
@@ -323,10 +403,12 @@ class Agent:
                         str(row[0]),
 
                     "title":
-                        row[1] or "",
+                        row[1]
+                        or "",
 
                     "categories":
-                        row[2] or "",
+                        row[2]
+                        or "",
 
                     "searchable_text":
                         " ".join(
@@ -339,18 +421,63 @@ class Agent:
                         ),
 
                     "rating_number":
-                        self._rating_numbers.get(
-                            str(row[0]),
-                            0,
+                        (
+                            self
+                            ._rating_numbers
+                            .get(
+                                str(row[0]),
+                                0,
+                            )
                         ),
                 }
-                for row in rows
+                for row
+                in rows
             ]
 
-            reranked = rerank_candidates(
-                candidates,
-                state,
-            )
+            # ----------------------------------
+            # 4. SELECT RANKING POLICY
+            # ----------------------------------
+
+            if (
+                state
+                .clarification_exhausted
+            ):
+
+                ranked = (
+                    rerank_for_exploration(
+                        candidates,
+                        state,
+                    )
+                )
+
+                # Do not show products the shopper
+                # has already seen.
+                ranked = [
+                    candidate
+                    for candidate
+                    in ranked
+                    if (
+                        candidate[
+                            "parent_asin"
+                        ]
+                        not in
+                        state
+                        .recommended_asins
+                    )
+                ]
+
+            else:
+
+                ranked = (
+                    rerank_candidates(
+                        candidates,
+                        state,
+                    )
+                )
+
+            # ----------------------------------
+            # 5. RETURN TOP K
+            # ----------------------------------
 
             recommendations = [
                 {
@@ -360,8 +487,26 @@ class Agent:
                         ]
                 }
                 for item
-                in reranked[:top_k]
+                in ranked[:top_k]
             ]
+
+        # ----------------------------------
+        # 6. REMEMBER WHAT WE SHOWED
+        # ----------------------------------
+
+        state.record_recommendations(
+            [
+                item[
+                    "parent_asin"
+                ]
+                for item
+                in recommendations
+            ]
+        )
+
+        # ----------------------------------
+        # 7. CHOOSE NEXT DIALOGUE ACTION
+        # ----------------------------------
 
         ask_attribute, message = (
             choose_clarification(

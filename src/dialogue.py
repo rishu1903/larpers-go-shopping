@@ -7,8 +7,12 @@ def choose_clarification(
     state: SessionState,
     turn: int,
 ) -> tuple[str | None, str]:
+    """
+    Decide whether another clarification
+    question is still useful.
+    """
 
-    # There is no point asking another question
+    # No benefit asking another question
     # on the final allowed turn.
     if turn >= 10:
         return (
@@ -16,13 +20,26 @@ def choose_clarification(
             "Here are the closest matches I found.",
         )
 
-    # Version 1 uses the broad `other`
-    # clarification mechanism provided
-    # by the official evaluator.
+    # The customer has explicitly indicated
+    # that they have no additional preference.
     #
-    # Later we will replace this with
-    # candidate-aware question selection.
+    # Stop repeating the same clarification
+    # question and use subsequent turns to
+    # explore alternative candidates instead.
+    if state.clarification_exhausted:
+        return (
+            None,
+            (
+                "I have enough information, "
+                "so I'm showing you some "
+                "different relevant alternatives."
+            ),
+        )
+
     return (
         "other",
-        "What else matters most to you for this purchase?",
+        (
+            "What else matters most to you "
+            "for this purchase?"
+        ),
     )
