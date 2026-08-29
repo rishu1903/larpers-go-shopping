@@ -112,6 +112,49 @@ class SessionStateTest(unittest.TestCase):
             state.active_text().lower(),
         )
 
+    def test_override_preserves_category(self) -> None:
+
+        state = SessionState(
+            user_profile={}
+        )
+
+        state.update(
+            "I'm looking for Shirts Polos. Button closure",
+            1,
+        )
+
+        state.update(
+            "For that, what matters is: "
+            "cotton; 60% Cotton, 40% Polyester.",
+            2,
+        )
+
+        state.update(
+            "Actually, ignore my earlier preference. "
+            "What I need is: cotton.",
+            3,
+        )
+
+        active = state.active_text().lower()
+
+        # Category remains.
+        self.assertIn(
+            "shirts polos",
+            active,
+        )
+
+        # Old Turn-1 preference disappears.
+        self.assertNotIn(
+            "button closure",
+            active,
+        )
+
+        # Valid evidence survives.
+        self.assertIn(
+            "60% cotton",
+            active,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

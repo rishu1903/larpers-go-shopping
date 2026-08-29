@@ -15,7 +15,6 @@ def _clean_customer_message(message: str) -> str:
 
     text = re.sub(r"\s+", " ", message).strip()
 
-    # These simulator replies contain no useful product information.
     lowered = text.lower()
 
     if lowered.startswith("those options are not quite right yet"):
@@ -27,7 +26,6 @@ def _clean_customer_message(message: str) -> str:
     if lowered.startswith("i don't have an additional preference for"):
         return ""
 
-    # Strip fixed simulator wording while keeping the useful product evidence.
     replacements = (
         (r"^I'm looking for\s+", ""),
         (r"\bA key requirement is:\s*", " "),
@@ -46,7 +44,6 @@ def _clean_customer_message(message: str) -> str:
             flags=re.IGNORECASE,
         )
 
-    # Remove browsing boilerplate.
     text = re.sub(
         r",?\s*but I'm still exploring\.?$",
         "",
@@ -67,6 +64,10 @@ class Evidence:
 class SessionState:
     user_profile: dict
 
+    # The broad product category survives preference changes.
+    category_text: str = ""
+
+    # Preference / constraint evidence may be superseded.
     evidence: list[Evidence] = field(default_factory=list)
 
     no_preference: set[str] = field(default_factory=set)
@@ -79,7 +80,6 @@ class SessionState:
         turn: int,
     ) -> None:
 
-        # Detect explicit "no preference" answers.
         no_pref = _NO_PREFERENCE_RE.search(user_message)
 
         if no_pref:
@@ -87,7 +87,6 @@ class SessionState:
                 no_pref.group(1).lower()
             )
 
-        # Detect the official intent-override wording.
         is_override = (
             "actually" in user_message.lower()
             and "ignore my earlier preference"
@@ -97,10 +96,8 @@ class SessionState:
         if is_override:
             self.override_seen = True
 
-            # The stale preference originates in Turn 1.
-            #
-            # Remove Turn 1, but KEEP useful constraints
-            # learned during intermediate turns.
+            # Remove preference evidence introduced on Turn 1,
+            # but keep the independently stored product category.
             self.evidence = [
                 item
                 for item in self.evidence
@@ -109,18 +106,52 @@ class SessionState:
 
         cleaned = _clean_customer_message(user_message)
 
-        if cleaned:
-            self.evidence.append(
-                Evidence(
-                    turn=turn,
-                    text=cleaned,
+        if not cleaned:
+            return
+
+        # Turn 1 has the form:
+        #
+        #   "Shirts Polos. Button closure"
+        #
+        # or simply:
+        #
+        #   "Shirts Polos"
+        #
+        # Keep the first sentence as persistent category context.
+        if turn == 1:
+
+            category, separator, remaining = cleaned.partition(".")
+
+            self.category_text = category.strip()
+
+            if separator and remaining.strip():
+                self.evidence.append(
+                    Evidence(
+                        turn=turn,
+                        text=remaining.strip(),
+                    )
                 )
+
+            return
+
+        self.evidence.append(
+            Evidence(
+                turn=turn,
+                text=cleaned,
             )
+        )
 
     def active_text(self) -> str:
-        """Return all currently valid search evidence."""
+        """Return current category + active product evidence."""
 
-        return " ".join(
+        parts: list[str] = []
+
+        if self.category_text:
+            parts.append(self.category_text)
+
+        parts.extend(
             item.text
             for item in self.evidence
         )
+
+        return " ".join(parts)
