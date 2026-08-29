@@ -8,6 +8,11 @@ from src.dialogue import (
     choose_clarification,
 )
 
+from src.hard_constraints import (
+    apply_budget_constraint,
+    coerce_price,
+)
+
 from src.reranker import (
     rerank_candidates,
     rerank_for_exploration,
@@ -67,15 +72,19 @@ class Agent:
 
         Session State
             ↓
+        Intent Router
+            ↓
         Field-aware BM25
+            +
+        Conditional Semantic Retrieval
+            ↓
+        Hard Constraint Filtering
             ↓
         Relevance Reranking
             ↓
-        Clarification Policy
+        Candidate-aware Clarification
             ↓
-        Candidate-aware Information Gain
-            ↓
-        Adaptive Hybrid Exploration
+        Adaptive Exploration
     """
 
     def __init__(
@@ -103,6 +112,11 @@ class Agent:
         self._rating_numbers: dict[
             str,
             int,
+        ] = {}
+
+        self._prices: dict[
+            str,
+            float | None,
         ] = {}
 
         self._asin_to_rowid: dict[
@@ -186,6 +200,20 @@ class Agent:
                         "rating_number"
                     )
                     or 0
+                )
+
+                # Price is deliberately NOT placed
+                # in the FTS text index.
+                #
+                # It is structured numeric metadata
+                # and will be used for actual hard
+                # constraint enforcement.
+                self._prices[
+                    parent_asin
+                ] = coerce_price(
+                    product.get(
+                        "price"
+                    )
                 )
 
                 batch.append(
@@ -293,7 +321,7 @@ class Agent:
         ]
 
         # ----------------------------------
-        # 1. UPDATE SESSION STATE
+        # 1. UPDATE CONVERSATIONAL STATE
         # ----------------------------------
 
         state.update(
@@ -332,6 +360,37 @@ class Agent:
             )
         )
 
+        # ----------------------------------
+        # 3. ATTACH STRUCTURED PRICE
+        # ----------------------------------
+
+        for candidate in candidates:
+
+            candidate[
+                "price"
+            ] = self._prices.get(
+                candidate[
+                    "parent_asin"
+                ]
+            )
+
+        # ----------------------------------
+        # 4. APPLY HARD CONSTRAINTS
+        # ----------------------------------
+        #
+        # This happens BEFORE reranking.
+        #
+        # A product that violates a hard budget
+        # is ineligible regardless of lexical,
+        # semantic or popularity score.
+
+        candidates = (
+            apply_budget_constraint(
+                candidates,
+                state.budget_constraint,
+            )
+        )
+
         recommendations: list[
             dict
         ] = []
@@ -343,7 +402,7 @@ class Agent:
         if candidates:
 
             # ----------------------------------
-            # 3. RANK CANDIDATES
+            # 5. SELECT RANKING POLICY
             # ----------------------------------
 
             if (
@@ -385,15 +444,16 @@ class Agent:
                     )
                 )
 
-            # The dialogue layer only needs
-            # a small representative slice
-            # of the current ambiguity.
+            # Candidate-aware dialogue policy
+            # analyses the currently feasible
+            # product set, not products that
+            # violate hard requirements.
             question_candidates = (
                 ranked[:30]
             )
 
             # ----------------------------------
-            # 4. RETURN TOP K
+            # 6. RETURN TOP K
             # ----------------------------------
 
             recommendations = [
@@ -409,7 +469,7 @@ class Agent:
             ]
 
         # ----------------------------------
-        # 5. REMEMBER SHOWN PRODUCTS
+        # 7. REMEMBER SHOWN PRODUCTS
         # ----------------------------------
 
         state.record_recommendations(
@@ -424,7 +484,7 @@ class Agent:
         )
 
         # ----------------------------------
-        # 6. CHOOSE NEXT QUESTION
+        # 8. CHOOSE NEXT QUESTION
         # ----------------------------------
 
         (
@@ -438,8 +498,6 @@ class Agent:
             ),
         )
 
-        # Prevent repeating the same structured
-        # clarification later.
         state.record_question(
             ask_attribute
         )

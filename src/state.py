@@ -3,6 +3,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 import re
 
+from src.hard_constraints import (
+    BudgetConstraint,
+    parse_budget_constraint,
+)
+
 from src.intent import (
     ShoppingIntent,
     infer_intent,
@@ -122,8 +127,6 @@ class SessionState:
 
     intent_confidence: float = 0.0
 
-    # Useful later for debugging,
-    # explanations and demo traces.
     intent_history: list[
         tuple[
             int,
@@ -145,6 +148,24 @@ class SessionState:
         default_factory=list
     )
 
+    # ----------------------------------
+    # STRUCTURED HARD CONSTRAINTS
+    # ----------------------------------
+
+    budget_constraint: (
+        BudgetConstraint
+        | None
+    ) = None
+
+    budget_source_turn: (
+        int
+        | None
+    ) = None
+
+    # ----------------------------------
+    # DIALOGUE STATE
+    # ----------------------------------
+
     no_preference: set[
         str
     ] = field(
@@ -156,10 +177,6 @@ class SessionState:
     ] = field(
         default_factory=set
     )
-
-    # ----------------------------------
-    # CONVERSATION CONTROL
-    # ----------------------------------
 
     override_seen: bool = False
 
@@ -231,23 +248,9 @@ class SessionState:
             )
         )
 
-        # Only a failed broad "other"
-        # clarification means the shopper
-        # has nothing additional to provide.
-        #
-        # A lack of preference for:
-        #
-        #     material
-        #     color
-        #     size
-        #
-        # does NOT exhaust every possible
-        # clarification dimension.
         if (
             additional_no_pref
-
             and
-
             additional_no_pref
             .group(1)
             .lower()
@@ -276,16 +279,11 @@ class SessionState:
 
             self.override_seen = True
 
-            # New intent may make clarification
-            # useful again.
             self.clarification_exhausted = (
                 False
             )
 
             # Remove mutable Turn-1 evidence.
-            #
-            # category_text is stored separately,
-            # so the product category survives.
             self.evidence = [
                 item
 
@@ -295,8 +293,50 @@ class SessionState:
                 if item.turn != 1
             ]
 
+            # Budget is also mutable evidence.
+            #
+            # If the stale preference being
+            # discarded originated on Turn 1,
+            # remove its structured form too.
+            if (
+                self.budget_source_turn
+                == 1
+            ):
+
+                self.budget_constraint = (
+                    None
+                )
+
+                self.budget_source_turn = (
+                    None
+                )
+
         # ----------------------------------
-        # 4. POSITIVE PRODUCT EVIDENCE
+        # 4. STRUCTURED BUDGET EXTRACTION
+        # ----------------------------------
+        #
+        # A newly stated budget supersedes the
+        # previous budget instead of intersecting
+        # indefinitely with stale constraints.
+
+        parsed_budget = (
+            parse_budget_constraint(
+                user_message
+            )
+        )
+
+        if parsed_budget is not None:
+
+            self.budget_constraint = (
+                parsed_budget
+            )
+
+            self.budget_source_turn = (
+                turn
+            )
+
+        # ----------------------------------
+        # 5. POSITIVE PRODUCT EVIDENCE
         # ----------------------------------
 
         cleaned = (
@@ -324,9 +364,7 @@ class SessionState:
 
             if (
                 separator
-
                 and
-
                 remaining.strip()
             ):
 
@@ -352,8 +390,8 @@ class SessionState:
         self,
     ) -> str:
         """
-        Return category plus all currently
-        valid product evidence.
+        Return category plus currently valid
+        textual product evidence.
         """
 
         parts: list[
