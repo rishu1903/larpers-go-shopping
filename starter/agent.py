@@ -7,6 +7,7 @@ from pathlib import Path
 
 from src.dialogue import choose_clarification
 from src.query import build_search_query
+from src.reranker import rerank_candidates
 from src.state import SessionState
 
 
@@ -219,7 +220,14 @@ class Agent:
         else:
 
             rows = self.connection.execute(
-                "SELECT parent_asin "
+                "SELECT "
+                "parent_asin, "
+                "title, "
+                "categories, "
+                "features, "
+                "details, "
+                "store, "
+                "description "
                 "FROM products "
                 "WHERE products MATCH ? "
                 "ORDER BY bm25("
@@ -235,15 +243,40 @@ class Agent:
                 "LIMIT ?",
                 (
                     expression,
-                    top_k,
+                    100,
                 ),
             ).fetchall()
 
-            recommendations = [
+
+            candidates = [
                 {
-                    "parent_asin": str(row[0])
+                    "parent_asin": str(row[0]),
+
+                    "title": row[1] or "",
+
+                    "categories": row[2] or "",
+
+                    "searchable_text": " ".join(
+                        str(value or "")
+                        for value in row[1:]
+                    ),
                 }
                 for row in rows
+            ]
+
+
+            reranked = rerank_candidates(
+                candidates,
+                state,
+            )
+
+
+            recommendations = [
+                {
+                    "parent_asin":
+                        item["parent_asin"]
+                }
+                for item in reranked[:top_k]
             ]
 
         ask_attribute, message = choose_clarification(
