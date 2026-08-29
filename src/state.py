@@ -3,6 +3,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 import re
 
+from src.intent import (
+    ShoppingIntent,
+    infer_intent,
+)
+
 
 _NO_PREFERENCE_RE = re.compile(
     r"i don't have "
@@ -23,8 +28,8 @@ def _clean_customer_message(
     message: str,
 ) -> str:
     """
-    Remove simulator / conversation boilerplate
-    while preserving product evidence.
+    Remove conversation/simulator boilerplate
+    while preserving searchable product evidence.
     """
 
     text = re.sub(
@@ -55,14 +60,17 @@ def _clean_customer_message(
             r"^I'm looking for\s+",
             "",
         ),
+
         (
             r"\bA key requirement is:\s*",
             " ",
         ),
+
         (
             r"^For that, what matters is:\s*",
             "",
         ),
+
         (
             r"^Actually, ignore my earlier preference\.\s*"
             r"What I need is:\s*",
@@ -106,30 +114,60 @@ class Evidence:
 class SessionState:
     user_profile: dict
 
-    # Persistent product category.
-    category_text: str = ""
+    # ----------------------------------
+    # ACTIVE SHOPPING INTENT
+    # ----------------------------------
 
-    # Mutable product constraints.
-    evidence: list[Evidence] = field(
+    intent: ShoppingIntent | None = None
+
+    intent_confidence: float = 0.0
+
+    # Useful later for debugging,
+    # explanations and demo traces.
+    intent_history: list[
+        tuple[
+            int,
+            str,
+        ]
+    ] = field(
         default_factory=list
     )
 
-    # Attributes explicitly declined by
-    # the shopper.
-    no_preference: set[str] = field(
+    # ----------------------------------
+    # PRODUCT STATE
+    # ----------------------------------
+
+    category_text: str = ""
+
+    evidence: list[
+        Evidence
+    ] = field(
+        default_factory=list
+    )
+
+    no_preference: set[
+        str
+    ] = field(
         default_factory=set
     )
 
-    # Attributes the agent has already asked.
-    asked_attributes: set[str] = field(
+    asked_attributes: set[
+        str
+    ] = field(
         default_factory=set
     )
+
+    # ----------------------------------
+    # CONVERSATION CONTROL
+    # ----------------------------------
 
     override_seen: bool = False
 
     clarification_exhausted: bool = False
 
-    recommended_asins: set[str] = field(
+    recommended_asins: set[
+        str
+    ] = field(
         default_factory=set
     )
 
@@ -140,7 +178,36 @@ class SessionState:
     ) -> None:
 
         # ----------------------------------
-        # NO-PREFERENCE TRACKING
+        # 1. UPDATE SHOPPING INTENT
+        # ----------------------------------
+
+        previous_intent = (
+            self.intent
+        )
+
+        (
+            self.intent,
+            self.intent_confidence,
+        ) = infer_intent(
+            user_message=user_message,
+            turn=turn,
+            current=self.intent,
+        )
+
+        if (
+            self.intent
+            != previous_intent
+        ):
+
+            self.intent_history.append(
+                (
+                    turn,
+                    self.intent.value,
+                )
+            )
+
+        # ----------------------------------
+        # 2. NO-PREFERENCE TRACKING
         # ----------------------------------
 
         no_pref = (
@@ -164,25 +231,23 @@ class SessionState:
             )
         )
 
-        # Important V6 distinction:
+        # Only a failed broad "other"
+        # clarification means the shopper
+        # has nothing additional to provide.
         #
-        # "I don't have an additional
-        #  preference for MATERIAL"
+        # A lack of preference for:
         #
-        # does NOT mean:
+        #     material
+        #     color
+        #     size
         #
-        # "I have no other preferences."
-        #
-        # We can still ask about color,
-        # style, size, etc.
-        #
-        # Only a failed broad `other`
-        # clarification tells us that the
-        # shopper has nothing else useful
-        # to add.
+        # does NOT exhaust every possible
+        # clarification dimension.
         if (
             additional_no_pref
+
             and
+
             additional_no_pref
             .group(1)
             .lower()
@@ -194,7 +259,7 @@ class SessionState:
             )
 
         # ----------------------------------
-        # INTENT OVERRIDE
+        # 3. INTENT OVERRIDE
         # ----------------------------------
 
         is_override = (
@@ -212,25 +277,26 @@ class SessionState:
             self.override_seen = True
 
             # New intent may make clarification
-            # productive again.
+            # useful again.
             self.clarification_exhausted = (
                 False
             )
 
-            # Remove only mutable Turn-1
-            # preference evidence.
+            # Remove mutable Turn-1 evidence.
             #
-            # category_text is stored separately
-            # and therefore survives.
+            # category_text is stored separately,
+            # so the product category survives.
             self.evidence = [
                 item
+
                 for item
                 in self.evidence
+
                 if item.turn != 1
             ]
 
         # ----------------------------------
-        # POSITIVE PRODUCT EVIDENCE
+        # 4. POSITIVE PRODUCT EVIDENCE
         # ----------------------------------
 
         cleaned = (
@@ -258,7 +324,10 @@ class SessionState:
 
             if (
                 separator
-                and remaining.strip()
+
+                and
+
+                remaining.strip()
             ):
 
                 self.evidence.append(
@@ -283,19 +352,23 @@ class SessionState:
         self,
     ) -> str:
         """
-        Return current category + active
-        product constraints.
+        Return category plus all currently
+        valid product evidence.
         """
 
-        parts: list[str] = []
+        parts: list[
+            str
+        ] = []
 
         if self.category_text:
+
             parts.append(
                 self.category_text
             )
 
         parts.extend(
             item.text
+
             for item
             in self.evidence
         )
@@ -309,13 +382,14 @@ class SessionState:
         parent_asins: list[str],
     ) -> None:
         """
-        Track products previously shown.
+        Remember products already shown.
         """
 
         self.recommended_asins.update(
             str(
                 parent_asin
             )
+
             for parent_asin
             in parent_asins
         )
@@ -325,8 +399,8 @@ class SessionState:
         attribute: str | None,
     ) -> None:
         """
-        Remember which structured questions
-        have already been asked.
+        Remember structured questions
+        already asked.
         """
 
         if attribute:

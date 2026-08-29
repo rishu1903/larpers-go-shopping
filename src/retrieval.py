@@ -3,6 +3,10 @@ from __future__ import annotations
 import re
 import sqlite3
 
+from src.intent import (
+    ShoppingIntent,
+)
+
 from src.semantic import (
     SemanticRetriever,
 )
@@ -57,20 +61,25 @@ def terms(
     text: str,
 ) -> list[str]:
     """
-    Produce unique lexical query terms
-    while preserving original order.
+    Produce unique lexical terms while
+    preserving their original order.
     """
 
     return list(
         dict.fromkeys(
             token.lower()
+
             for token
             in TOKEN_RE.findall(
                 text
             )
+
             if (
                 len(token) > 1
-                and token.lower()
+
+                and
+
+                token.lower()
                 not in STOPWORDS
             )
         )
@@ -87,6 +96,7 @@ def _ors(
 
     return " OR ".join(
         f'"{token}"'
+
         for token
         in tokens[
             :max_terms
@@ -100,26 +110,19 @@ def build_expression(
     """
     Build a field-aware BM25 query.
 
-    V4 searched all customer terms across
-    every FTS column.
+    Category evidence is searched primarily
+    against:
 
-    V5 separates:
+        title
+        categories
 
-        CATEGORY TERMS
-            ↓
-        title + categories
+    Product constraints are searched against:
 
-    from:
-
-        PREFERENCE / CONSTRAINT TERMS
-            ↓
-        title + features + details
-        + description + store
-
-    This prevents category words from being
-    rewarded merely because they appear in a
-    long description and gives structured
-    evidence more appropriate search fields.
+        title
+        features
+        details
+        description
+        store
     """
 
     category_terms = terms(
@@ -129,12 +132,15 @@ def build_expression(
     evidence_terms = terms(
         " ".join(
             item.text
+
             for item
             in state.evidence
         )
     )
 
-    clauses: list[str] = []
+    clauses: list[
+        str
+    ] = []
 
     if category_terms:
 
@@ -157,9 +163,59 @@ def build_expression(
 
     return " OR ".join(
         f"({clause})"
+
         for clause
         in clauses
     )
+
+
+def should_use_semantic(
+    state: SessionState,
+    lexical_count: int,
+    exploration: bool,
+) -> bool:
+    """
+    Decide whether the dense retrieval route
+    should be activated.
+
+    BUYING
+    -------
+
+    Prefer the high-precision lexical path.
+
+    BROWSING
+    --------
+
+    Activate semantic recall when lexical
+    retrieval produces too small a candidate
+    pool.
+
+    EXPLORATION
+    -----------
+
+    Always enable semantic recall because
+    clarification has already been exhausted.
+
+    This gives us explicit route-aware retrieval
+    without blindly injecting dense candidates
+    into every query.
+    """
+
+    if exploration:
+        return True
+
+    if (
+        state.intent
+        == ShoppingIntent.BROWSING
+
+        and
+
+        lexical_count < 50
+    ):
+
+        return True
+
+    return False
 
 
 def _candidate_from_row(
@@ -170,8 +226,8 @@ def _candidate_from_row(
     ],
 ) -> dict:
     """
-    Convert an FTS row into the candidate
-    structure expected by our reranker.
+    Convert one FTS row to the structure
+    expected by the reranking layer.
     """
 
     parent_asin = str(
@@ -201,6 +257,7 @@ def _candidate_from_row(
                     value
                     or ""
                 )
+
                 for value
                 in row[2:]
             ),
@@ -211,9 +268,6 @@ def _candidate_from_row(
                 0,
             ),
 
-        # Reserved now because later versions
-        # may include this score directly in
-        # fusion/reranking.
         "semantic_score":
             0.0,
 
@@ -237,43 +291,42 @@ def retrieve_candidates(
     exploration: bool = False,
 ) -> list[dict]:
     """
-    Retrieve the candidate pool.
+    Execute the route-aware candidate
+    retrieval policy.
 
-    NORMAL MODE
-    -----------
+    BUYING
+    ======
 
-        field-aware BM25
-        Top 100
+        BM25 Top 100
 
-    EXPLORATION MODE
-    ----------------
+    BROWSING
+    ========
 
-        field-aware BM25
-        Top 500
+        BM25 Top 100
+
+        If lexical recall is sparse:
 
             +
+        Semantic Top 100
 
-        dense semantic search
-        Top 250
+    EXPLORATION
+    ===========
 
-            ↓
-
-        candidate union
-
-
-    Why semantic search is conditional:
-
-    Our public ablation showed that injecting
-    semantic candidates on every turn reduced
-    MRR despite preserving HR@10.
-
-    Therefore the dense route activates only
-    when structured clarification is exhausted.
+        BM25 Top 500
+            +
+        Semantic Top 250
     """
 
-    expression = build_expression(
-        state
+    expression = (
+        build_expression(
+            state
+        )
     )
+
+    # ----------------------------------
+    # ROUTE 1:
+    # FIELD-AWARE BM25
+    # ----------------------------------
 
     lexical_limit = (
         500
@@ -281,12 +334,9 @@ def retrieve_candidates(
         else 100
     )
 
-    lexical: list[dict] = []
-
-    # --------------------------------------------------
-    # ROUTE 1:
-    # FIELD-AWARE BM25
-    # --------------------------------------------------
+    lexical: list[
+        dict
+    ] = []
 
     if expression:
 
@@ -329,32 +379,45 @@ def retrieve_candidates(
                 row,
                 rating_numbers,
             )
+
             for row
             in rows
         ]
 
-    # --------------------------------------------------
-    # HIGH-PRECISION MODE
-    # --------------------------------------------------
-    #
-    # Do not inject dense candidates while
-    # clarification is still productive.
-    #
-    # This deliberately preserves our proven
-    # lexical precision.
+    # ----------------------------------
+    # INTENT-ROUTED SEMANTIC DECISION
+    # ----------------------------------
+
+    use_semantic = (
+        should_use_semantic(
+            state=state,
+            lexical_count=len(
+                lexical
+            ),
+            exploration=exploration,
+        )
+    )
 
     if (
         semantic is None
-        or not exploration
+
+        or
+
+        not use_semantic
     ):
+
         return lexical
 
-    # --------------------------------------------------
+    # ----------------------------------
     # ROUTE 2:
-    # DENSE LATENT-SEMANTIC RETRIEVAL
-    # --------------------------------------------------
+    # DENSE SEMANTIC RETRIEVAL
+    # ----------------------------------
 
-    semantic_limit = 250
+    semantic_limit = (
+        250
+        if exploration
+        else 100
+    )
 
     semantic_hits = (
         semantic.search(
@@ -364,9 +427,13 @@ def retrieve_candidates(
     )
 
     if not semantic_hits:
+
         return lexical
 
-    # Existing lexical candidates by ASIN.
+    # ----------------------------------
+    # FUSE THE TWO CANDIDATE ROUTES
+    # ----------------------------------
+
     by_asin = {
         candidate[
             "parent_asin"
@@ -377,16 +444,17 @@ def retrieve_candidates(
         in lexical
     }
 
-    score_by_asin = dict(
+    semantic_score_by_asin = dict(
         semantic_hits
     )
 
-    # Find products discovered only by
-    # the semantic retrieval route.
     missing_asins = [
         asin
-        for asin, _
-        in semantic_hits
+
+        for (
+            asin,
+            _,
+        ) in semantic_hits
 
         if (
             asin
@@ -403,21 +471,20 @@ def retrieve_candidates(
         asin_to_rowid[
             asin
         ]
+
         for asin
         in missing_asins
     ]
 
-    # Fetch metadata for semantic-only
-    # products from the existing FTS table.
-    #
-    # We map ASIN -> rowid so this still works
-    # correctly even if the runtime catalogue
-    # ordering differs from the semantic asset
-    # ordering.
+    # ----------------------------------
+    # LOAD SEMANTIC-ONLY PRODUCT METADATA
+    # ----------------------------------
+
     if missing_rowids:
 
         placeholders = ",".join(
             "?"
+
             for _
             in missing_rowids
         )
@@ -462,19 +529,24 @@ def retrieve_candidates(
                 ]
             ] = candidate
 
-    # Mark products that appeared in both routes
-    # and retain their semantic similarity score.
+    # ----------------------------------
+    # MARK HYBRID CANDIDATES
+    # ----------------------------------
+
     for (
         asin,
         candidate,
     ) in by_asin.items():
 
-        if asin in score_by_asin:
+        if (
+            asin
+            in semantic_score_by_asin
+        ):
 
             candidate[
                 "semantic_score"
             ] = (
-                score_by_asin[
+                semantic_score_by_asin[
                     asin
                 ]
             )
@@ -485,6 +557,7 @@ def retrieve_candidates(
                 ]
                 == "lexical"
             ):
+
                 candidate[
                     "source"
                 ] = "hybrid"
@@ -493,22 +566,23 @@ def retrieve_candidates(
         candidate[
             "parent_asin"
         ]
+
         for candidate
         in lexical
     }
 
-    # Preserve lexical ordering first.
-    #
-    # Semantic retrieval EXPANDS recall;
-    # it does not arbitrarily replace our
-    # proven lexical route.
+    # Preserve the proven lexical ordering
+    # first, while allowing semantic retrieval
+    # to expand the candidate universe.
     semantic_only = [
         by_asin[
             asin
         ]
 
-        for asin, _
-        in semantic_hits
+        for (
+            asin,
+            _,
+        ) in semantic_hits
 
         if (
             asin
