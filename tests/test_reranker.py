@@ -5,6 +5,7 @@ import unittest
 from src.reranker import (
     rerank_candidates,
 )
+
 from src.state import (
     Evidence,
     SessionState,
@@ -53,6 +54,12 @@ class RerankerTest(
                         "Walking Shoes "
                         "waterproof casual"
                     ),
+
+                # Give the less relevant
+                # candidate much greater
+                # popularity deliberately.
+                "rating_number":
+                    5000,
             },
             {
                 "parent_asin":
@@ -73,6 +80,88 @@ class RerankerTest(
                         "waterproof "
                         "rubber sole"
                     ),
+
+                "rating_number":
+                    10,
+            },
+        ]
+
+        ranked = rerank_candidates(
+            candidates,
+            state,
+        )
+
+        # Relevance must beat popularity.
+        self.assertEqual(
+            ranked[0][
+                "parent_asin"
+            ],
+            "target",
+        )
+
+
+    def test_popularity_breaks_equal_relevance_ties(
+        self,
+    ) -> None:
+
+        state = SessionState(
+            user_profile={}
+        )
+
+        state.category_text = (
+            "Robes"
+        )
+
+        state.evidence = [
+            Evidence(
+                turn=2,
+                text=(
+                    "100% Polyester; "
+                    "Tie closure"
+                ),
+            )
+        ]
+
+        candidates = [
+            {
+                "parent_asin":
+                    "less_popular",
+
+                "title":
+                    "Fleece Robe",
+
+                "categories":
+                    "Robes",
+
+                "searchable_text":
+                    (
+                        "Robes "
+                        "100% Polyester "
+                        "Tie closure"
+                    ),
+
+                "rating_number":
+                    50,
+            },
+            {
+                "parent_asin":
+                    "more_popular",
+
+                "title":
+                    "Fleece Robe",
+
+                "categories":
+                    "Robes",
+
+                "searchable_text":
+                    (
+                        "Robes "
+                        "100% Polyester "
+                        "Tie closure"
+                    ),
+
+                "rating_number":
+                    5000,
             },
         ]
 
@@ -82,12 +171,14 @@ class RerankerTest(
         )
 
         self.assertEqual(
-            ranked[0]["parent_asin"],
-            "target",
+            ranked[0][
+                "parent_asin"
+            ],
+            "more_popular",
         )
 
 
-    def test_bm25_order_breaks_true_ties(
+    def test_bm25_order_is_final_tie_breaker(
         self,
     ) -> None:
 
@@ -112,6 +203,9 @@ class RerankerTest(
 
                 "searchable_text":
                     "Wallet",
+
+                "rating_number":
+                    100,
             },
             {
                 "parent_asin":
@@ -125,6 +219,9 @@ class RerankerTest(
 
                 "searchable_text":
                     "Wallet",
+
+                "rating_number":
+                    100,
             },
         ]
 
@@ -135,8 +232,11 @@ class RerankerTest(
 
         self.assertEqual(
             [
-                item["parent_asin"]
-                for item in ranked
+                item[
+                    "parent_asin"
+                ]
+                for item
+                in ranked
             ],
             [
                 "first",

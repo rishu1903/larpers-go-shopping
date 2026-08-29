@@ -83,8 +83,8 @@ def _terms(text: str) -> list[str]:
 
 class Agent:
     """
-    Stateful lexical retrieval baseline
-    with conversational clarification.
+    Stateful shopping-search agent with
+    BM25 recall and deterministic reranking.
     """
 
     def __init__(
@@ -92,13 +92,27 @@ class Agent:
         catalog_path: str | Path = "data/catalog.jsonl",
     ) -> None:
 
-        self.catalog_path = Path(catalog_path)
+        self.catalog_path = Path(
+            catalog_path
+        )
 
-        self.connection = sqlite3.connect(":memory:")
+        self.connection = sqlite3.connect(
+            ":memory:"
+        )
 
         self._sessions: dict[
             str,
             SessionState,
+        ] = {}
+
+        # Keep popularity metadata outside the FTS index.
+        #
+        # rating_number is NOT used for retrieval.
+        # It is only used as a secondary tie-breaker
+        # after intent compatibility has been scored.
+        self._rating_numbers: dict[
+            str,
+            int,
         ] = {}
 
         self._build_index()
@@ -137,17 +151,56 @@ class Agent:
 
             for line in handle:
 
-                product = json.loads(line)
+                product = json.loads(
+                    line
+                )
+
+                parent_asin = str(
+                    product["parent_asin"]
+                )
+
+                self._rating_numbers[
+                    parent_asin
+                ] = int(
+                    product.get(
+                        "rating_number"
+                    )
+                    or 0
+                )
 
                 batch.append(
                     (
-                        str(product["parent_asin"]),
-                        _text(product.get("title")),
-                        _text(product.get("categories")),
-                        _text(product.get("features")),
-                        _text(product.get("details")),
-                        _text(product.get("store")),
-                        _text(product.get("description")),
+                        parent_asin,
+                        _text(
+                            product.get(
+                                "title"
+                            )
+                        ),
+                        _text(
+                            product.get(
+                                "categories"
+                            )
+                        ),
+                        _text(
+                            product.get(
+                                "features"
+                            )
+                        ),
+                        _text(
+                            product.get(
+                                "details"
+                            )
+                        ),
+                        _text(
+                            product.get(
+                                "store"
+                            )
+                        ),
+                        _text(
+                            product.get(
+                                "description"
+                            )
+                        ),
                     )
                 )
 
@@ -162,6 +215,7 @@ class Agent:
                     batch.clear()
 
         if batch:
+
             cursor.executemany(
                 "INSERT INTO products "
                 "VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -176,7 +230,9 @@ class Agent:
         user_profile: dict,
     ) -> None:
 
-        self._sessions[session_id] = SessionState(
+        self._sessions[
+            session_id
+        ] = SessionState(
             user_profile=user_profile
         )
 
@@ -193,18 +249,24 @@ class Agent:
                 "reset must be called before respond"
             )
 
-        state = self._sessions[session_id]
+        state = self._sessions[
+            session_id
+        ]
 
         state.update(
             user_message=user_message,
             turn=turn,
         )
 
-        search_query = build_search_query(state)
+        search_query = build_search_query(
+            state
+        )
 
         unique_terms = list(
             dict.fromkeys(
-                _terms(search_query)
+                _terms(
+                    search_query
+                )
             )
         )[:40]
 
@@ -215,10 +277,18 @@ class Agent:
 
         if not expression:
 
-            recommendations: list[dict] = []
+            recommendations: list[
+                dict
+            ] = []
 
         else:
 
+            # BM25 is now explicitly the
+            # candidate-generation stage.
+            #
+            # We retrieve 100 candidates,
+            # then let the second-stage
+            # reranker choose the best 10.
             rows = self.connection.execute(
                 "SELECT "
                 "parent_asin, "
@@ -247,47 +317,69 @@ class Agent:
                 ),
             ).fetchall()
 
-
             candidates = [
                 {
-                    "parent_asin": str(row[0]),
+                    "parent_asin":
+                        str(row[0]),
 
-                    "title": row[1] or "",
+                    "title":
+                        row[1] or "",
 
-                    "categories": row[2] or "",
+                    "categories":
+                        row[2] or "",
 
-                    "searchable_text": " ".join(
-                        str(value or "")
-                        for value in row[1:]
-                    ),
+                    "searchable_text":
+                        " ".join(
+                            str(
+                                value
+                                or ""
+                            )
+                            for value
+                            in row[1:]
+                        ),
+
+                    "rating_number":
+                        self._rating_numbers.get(
+                            str(row[0]),
+                            0,
+                        ),
                 }
                 for row in rows
             ]
-
 
             reranked = rerank_candidates(
                 candidates,
                 state,
             )
 
-
             recommendations = [
                 {
                     "parent_asin":
-                        item["parent_asin"]
+                        item[
+                            "parent_asin"
+                        ]
                 }
-                for item in reranked[:top_k]
+                for item
+                in reranked[:top_k]
             ]
 
-        ask_attribute, message = choose_clarification(
-            state,
-            turn,
+        ask_attribute, message = (
+            choose_clarification(
+                state,
+                turn,
+            )
         )
 
         return {
-            "message": message,
-            "ask_attribute": ask_attribute,
-            "recommendations": recommendations,
+            "message":
+                message,
+
+            "ask_attribute":
+                ask_attribute,
+
+            "recommendations":
+                recommendations,
+
             "usage": {
                 "prompt_tokens": 0,
                 "completion_tokens": 0,
