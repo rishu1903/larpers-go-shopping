@@ -1,0 +1,1167 @@
+{
+  "benchmark": "end-to-end production top-10 shadow evaluation",
+  "uses_public_labels": false,
+  "source_benchmark": "experiments\\v10_2_concept_robustness.json",
+  "methodology": {
+    "uses_public_agent_api": true,
+    "initial_turn_is_buying_style": true,
+    "second_turn_exhausts_other_clarification": true,
+    "evaluates_final_top_10": true,
+    "complete_concept_positive_sets_reconstructed": true
+  },
+  "config": {
+    "catalog": "data\\catalog.jsonl",
+    "source": "experiments\\v10_2_concept_robustness.json",
+    "top_k": 10,
+    "case_count": 13
+  },
+  "summary": {
+    "sample_count": 13,
+    "initial": {
+      "sample_count": 13,
+      "hit_rate_at_10": 0.692308,
+      "mrr_at_10": 0.25641,
+      "macro_precision_at_10": 0.184615,
+      "macro_recall_at_10": 0.232291,
+      "mean_recommendation_count": 10.0
+    },
+    "after_exploration": {
+      "sample_count": 13,
+      "hit_rate_at_10": 0.692308,
+      "mrr_at_10": 0.20812,
+      "macro_precision_at_10": 0.138462,
+      "macro_recall_at_10": 0.23258,
+      "mean_recommendation_count": 10.0
+    },
+    "transition": {
+      "rescued_after_exploration": 2,
+      "lost_after_exploration": 2,
+      "hit_both": 7,
+      "miss_both": 2
+    },
+    "v10_2_semantic_rescue_subset": {
+      "sample_count": 1,
+      "initial": {
+        "sample_count": 1,
+        "hit_rate_at_10": 0.0,
+        "mrr_at_10": 0.0,
+        "macro_precision_at_10": 0.0,
+        "macro_recall_at_10": 0.0,
+        "mean_recommendation_count": 10.0
+      },
+      "after_exploration": {
+        "sample_count": 1,
+        "hit_rate_at_10": 0.0,
+        "mrr_at_10": 0.0,
+        "macro_precision_at_10": 0.0,
+        "macro_recall_at_10": 0.0,
+        "mean_recommendation_count": 10.0
+      },
+      "rescued_into_top_10": 0
+    },
+    "by_concept": {
+      "adjustable": {
+        "initial": {
+          "sample_count": 1,
+          "hit_rate_at_10": 0.0,
+          "mrr_at_10": 0.0,
+          "macro_precision_at_10": 0.0,
+          "macro_recall_at_10": 0.0,
+          "mean_recommendation_count": 10.0
+        },
+        "after_exploration": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.2,
+          "macro_precision_at_10": 0.1,
+          "macro_recall_at_10": 0.25,
+          "mean_recommendation_count": 10.0
+        },
+        "rescued_after_exploration": 1
+      },
+      "breathable": {
+        "initial": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.25,
+          "macro_precision_at_10": 0.1,
+          "macro_recall_at_10": 0.25,
+          "mean_recommendation_count": 10.0
+        },
+        "after_exploration": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.111111,
+          "macro_precision_at_10": 0.1,
+          "macro_recall_at_10": 0.25,
+          "mean_recommendation_count": 10.0
+        },
+        "rescued_after_exploration": 0
+      },
+      "hiking": {
+        "initial": {
+          "sample_count": 1,
+          "hit_rate_at_10": 0.0,
+          "mrr_at_10": 0.0,
+          "macro_precision_at_10": 0.0,
+          "macro_recall_at_10": 0.0,
+          "mean_recommendation_count": 10.0
+        },
+        "after_exploration": {
+          "sample_count": 1,
+          "hit_rate_at_10": 0.0,
+          "mrr_at_10": 0.0,
+          "macro_precision_at_10": 0.0,
+          "macro_recall_at_10": 0.0,
+          "mean_recommendation_count": 10.0
+        },
+        "rescued_after_exploration": 0
+      },
+      "hooded": {
+        "initial": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.5,
+          "macro_precision_at_10": 0.5,
+          "macro_recall_at_10": 0.416667,
+          "mean_recommendation_count": 10.0
+        },
+        "after_exploration": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.5,
+          "macro_precision_at_10": 0.2,
+          "macro_recall_at_10": 0.166667,
+          "mean_recommendation_count": 10.0
+        },
+        "rescued_after_exploration": 0
+      },
+      "insulated": {
+        "initial": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.5,
+          "macro_precision_at_10": 0.3,
+          "macro_recall_at_10": 0.6,
+          "mean_recommendation_count": 10.0
+        },
+        "after_exploration": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.2,
+          "macro_precision_at_10": 0.2,
+          "macro_recall_at_10": 0.4,
+          "mean_recommendation_count": 10.0
+        },
+        "rescued_after_exploration": 0
+      },
+      "lightweight": {
+        "initial": {
+          "sample_count": 1,
+          "hit_rate_at_10": 0.0,
+          "mrr_at_10": 0.0,
+          "macro_precision_at_10": 0.0,
+          "macro_recall_at_10": 0.0,
+          "mean_recommendation_count": 10.0
+        },
+        "after_exploration": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.25,
+          "macro_precision_at_10": 0.1,
+          "macro_recall_at_10": 0.5,
+          "mean_recommendation_count": 10.0
+        },
+        "rescued_after_exploration": 1
+      },
+      "non_slip": {
+        "initial": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.166667,
+          "macro_precision_at_10": 0.1,
+          "macro_recall_at_10": 0.2,
+          "mean_recommendation_count": 10.0
+        },
+        "after_exploration": {
+          "sample_count": 1,
+          "hit_rate_at_10": 0.0,
+          "mrr_at_10": 0.0,
+          "macro_precision_at_10": 0.0,
+          "macro_recall_at_10": 0.0,
+          "mean_recommendation_count": 10.0
+        },
+        "rescued_after_exploration": 0
+      },
+      "pockets": {
+        "initial": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 1.0,
+          "macro_precision_at_10": 0.7,
+          "macro_recall_at_10": 0.636364,
+          "mean_recommendation_count": 10.0
+        },
+        "after_exploration": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.5,
+          "macro_precision_at_10": 0.4,
+          "macro_recall_at_10": 0.363636,
+          "mean_recommendation_count": 10.0
+        },
+        "rescued_after_exploration": 0
+      },
+      "running": {
+        "initial": {
+          "sample_count": 1,
+          "hit_rate_at_10": 0.0,
+          "mrr_at_10": 0.0,
+          "macro_precision_at_10": 0.0,
+          "macro_recall_at_10": 0.0,
+          "mean_recommendation_count": 10.0
+        },
+        "after_exploration": {
+          "sample_count": 1,
+          "hit_rate_at_10": 0.0,
+          "mrr_at_10": 0.0,
+          "macro_precision_at_10": 0.0,
+          "macro_recall_at_10": 0.0,
+          "mean_recommendation_count": 10.0
+        },
+        "rescued_after_exploration": 0
+      },
+      "stretch": {
+        "initial": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.25,
+          "macro_precision_at_10": 0.1,
+          "macro_recall_at_10": 0.333333,
+          "mean_recommendation_count": 10.0
+        },
+        "after_exploration": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.111111,
+          "macro_precision_at_10": 0.2,
+          "macro_recall_at_10": 0.666667,
+          "mean_recommendation_count": 10.0
+        },
+        "rescued_after_exploration": 0
+      },
+      "water_resistant": {
+        "initial": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.166667,
+          "macro_precision_at_10": 0.1,
+          "macro_recall_at_10": 0.142857,
+          "mean_recommendation_count": 10.0
+        },
+        "after_exploration": {
+          "sample_count": 1,
+          "hit_rate_at_10": 0.0,
+          "mrr_at_10": 0.0,
+          "macro_precision_at_10": 0.0,
+          "macro_recall_at_10": 0.0,
+          "mean_recommendation_count": 10.0
+        },
+        "rescued_after_exploration": 0
+      },
+      "waterproof": {
+        "initial": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.25,
+          "macro_precision_at_10": 0.1,
+          "macro_recall_at_10": 0.076923,
+          "mean_recommendation_count": 10.0
+        },
+        "after_exploration": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.5,
+          "macro_precision_at_10": 0.2,
+          "macro_recall_at_10": 0.153846,
+          "mean_recommendation_count": 10.0
+        },
+        "rescued_after_exploration": 0
+      },
+      "winter": {
+        "initial": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.25,
+          "macro_precision_at_10": 0.4,
+          "macro_recall_at_10": 0.363636,
+          "mean_recommendation_count": 10.0
+        },
+        "after_exploration": {
+          "sample_count": 1,
+          "hit_rate_at_10": 1.0,
+          "mrr_at_10": 0.333333,
+          "macro_precision_at_10": 0.3,
+          "macro_recall_at_10": 0.272727,
+          "mean_recommendation_count": 10.0
+        },
+        "rescued_after_exploration": 0
+      }
+    }
+  },
+  "cases": [
+    {
+      "case_id": "concept_adjustable_ac798cf79d_p3",
+      "concept": "adjustable",
+      "category": "Baby Boys Sneakers",
+      "paraphrase": "something with a fit that can be fine-tuned",
+      "buying_message": "I'm looking for Baby Boys Sneakers. A key requirement is: something with a fit that can be fine-tuned.",
+      "relevant_count": 4,
+      "v10_2": {
+        "lexical_first_relevant_rank": 19,
+        "semantic_first_relevant_rank": 92
+      },
+      "initial": {
+        "ask_attribute": "other",
+        "message": "What else matters most to you for this purchase?",
+        "recommendations": [
+          "B0073D4YAO",
+          "B08R9J9X6B",
+          "B08D776GM5",
+          "B07XXM8DR7",
+          "B0019CI90Q",
+          "B094DCVP8Q",
+          "B07522NX78",
+          "B088PGN5LM",
+          "B06Y58V21Z",
+          "B00AQFY66S"
+        ],
+        "recommendation_count": 10,
+        "hit": false,
+        "first_relevant_rank": null,
+        "reciprocal_rank": 0.0,
+        "relevant_hits": 0,
+        "precision_at_10": 0.0,
+        "recall_at_10": 0.0,
+        "relevant_ranks": []
+      },
+      "after_exploration": {
+        "ask_attribute": null,
+        "message": "I have enough information, so I'm showing you some different relevant alternatives.",
+        "recommendations": [
+          "B096H9H6LP",
+          "B0028Y50TW",
+          "B01LZKEJR1",
+          "B005ADL1UA",
+          "B00BB9WK5C",
+          "B086HX15PV",
+          "B07NQJPFB4",
+          "B07CH6QZDT",
+          "B0141R0YGC",
+          "B0B2XL9LPM"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 5,
+        "reciprocal_rank": 0.2,
+        "relevant_hits": 1,
+        "precision_at_10": 0.1,
+        "recall_at_10": 0.25,
+        "relevant_ranks": [
+          5
+        ]
+      },
+      "transition": "rescued_after_exploration"
+    },
+    {
+      "case_id": "concept_breathable_56d79b9b9b_p2",
+      "concept": "breathable",
+      "category": "Underwear Boxers",
+      "paraphrase": "something that helps reduce heat buildup during wear",
+      "buying_message": "I'm looking for Underwear Boxers. A key requirement is: something that helps reduce heat buildup during wear.",
+      "relevant_count": 4,
+      "v10_2": {
+        "lexical_first_relevant_rank": 4,
+        "semantic_first_relevant_rank": 97
+      },
+      "initial": {
+        "ask_attribute": "other",
+        "message": "What else matters most to you for this purchase?",
+        "recommendations": [
+          "B07F9Q6TMZ",
+          "B07RD6RS4C",
+          "B073HWF4D3",
+          "B08PF4BL7Q",
+          "B07G7GSVRS",
+          "B00HNF6HB6",
+          "B0BK8NPC8J",
+          "B08R5RQTS9",
+          "B07JGCKR5G",
+          "B0C5RY6F2H"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 4,
+        "reciprocal_rank": 0.25,
+        "relevant_hits": 1,
+        "precision_at_10": 0.1,
+        "recall_at_10": 0.25,
+        "relevant_ranks": [
+          4
+        ]
+      },
+      "after_exploration": {
+        "ask_attribute": null,
+        "message": "I have enough information, so I'm showing you some different relevant alternatives.",
+        "recommendations": [
+          "B07CBYV8BY",
+          "B08LP8STRY",
+          "B00YXUTUHW",
+          "B076TK877J",
+          "B01N78899W",
+          "B00LM78X0E",
+          "B0050H3PI2",
+          "B088MK2KN9",
+          "B00KSU6PLK",
+          "B008OYOZJ6"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 9,
+        "reciprocal_rank": 0.111111,
+        "relevant_hits": 1,
+        "precision_at_10": 0.1,
+        "recall_at_10": 0.25,
+        "relevant_ranks": [
+          9
+        ]
+      },
+      "transition": "hit_both"
+    },
+    {
+      "case_id": "concept_hiking_bb6edd2521_p1",
+      "concept": "hiking",
+      "category": "Boots",
+      "paraphrase": "something suitable for trails and uneven terrain",
+      "buying_message": "I'm looking for Boots. A key requirement is: something suitable for trails and uneven terrain.",
+      "relevant_count": 9,
+      "v10_2": {
+        "lexical_first_relevant_rank": null,
+        "semantic_first_relevant_rank": 31
+      },
+      "initial": {
+        "ask_attribute": "other",
+        "message": "What else matters most to you for this purchase?",
+        "recommendations": [
+          "B09Y5GF1GL",
+          "B00ZUYI166",
+          "B09NCJVMGX",
+          "B07VCQT55H",
+          "B07BYR6T7W",
+          "B071YRXBY2",
+          "B09699PSB5",
+          "B07TRCD9TC",
+          "B097XSNQQN",
+          "B00MJYP67M"
+        ],
+        "recommendation_count": 10,
+        "hit": false,
+        "first_relevant_rank": null,
+        "reciprocal_rank": 0.0,
+        "relevant_hits": 0,
+        "precision_at_10": 0.0,
+        "recall_at_10": 0.0,
+        "relevant_ranks": []
+      },
+      "after_exploration": {
+        "ask_attribute": null,
+        "message": "I have enough information, so I'm showing you some different relevant alternatives.",
+        "recommendations": [
+          "B07ZQKPXHY",
+          "B003FEPJ6I",
+          "B07V5JK8N4",
+          "B0BS3JHR2D",
+          "B007KJ62NI",
+          "B09DKGWFFS",
+          "B0864GV5ZG",
+          "B07ZX36FVH",
+          "B0992F13GP",
+          "B007NMHY84"
+        ],
+        "recommendation_count": 10,
+        "hit": false,
+        "first_relevant_rank": null,
+        "reciprocal_rank": 0.0,
+        "relevant_hits": 0,
+        "precision_at_10": 0.0,
+        "recall_at_10": 0.0,
+        "relevant_ranks": []
+      },
+      "transition": "miss_both"
+    },
+    {
+      "case_id": "concept_hooded_31153b22f7_p1",
+      "concept": "hooded",
+      "category": "Active Track & Active Jackets",
+      "paraphrase": "something with built-in head coverage",
+      "buying_message": "I'm looking for Active Track & Active Jackets. A key requirement is: something with built-in head coverage.",
+      "relevant_count": 12,
+      "v10_2": {
+        "lexical_first_relevant_rank": 1,
+        "semantic_first_relevant_rank": 27
+      },
+      "initial": {
+        "ask_attribute": "other",
+        "message": "What else matters most to you for this purchase?",
+        "recommendations": [
+          "B08P2KKWX5",
+          "B00OGNVZYW",
+          "B0C371CSNQ",
+          "B004ZKSDPU",
+          "B00N9973OA",
+          "B075K877H1",
+          "B07F2Q9Z2M",
+          "B07X4HZGBZ",
+          "B00DZMJ30S",
+          "B0BN1H3LT2"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
+        "relevant_hits": 5,
+        "precision_at_10": 0.5,
+        "recall_at_10": 0.416667,
+        "relevant_ranks": [
+          2,
+          3,
+          4,
+          6,
+          9
+        ]
+      },
+      "after_exploration": {
+        "ask_attribute": null,
+        "message": "I have enough information, so I'm showing you some different relevant alternatives.",
+        "recommendations": [
+          "B085945YJV",
+          "B00Y1SBQC8",
+          "B07DY8M56M",
+          "B08TML9JD3",
+          "B0BBMRJ9K9",
+          "B005UKKWJE",
+          "B010DEVJJI",
+          "B000VA10MQ",
+          "B00KY8AV3E",
+          "B004VF16XA"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
+        "relevant_hits": 2,
+        "precision_at_10": 0.2,
+        "recall_at_10": 0.166667,
+        "relevant_ranks": [
+          2,
+          7
+        ]
+      },
+      "transition": "hit_both"
+    },
+    {
+      "case_id": "concept_insulated_51e3e36436_p3",
+      "concept": "insulated",
+      "category": "Outdoor & Work Hiking & Trekking",
+      "paraphrase": "something that provides extra warmth for low temperatures",
+      "buying_message": "I'm looking for Outdoor & Work Hiking & Trekking. A key requirement is: something that provides extra warmth for low temperatures.",
+      "relevant_count": 5,
+      "v10_2": {
+        "lexical_first_relevant_rank": 2,
+        "semantic_first_relevant_rank": 90
+      },
+      "initial": {
+        "ask_attribute": "other",
+        "message": "What else matters most to you for this purchase?",
+        "recommendations": [
+          "B07XKTFLD5",
+          "B07L6S9773",
+          "B07NQF3VXC",
+          "B001UE70D0",
+          "B010733C2W",
+          "B0037QH15G",
+          "B07B3XHXXC",
+          "B0B99P5YC5",
+          "B01MXJH64T",
+          "B07B8G682G"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
+        "relevant_hits": 3,
+        "precision_at_10": 0.3,
+        "recall_at_10": 0.6,
+        "relevant_ranks": [
+          2,
+          6,
+          9
+        ]
+      },
+      "after_exploration": {
+        "ask_attribute": null,
+        "message": "I have enough information, so I'm showing you some different relevant alternatives.",
+        "recommendations": [
+          "B07L3F6BNK",
+          "B00PTYFTCG",
+          "B07TGT33HJ",
+          "B018WS3ISC",
+          "B07MG77LF2",
+          "B0844QC81P",
+          "B08CS69N26",
+          "B07XY22VBK",
+          "B0721LDMQZ",
+          "B071GZ48Q8"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 5,
+        "reciprocal_rank": 0.2,
+        "relevant_hits": 2,
+        "precision_at_10": 0.2,
+        "recall_at_10": 0.4,
+        "relevant_ranks": [
+          5,
+          9
+        ]
+      },
+      "transition": "hit_both"
+    },
+    {
+      "case_id": "concept_lightweight_94e519d562_p1",
+      "concept": "lightweight",
+      "category": "Tops, Tees & Shirts Tees",
+      "paraphrase": "something that does not feel heavy during use",
+      "buying_message": "I'm looking for Tops, Tees & Shirts Tees. A key requirement is: something that does not feel heavy during use.",
+      "relevant_count": 2,
+      "v10_2": {
+        "lexical_first_relevant_rank": null,
+        "semantic_first_relevant_rank": null
+      },
+      "initial": {
+        "ask_attribute": "other",
+        "message": "What else matters most to you for this purchase?",
+        "recommendations": [
+          "B0C1ZVKCXB",
+          "B0B2F2HDGZ",
+          "B07GFH1G6D",
+          "B07P3FMFGJ",
+          "B07G8SWBWZ",
+          "B07GFCW9CF",
+          "B07BVK6YJK",
+          "B084YZKSWK",
+          "B08Z32GJRX",
+          "B00FFZBV1M"
+        ],
+        "recommendation_count": 10,
+        "hit": false,
+        "first_relevant_rank": null,
+        "reciprocal_rank": 0.0,
+        "relevant_hits": 0,
+        "precision_at_10": 0.0,
+        "recall_at_10": 0.0,
+        "relevant_ranks": []
+      },
+      "after_exploration": {
+        "ask_attribute": null,
+        "message": "I have enough information, so I'm showing you some different relevant alternatives.",
+        "recommendations": [
+          "B09CS9MQ93",
+          "B07TLQCN21",
+          "B09D63ZQJ6",
+          "B08NTTJJXB",
+          "B088H1MZXG",
+          "B073DV6HYF",
+          "B08XYNSX6B",
+          "B06ZZPY7TL",
+          "B07G2F92LK",
+          "B00PUOMH70"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 4,
+        "reciprocal_rank": 0.25,
+        "relevant_hits": 1,
+        "precision_at_10": 0.1,
+        "recall_at_10": 0.5,
+        "relevant_ranks": [
+          4
+        ]
+      },
+      "transition": "rescued_after_exploration"
+    },
+    {
+      "case_id": "concept_non_slip_7348a6c1eb_p2",
+      "concept": "non_slip",
+      "category": "Fashion Chukka",
+      "paraphrase": "something that grips well on smooth or wet floors",
+      "buying_message": "I'm looking for Fashion Chukka. A key requirement is: something that grips well on smooth or wet floors.",
+      "relevant_count": 5,
+      "v10_2": {
+        "lexical_first_relevant_rank": 5,
+        "semantic_first_relevant_rank": null
+      },
+      "initial": {
+        "ask_attribute": "other",
+        "message": "What else matters most to you for this purchase?",
+        "recommendations": [
+          "B078KF6W6T",
+          "B0083IWRZC",
+          "B00AVB7YUM",
+          "B00HWZDEFO",
+          "B011F4TQCC",
+          "B007JU5SXI",
+          "B00U23O4UC",
+          "B00TRCUQOC",
+          "B01DH8ISG4",
+          "B01C6VQYK0"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 6,
+        "reciprocal_rank": 0.166667,
+        "relevant_hits": 1,
+        "precision_at_10": 0.1,
+        "recall_at_10": 0.2,
+        "relevant_ranks": [
+          6
+        ]
+      },
+      "after_exploration": {
+        "ask_attribute": null,
+        "message": "I have enough information, so I'm showing you some different relevant alternatives.",
+        "recommendations": [
+          "B00PC12U6Y",
+          "B004KNWAUQ",
+          "B00U2GEMGU",
+          "B01FTZ8FT8",
+          "B00JSNPWXU",
+          "B004OT88RK",
+          "B00JJZOY86",
+          "B000VIAFB0",
+          "B0035LD36E",
+          "B006PDZ7NG"
+        ],
+        "recommendation_count": 10,
+        "hit": false,
+        "first_relevant_rank": null,
+        "reciprocal_rank": 0.0,
+        "relevant_hits": 0,
+        "precision_at_10": 0.0,
+        "recall_at_10": 0.0,
+        "relevant_ranks": []
+      },
+      "transition": "lost_after_exploration"
+    },
+    {
+      "case_id": "concept_pockets_9dbe27157d_p2",
+      "concept": "pockets",
+      "category": "Skirts & Skorts Active Skorts",
+      "paraphrase": "something with places to keep a phone or other small items",
+      "buying_message": "I'm looking for Skirts & Skorts Active Skorts. A key requirement is: something with places to keep a phone or other small items.",
+      "relevant_count": 11,
+      "v10_2": {
+        "lexical_first_relevant_rank": 4,
+        "semantic_first_relevant_rank": null
+      },
+      "initial": {
+        "ask_attribute": "other",
+        "message": "What else matters most to you for this purchase?",
+        "recommendations": [
+          "B095NYV4K3",
+          "B08BR429FS",
+          "B098FD3BYZ",
+          "B0BKPN3XBX",
+          "B07J5QZ7Z5",
+          "B01A8DEGRG",
+          "B00OM6WHG8",
+          "B07JLHNGL9",
+          "B0B6C5JCR7",
+          "B0BYVFWJ35"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "relevant_hits": 7,
+        "precision_at_10": 0.7,
+        "recall_at_10": 0.636364,
+        "relevant_ranks": [
+          1,
+          2,
+          5,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      "after_exploration": {
+        "ask_attribute": null,
+        "message": "I have enough information, so I'm showing you some different relevant alternatives.",
+        "recommendations": [
+          "B00HJCCIYS",
+          "B0B83C8CRY",
+          "B00FPNW5VY",
+          "B07YV9T2MF",
+          "B07TBLBQPY",
+          "B098B2QPBJ",
+          "B09QPVXB8B",
+          "B06WRQSNNY",
+          "B07544FGSX",
+          "B085MB5X1Q"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
+        "relevant_hits": 4,
+        "precision_at_10": 0.4,
+        "recall_at_10": 0.363636,
+        "relevant_ranks": [
+          2,
+          3,
+          5,
+          6
+        ]
+      },
+      "transition": "hit_both"
+    },
+    {
+      "case_id": "concept_running_e91bab31b1_p3",
+      "concept": "running",
+      "category": "Tops, Tees & Blouses T-Shirts",
+      "paraphrase": "something appropriate for regular jogs and workouts",
+      "buying_message": "I'm looking for Tops, Tees & Blouses T-Shirts. A key requirement is: something appropriate for regular jogs and workouts.",
+      "relevant_count": 21,
+      "v10_2": {
+        "lexical_first_relevant_rank": null,
+        "semantic_first_relevant_rank": null
+      },
+      "initial": {
+        "ask_attribute": "other",
+        "message": "What else matters most to you for this purchase?",
+        "recommendations": [
+          "B073XHKSXP",
+          "B091DHBFYF",
+          "B07B75XMHH",
+          "B091PYS9P3",
+          "B07V32L556",
+          "B092M9PXJ6",
+          "B08P4FVL8J",
+          "B08ZRVWNC2",
+          "B096RPJHN7",
+          "B08GLZJPL7"
+        ],
+        "recommendation_count": 10,
+        "hit": false,
+        "first_relevant_rank": null,
+        "reciprocal_rank": 0.0,
+        "relevant_hits": 0,
+        "precision_at_10": 0.0,
+        "recall_at_10": 0.0,
+        "relevant_ranks": []
+      },
+      "after_exploration": {
+        "ask_attribute": null,
+        "message": "I have enough information, so I'm showing you some different relevant alternatives.",
+        "recommendations": [
+          "B09XJDLX5F",
+          "B0889K1JQD",
+          "B083HT5XST",
+          "B08N4FFHGT",
+          "B0888X1JKQ",
+          "B0B3JHB938",
+          "B0B8Z9L5PX",
+          "B0894QLSZR",
+          "B0897P3CNK",
+          "B07ZX1QPRB"
+        ],
+        "recommendation_count": 10,
+        "hit": false,
+        "first_relevant_rank": null,
+        "reciprocal_rank": 0.0,
+        "relevant_hits": 0,
+        "precision_at_10": 0.0,
+        "recall_at_10": 0.0,
+        "relevant_ranks": []
+      },
+      "transition": "miss_both"
+    },
+    {
+      "case_id": "concept_stretch_c08837996c_p3",
+      "concept": "stretch",
+      "category": "Suits & Sport Coats Sport Coats & Blazers",
+      "paraphrase": "something that gives a little instead of feeling rigid",
+      "buying_message": "I'm looking for Suits & Sport Coats Sport Coats & Blazers. A key requirement is: something that gives a little instead of feeling rigid.",
+      "relevant_count": 3,
+      "v10_2": {
+        "lexical_first_relevant_rank": 25,
+        "semantic_first_relevant_rank": 18
+      },
+      "initial": {
+        "ask_attribute": "other",
+        "message": "What else matters most to you for this purchase?",
+        "recommendations": [
+          "B0BFH4YCSH",
+          "B085WQM7KC",
+          "B01D1XIJI2",
+          "B00QTSTPZS",
+          "B00ITFKBW0",
+          "B074HTR9BR",
+          "B07SDPT958",
+          "B07QJ5NXR2",
+          "B0B7QVYKP4",
+          "B07BLX9X64"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 4,
+        "reciprocal_rank": 0.25,
+        "relevant_hits": 1,
+        "precision_at_10": 0.1,
+        "recall_at_10": 0.333333,
+        "relevant_ranks": [
+          4
+        ]
+      },
+      "after_exploration": {
+        "ask_attribute": null,
+        "message": "I have enough information, so I'm showing you some different relevant alternatives.",
+        "recommendations": [
+          "B077NZ4JBM",
+          "B01C42UMPY",
+          "B00D4LW6BI",
+          "B07613ZQ82",
+          "B0881KQ8JN",
+          "B07FL5Y99Z",
+          "B07617VBR6",
+          "B08JYYXPBF",
+          "B07M5HQYV2",
+          "B0752XLR8L"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 9,
+        "reciprocal_rank": 0.111111,
+        "relevant_hits": 2,
+        "precision_at_10": 0.2,
+        "recall_at_10": 0.666667,
+        "relevant_ranks": [
+          9,
+          10
+        ]
+      },
+      "transition": "hit_both"
+    },
+    {
+      "case_id": "concept_water_resistant_5f4bb3c1b9_p3",
+      "concept": "water_resistant",
+      "category": "Handbags & Wallets Shoulder Bags",
+      "paraphrase": "something suitable for occasional wet conditions",
+      "buying_message": "I'm looking for Handbags & Wallets Shoulder Bags. A key requirement is: something suitable for occasional wet conditions.",
+      "relevant_count": 7,
+      "v10_2": {
+        "lexical_first_relevant_rank": 8,
+        "semantic_first_relevant_rank": 80
+      },
+      "initial": {
+        "ask_attribute": "other",
+        "message": "What else matters most to you for this purchase?",
+        "recommendations": [
+          "B098WP6FNN",
+          "B07XM5LF6Q",
+          "B0B5TX3C7V",
+          "B00NYY56Y4",
+          "B00J6EZEKC",
+          "B083JK8NRM",
+          "B01D04INWE",
+          "B07ZNZMWS1",
+          "B07DCMP8BM",
+          "B08ZSDJ9CV"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 6,
+        "reciprocal_rank": 0.166667,
+        "relevant_hits": 1,
+        "precision_at_10": 0.1,
+        "recall_at_10": 0.142857,
+        "relevant_ranks": [
+          6
+        ]
+      },
+      "after_exploration": {
+        "ask_attribute": null,
+        "message": "I have enough information, so I'm showing you some different relevant alternatives.",
+        "recommendations": [
+          "B07X6GRX3V",
+          "B07791KH2D",
+          "B0919Y37TR",
+          "B093225VLW",
+          "B07Q579SKB",
+          "B082K8V1Q2",
+          "B0BL6VP288",
+          "B08RNHKLVX",
+          "B09VNHVG6S",
+          "B07BKWB29R"
+        ],
+        "recommendation_count": 10,
+        "hit": false,
+        "first_relevant_rank": null,
+        "reciprocal_rank": 0.0,
+        "relevant_hits": 0,
+        "precision_at_10": 0.0,
+        "recall_at_10": 0.0,
+        "relevant_ranks": []
+      },
+      "transition": "lost_after_exploration"
+    },
+    {
+      "case_id": "concept_waterproof_2b71cdf482_p2",
+      "concept": "waterproof",
+      "category": "Boots Mid-Calf",
+      "paraphrase": "something designed to keep water from getting through",
+      "buying_message": "I'm looking for Boots Mid-Calf. A key requirement is: something designed to keep water from getting through.",
+      "relevant_count": 13,
+      "v10_2": {
+        "lexical_first_relevant_rank": 4,
+        "semantic_first_relevant_rank": 2
+      },
+      "initial": {
+        "ask_attribute": "other",
+        "message": "What else matters most to you for this purchase?",
+        "recommendations": [
+          "B07YK3TB9Z",
+          "B074JMZWN3",
+          "B099Q82SPB",
+          "B07ZV99Q2T",
+          "B007JT427C",
+          "B0897WX4Y3",
+          "B0017IMERG",
+          "B01MUGZ7DV",
+          "B003IKNYKC",
+          "B07YGKXP7W"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 4,
+        "reciprocal_rank": 0.25,
+        "relevant_hits": 1,
+        "precision_at_10": 0.1,
+        "recall_at_10": 0.076923,
+        "relevant_ranks": [
+          4
+        ]
+      },
+      "after_exploration": {
+        "ask_attribute": null,
+        "message": "I have enough information, so I'm showing you some different relevant alternatives.",
+        "recommendations": [
+          "B079MSN9X3",
+          "B07D44JK89",
+          "B07BRB2SWK",
+          "B002C74IEI",
+          "B00OYZNJHI",
+          "B01H7CTB0S",
+          "B01MQTO54D",
+          "B08M68Q4J5",
+          "B003AM7NQ4",
+          "B00QT1AZ90"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
+        "relevant_hits": 2,
+        "precision_at_10": 0.2,
+        "recall_at_10": 0.153846,
+        "relevant_ranks": [
+          2,
+          10
+        ]
+      },
+      "transition": "hit_both"
+    },
+    {
+      "case_id": "concept_winter_4d13297893_p3",
+      "concept": "winter",
+      "category": "Jackets & Coats Fleece",
+      "paraphrase": "something appropriate when the weather gets very cold",
+      "buying_message": "I'm looking for Jackets & Coats Fleece. A key requirement is: something appropriate when the weather gets very cold.",
+      "relevant_count": 11,
+      "v10_2": {
+        "lexical_first_relevant_rank": 10,
+        "semantic_first_relevant_rank": null
+      },
+      "initial": {
+        "ask_attribute": "other",
+        "message": "What else matters most to you for this purchase?",
+        "recommendations": [
+          "B08615YJSC",
+          "B00G4U994I",
+          "B0BSFGB48M",
+          "B00943QA2Q",
+          "B0B41RG21B",
+          "B00ABEQ3FQ",
+          "B078C6DXVJ",
+          "B00FPKG388",
+          "B077P1XQH6",
+          "B07FN6VF7Y"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 4,
+        "reciprocal_rank": 0.25,
+        "relevant_hits": 4,
+        "precision_at_10": 0.4,
+        "recall_at_10": 0.363636,
+        "relevant_ranks": [
+          4,
+          5,
+          7,
+          8
+        ]
+      },
+      "after_exploration": {
+        "ask_attribute": null,
+        "message": "I have enough information, so I'm showing you some different relevant alternatives.",
+        "recommendations": [
+          "B08KCV3FZK",
+          "B010N9HAU0",
+          "B0BL78RB6W",
+          "B08N1DJ5LX",
+          "B099RZ5S1S",
+          "B07N8GKK2D",
+          "B00NKSHUD4",
+          "B01N8RU6H5",
+          "B091C37VXK",
+          "B00GV4B2P6"
+        ],
+        "recommendation_count": 10,
+        "hit": true,
+        "first_relevant_rank": 3,
+        "reciprocal_rank": 0.333333,
+        "relevant_hits": 3,
+        "precision_at_10": 0.3,
+        "recall_at_10": 0.272727,
+        "relevant_ranks": [
+          3,
+          4,
+          5
+        ]
+      },
+      "transition": "hit_both"
+    }
+  ]
+}
