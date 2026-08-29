@@ -5,22 +5,67 @@ import re
 import sqlite3
 from pathlib import Path
 
+from src.dialogue import choose_clarification
+from src.query import build_search_query
+from src.state import SessionState
 
-TOKEN_RE = re.compile(r"[a-z0-9]+", re.IGNORECASE)
+
+TOKEN_RE = re.compile(
+    r"[a-z0-9]+",
+    re.IGNORECASE,
+)
+
 STOPWORDS = {
-    "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "from",
-    "i", "in", "is", "it", "me", "my", "of", "on", "or", "please", "some",
-    "that", "the", "this", "to", "want", "with", "would", "you", "looking",
+    "a",
+    "an",
+    "and",
+    "are",
+    "as",
+    "at",
+    "be",
+    "but",
+    "by",
+    "for",
+    "from",
+    "i",
+    "in",
+    "is",
+    "it",
+    "me",
+    "my",
+    "of",
+    "on",
+    "or",
+    "please",
+    "some",
+    "that",
+    "the",
+    "this",
+    "to",
+    "want",
+    "with",
+    "would",
+    "you",
+    "looking",
 }
 
 
 def _text(value: object) -> str:
     if value is None:
         return ""
+
     if isinstance(value, dict):
-        return " ".join(f"{key} {item}" for key, item in value.items())
+        return " ".join(
+            f"{key} {item}"
+            for key, item in value.items()
+        )
+
     if isinstance(value, list):
-        return " ".join(str(item) for item in value)
+        return " ".join(
+            str(item)
+            for item in value
+        )
+
     return str(value)
 
 
@@ -28,30 +73,71 @@ def _terms(text: str) -> list[str]:
     return [
         token.lower()
         for token in TOKEN_RE.findall(text)
-        if len(token) > 1 and token.lower() not in STOPWORDS
+        if (
+            len(token) > 1
+            and token.lower() not in STOPWORDS
+        )
     ]
 
 
 class Agent:
-    """Editable weak baseline: stateless BM25 retrieval with no LLM dependency."""
+    """
+    Stateful lexical retrieval baseline
+    with conversational clarification.
+    """
 
-    def __init__(self, catalog_path: str | Path = "data/catalog.jsonl") -> None:
+    def __init__(
+        self,
+        catalog_path: str | Path = "data/catalog.jsonl",
+    ) -> None:
+
         self.catalog_path = Path(catalog_path)
+
         self.connection = sqlite3.connect(":memory:")
-        self._sessions: set[str] = set()
+
+        self._sessions: dict[
+            str,
+            SessionState,
+        ] = {}
+
         self._build_index()
 
     def _build_index(self) -> None:
+
         cursor = self.connection.cursor()
+
         cursor.execute(
             "CREATE VIRTUAL TABLE products USING fts5("
-            "parent_asin UNINDEXED, title, categories, features, details, store, description, "
+            "parent_asin UNINDEXED, "
+            "title, "
+            "categories, "
+            "features, "
+            "details, "
+            "store, "
+            "description, "
             "tokenize='unicode61 remove_diacritics 2')"
         )
-        batch: list[tuple[str, str, str, str, str, str, str]] = []
-        with self.catalog_path.open(encoding="utf-8") as handle:
+
+        batch: list[
+            tuple[
+                str,
+                str,
+                str,
+                str,
+                str,
+                str,
+                str,
+            ]
+        ] = []
+
+        with self.catalog_path.open(
+            encoding="utf-8"
+        ) as handle:
+
             for line in handle:
+
                 product = json.loads(line)
+
                 batch.append(
                     (
                         str(product["parent_asin"]),
@@ -63,16 +149,35 @@ class Agent:
                         _text(product.get("description")),
                     )
                 )
+
                 if len(batch) >= 1000:
-                    cursor.executemany("INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?)", batch)
+
+                    cursor.executemany(
+                        "INSERT INTO products "
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                        batch,
+                    )
+
                     batch.clear()
+
         if batch:
-            cursor.executemany("INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?)", batch)
+            cursor.executemany(
+                "INSERT INTO products "
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                batch,
+            )
+
         self.connection.commit()
 
-    def reset(self, session_id: str, user_profile: dict) -> None:
-        # The profile is anonymized and may be used for personalization.
-        self._sessions.add(session_id)
+    def reset(
+        self,
+        session_id: str,
+        user_profile: dict,
+    ) -> None:
+
+        self._sessions[session_id] = SessionState(
+            user_profile=user_profile
+        )
 
     def respond(
         self,
@@ -81,22 +186,77 @@ class Agent:
         turn: int,
         top_k: int,
     ) -> dict:
+
         if session_id not in self._sessions:
-            raise RuntimeError("reset must be called before respond")
-        unique_terms = list(dict.fromkeys(_terms(user_message)))[:40]
-        expression = " OR ".join(f'"{term}"' for term in unique_terms)
+            raise RuntimeError(
+                "reset must be called before respond"
+            )
+
+        state = self._sessions[session_id]
+
+        state.update(
+            user_message=user_message,
+            turn=turn,
+        )
+
+        search_query = build_search_query(state)
+
+        unique_terms = list(
+            dict.fromkeys(
+                _terms(search_query)
+            )
+        )[:40]
+
+        expression = " OR ".join(
+            f'"{term}"'
+            for term in unique_terms
+        )
+
         if not expression:
+
             recommendations: list[dict] = []
+
         else:
+
             rows = self.connection.execute(
-                "SELECT parent_asin FROM products WHERE products MATCH ? "
-                "ORDER BY bm25(products, 0.0, 6.0, 4.0, 2.5, 2.5, 1.5, 1.0) LIMIT ?",
-                (expression, top_k),
+                "SELECT parent_asin "
+                "FROM products "
+                "WHERE products MATCH ? "
+                "ORDER BY bm25("
+                "products, "
+                "0.0, "
+                "6.0, "
+                "4.0, "
+                "2.5, "
+                "2.5, "
+                "1.5, "
+                "1.0"
+                ") "
+                "LIMIT ?",
+                (
+                    expression,
+                    top_k,
+                ),
             ).fetchall()
-            recommendations = [{"parent_asin": str(row[0])} for row in rows]
+
+            recommendations = [
+                {
+                    "parent_asin": str(row[0])
+                }
+                for row in rows
+            ]
+
+        ask_attribute, message = choose_clarification(
+            state,
+            turn,
+        )
+
         return {
-            "message": "Here are the closest matches I found.",
-            "ask_attribute": None,
+            "message": message,
+            "ask_attribute": ask_attribute,
             "recommendations": recommendations,
-            "usage": {"prompt_tokens": 0, "completion_tokens": 0},
+            "usage": {
+                "prompt_tokens": 0,
+                "completion_tokens": 0,
+            },
         }
