@@ -1,112 +1,679 @@
-# TechJam Conversational E-Commerce Search Challenge
+# TechJam 2026 — Conversational Shopping Copilot
 
-Build an AI shopping agent that asks useful follow-up questions and recommends the customer's hidden target product within at most 10 turns.
+AI-powered conversational product search and recommendation system for **TechJam 2026 Problem Statement 4: Shopping Copilot — AI Conversational Search and Recommendations**.
 
-## What You Receive
+The system operates over the frozen **50,000-product Amazon Reviews 2023 Clothing, Shoes & Jewelry catalogue** and maintains conversational state across a maximum of 10 user turns.
 
-- A frozen catalog of 50,000 products from the `Clothing_Shoes_and_Jewelry` category of Amazon Reviews 2023.
-- 200 labeled public sessions for local development.
-- A weak BM25 starter agent and deterministic local evaluator.
-- The Agent API contract and scoring rules.
+Our approach combines:
 
-The organizer keeps 800 additional sessions private for final evaluation.
+- field-aware BM25 lexical retrieval;
+- lightweight catalogue-trained semantic retrieval;
+- deterministic candidate reranking;
+- multi-turn preference accumulation;
+- intent and override handling;
+- candidate-aware clarification;
+- adaptive long-tail exploration;
+- hard budget constraints;
+- safe aggregate-profile personalization;
+- catalogue-derived robustness evaluation.
 
-## Task
+The original participant-kit README is preserved at:
 
-For each session, your agent receives an anonymized preference profile and a short customer message. Raw user IDs, review text, timestamps, and purchase history are never disclosed. On every turn the agent may:
+`docs/participant-kit/ORIGINAL_README.md`
 
-- ask a natural clarification question in `message` and identify one requested field in `ask_attribute`;
-- return a ranked list of up to 10 catalog `parent_asin` values;
-- do both in the same response.
+---
 
-The session ends when the target product appears in the scored Top 10 or after turn 10. Sessions cover Buying, Browsing, Intent Override, and Boundary behavior.
+## Current Performance
 
-## Download the Catalog
+Latest official **200-session public evaluator** result:
 
-Download `catalog.jsonl.gz` from the GitHub Release attached to this repository, then run:
+| Metric | Score |
+|---|---:|
+| Hit Rate@10 | **1.0000** |
+| MRR | **0.815145** |
+| MTTC | **2.035** |
+| Efficiency | **0.8965** |
+| Technical Score | **0.923844** |
 
-```bash
-gzip -dk catalog.jsonl.gz
-mv catalog.jsonl data/catalog.jsonl
+Official starter baseline:
+
+| Metric | Baseline |
+|---|---:|
+| Hit Rate@10 | 0.125 |
+| MRR | 0.068034 |
+| MTTC | 9.81 |
+| Efficiency | 0.119 |
+| Technical Score | 0.10671 |
+
+The current agent therefore reaches all 200 public targets while substantially improving ranking quality and recommendation speed relative to the starter implementation.
+
+---
+
+# Architecture
+
+```mermaid
+flowchart TD
+    U[User Message] --> S[Session State]
+
+    P[Aggregate User Profile] --> S
+
+    S --> I[Intent Router]
+    S --> H[Hard Constraint Parser]
+
+    I --> Q{Retrieval Route}
+
+    Q -->|Buying / strong lexical evidence| L[Field-aware BM25]
+    Q -->|Exploration / sparse browsing| L
+    Q -->|Exploration / sparse browsing| D[LSA Semantic Retrieval]
+
+    L --> C[Candidate Pool]
+    D --> C
+
+    H --> F[Hard Constraint Filter]
+    C --> F
+
+    F --> R[Constraint-aware Reranker]
+
+    R --> TOP[Top Recommendations]
+    R --> A[Candidate-aware Clarification]
+
+    A --> S
+    TOP --> U
 ```
 
-Verify the downloaded file using the published `SHA256SUMS` file.
+The primary architecture deliberately remains **lexical-first**.
 
-## Run the Starter
+Catalogue-derived robustness testing showed that BM25 remains substantially stronger as a standalone retriever, while semantic retrieval provides complementary recovery on queries with weaker lexical overlap.
 
-Python 3.10 or later is recommended. The starter uses only the Python standard library.
+---
 
-```bash
-python3 -m evaluator.local_evaluator
+# Conversational Flow
+
+```mermaid
+stateDiagram-v2
+    [*] --> Initial
+
+    Initial --> Buying: explicit requirement
+    Initial --> Browsing: exploring language
+
+    Browsing --> Buying: preference becomes explicit
+
+    Buying --> Buying: additional constraint
+
+    Buying --> Override: user changes requirement
+    Browsing --> Override: user changes requirement
+
+    Override --> Buying: stale evidence removed
+
+    Buying --> Exploration: no additional preference
+    Browsing --> Exploration: no additional preference
+
+    Exploration --> Buying: new explicit preference
+
+    Buying --> [*]: turn limit / sufficient result
+    Exploration --> [*]: turn limit / sufficient result
 ```
 
-Edit `starter/agent.py` to implement your system. Do not edit the evaluator or public labels when reporting your local score.
-The command writes per-session results and aggregate metrics to `results.json`.
+---
 
-The included weak BM25 starter scores Hit Rate@10 `0.125`, MRR `0.068034`, and
-MTTC `9.81` on the released public set. See `docs/baseline_results.json`.
+# Retrieval Strategy
 
-## Agent Interface
+```mermaid
+flowchart LR
+    M[Conversation Evidence] --> B[BM25]
 
-```python
-class Agent:
-    def reset(self, session_id: str, user_profile: dict) -> None:
-        ...
+    M --> G{Dense route needed?}
 
-    def respond(self, session_id: str, user_message: str, turn: int, top_k: int) -> dict:
-        return {
-            "message": "Do you have a material preference?",
-            "ask_attribute": "material",
-            "recommendations": [
-                {"parent_asin": "B000..."},
-                {"parent_asin": "B001..."}
-            ],
-            "usage": {"prompt_tokens": 120, "completion_tokens": 30}
-        }
+    G -->|No| B
+    G -->|Yes| S[Semantic LSA]
+
+    B --> U[Candidate Union]
+    S --> U
+
+    U --> HC[Hard Constraint Filter]
+    HC --> RR[Reranker]
+    RR --> T10[Final Top 10]
 ```
 
-`ask_attribute` is one of `category`, `material`, `color`, `size`, `style`, `brand`, `budget`, `feature`, `use_case`, `other`, or `null`. See `docs/agent_api_contract.json`.
+Dense retrieval is **not enabled universally**.
 
-## Technical Metrics
+Previous ablations showed that always-on semantic retrieval reduced public MRR. The semantic route is therefore used as a recovery mechanism during exploration or when browsing retrieval is sparse.
 
-- **Hit Rate@10:** fraction of sessions that find the target within 10 turns.
-- **MRR:** mean reciprocal rank of the target; a miss contributes zero.
-- **MTTC:** mean first-hit turn; a miss is assigned turn 11.
-- **Reported token usage:** prompt and completion tokens returned by the team's model client.
+---
+
+# Implementation Evolution
+
+```mermaid
+flowchart TD
+    V0[Starter BM25<br/>Score 0.10671]
+
+    V1[V1 Multi-turn Evidence<br/>Score 0.738582]
+
+    V11[V1.1 Category Preservation<br/>Score 0.752190]
+
+    V2[V2 Constraint-aware Reranker<br/>Score 0.852379]
+
+    V3[V3 Popularity Tie-break<br/>Score 0.920764]
+
+    V4[V4 Adaptive Exploration<br/>Score 0.923814]
+
+    V5[V5 Hybrid Semantic Retrieval<br/>Score 0.923844]
+
+    V6[V6 Candidate-aware Questions]
+
+    V7[V7 Buying / Browsing Intent Routing]
+
+    V8[V8 Context-safe Budget Constraints]
+
+    V9[V9 Safe Profile Personalization]
+
+    V10[V10.2 Domain-gated Robustness Benchmark]
+
+    V11E[V11 End-to-end Shadow Ranking]
+
+    V0 --> V1 --> V11 --> V2 --> V3 --> V4 --> V5 --> V6 --> V7 --> V8 --> V9 --> V10 --> V11E
+```
+
+---
+
+# Version History
+
+## V1 — Conversational State
+
+The starter agent was stateless and searched only the latest customer message.
+
+V1 introduced accumulated conversational evidence so later turns benefited from earlier preferences.
+
+Public score:
+
+`0.106710 → 0.738582`
+
+---
+
+## V1.1 — Category Preservation
+
+Separated persistent product-category information from mutable user preferences.
+
+This was important for intent override scenarios: when the user changes a preference, stale preference evidence can be removed without accidentally deleting the product category.
+
+Public score:
+
+`0.738582 → 0.752190`
+
+---
+
+## V2 — Constraint-aware Reranking
+
+Added a deterministic reranker over the BM25 candidate pool.
+
+Signals include:
+
+- category token coverage;
+- exact category phrase matches;
+- accumulated evidence coverage;
+- exact evidence phrases;
+- BM25 ranking.
+
+Public score:
+
+`0.752190 → 0.852379`
+
+---
+
+## V3 — Popularity Tie-breaking
+
+Many catalogue products can have effectively identical textual relevance.
+
+V3 uses `rating_number` as a deterministic secondary signal inside equal relevance tiers.
+
+Public result:
+
+- Hit Rate@10: `0.995`
+- MRR: `0.811881`
+- Technical Score: `0.920764`
+
+---
+
+## V4 — Adaptive Exploration
+
+One public target was a highly ambiguous long-tail product that could not be distinguished from many lexical matches.
+
+V4 introduced:
+
+- clarification exhaustion detection;
+- wider candidate retrieval after the user has no more information;
+- long-tail exploration ordering;
+- seen-product filtering.
+
+Public result:
+
+- Hit Rate@10: **1.000**
+- Technical Score: `0.923814`
+
+---
+
+## V5 — Hybrid Semantic Retrieval
+
+Added a local semantic retrieval path trained entirely on the provided 50k catalogue.
+
+Implementation:
+
+- TF-IDF;
+- 1–2 gram features;
+- Truncated SVD;
+- 96-dimensional LSA representation;
+- normalized document embeddings;
+- `float16` catalogue matrix.
+
+Semantic search is used adaptively rather than universally because always-on dense retrieval reduced public MRR.
+
+Current semantic assets:
+
+- `assets/catalog_lsa.npy`
+- `assets/semantic_asins.json`
+- `assets/semantic_pipeline.joblib`
+
+Public score reached:
+
+**0.923844**
+
+---
+
+## V6 — Candidate-aware Clarification
+
+The first three turns retain broad `other` clarification because this aligns well with the deterministic competition simulator.
+
+For unresolved later turns, clarification is selected using candidate uncertainty.
+
+Possible dimensions include:
+
+- material;
+- color;
+- size;
+- style;
+- use case;
+- feature.
+
+Questions are chosen using coverage and normalized entropy across the current candidate set.
+
+---
+
+## V7 — Intent Routing
+
+Added explicit conversational intent state:
+
+- `BUYING`
+- `BROWSING`
+
+Browsing language can enable broader retrieval when the lexical pool is weak.
+
+Explicit narrowing such as:
+
+- `I prefer`
+- `I would prefer`
+- `I'd like`
+- `I need`
+- `my budget`
+- `what matters most`
+
+moves the session into buying mode.
+
+This preserved the public benchmark while making retrieval behavior more intentional.
+
+---
+
+## V8 — Hard Budget Constraints
+
+Added structured price filtering.
+
+Examples correctly understood:
+
+- `under $80`
+- `budget under 80`
+- `price below 100`
+- `I can spend up to 120`
+- `$50 to $100`
+
+The parser intentionally rejects unrelated measurements such as:
+
+- `fits up to 8-inch wrist circumference`
+- `water resistant up to 30m`
+
+This avoids interpreting arbitrary catalogue measurements as budget constraints.
+
+---
+
+## V9 — Safe Profile Personalization
+
+Uses anonymized aggregate profile tags to influence **which clarification dimension** may matter.
+
+The profile never invents a concrete preference.
+
+For example:
+
+`material matters historically`
+
+does **not** imply:
+
+`user wants cotton`
+
+Profile information is only allowed to break near-ties between candidate-driven clarification choices.
+
+Priority:
+
+1. current explicit preference;
+2. current candidate uncertainty;
+3. aggregate historical profile.
+
+---
+
+# V10.2 — Robustness Benchmark
+
+The public evaluator contains 200 labeled sessions, while 800 sessions remain private.
+
+To reduce public-set overfitting, we added a self-supervised catalogue-derived robustness benchmark that does **not use public labels**.
+
+The benchmark:
+
+1. identifies explicit product concepts in catalogue metadata;
+2. removes the original concept keyword from the query;
+3. generates semantically equivalent paraphrases;
+4. restricts concepts to sensible product domains;
+5. treats every qualifying same-category product as relevant;
+6. compares lexical and semantic candidate generation.
+
+Examples:
+
+`waterproof`
+
+→ `something designed to keep water from getting through`
+
+`breathable`
+
+→ `something that helps reduce heat buildup during wear`
+
+`non-slip`
+
+→ `something with secure traction on slick surfaces`
+
+## V10.2 Results
+
+130 cases, balanced across 13 concept families:
+
+| Retrieval route | Hit@10 | Hit@100 | Macro Recall@100 |
+|---|---:|---:|---:|
+| Lexical | **58.46%** | **90.00%** | **67.78%** |
+| Semantic | 16.15% | 59.23% | 18.86% |
+| Hybrid candidate union | **60.00%** | **94.62%** | **73.43%** |
+
+Complementarity:
+
+- 71 cases found by both routes;
+- 46 lexical-only cases;
+- 6 semantic rescue cases;
+- 7 missed by both.
+
+This supports the current design:
+
+> Use lexical retrieval as the precision-first primary route and semantic retrieval as a complementary recovery mechanism.
+
+---
+
+# V11 — End-to-End Shadow Ranking
+
+V10.2 measures whether relevant products reach the candidate pool.
+
+V11 evaluates whether the **actual production agent** can turn those candidates into final top-10 recommendations.
+
+It exercises the public competition interface:
 
 ```text
-TechnicalScore = 0.50 × HitRate@10 + 0.30 × MRR + 0.20 × Efficiency
-Efficiency = clip((11 - MTTC) / 10, 0, 1)
+Agent.reset(...)
+Agent.respond(...)
 ```
 
-`TechnicalScore` is an objective input to the `Technical Execution` assessment. It is not a separate judging criterion and does not represent the entire `Technical Execution` score.
+For each V10.2 case:
 
-Only exact `parent_asin` equality produces a hit. Core metrics are also reported by scenario.
+```mermaid
+sequenceDiagram
+    participant U as Synthetic User
+    participant A as Production Agent
+    participant R as Retrieval + Reranker
 
-## Model Choice and Cost
+    U->>A: Buying-style paraphrased requirement
+    A->>R: Normal production retrieval
+    R-->>A: Ranked candidates
+    A-->>U: Top-10 + clarification
 
-Teams may use any legally accessible LLM API or local model. Teams manage their own credentials and must never commit API keys. Model choice, estimated cost, token usage, and latency must be disclosed. Token usage is a feasibility metric, not part of the core technical score. The organizer does not provide or reimburse model API credits; teams are responsible for any costs incurred through optional external services.
+    U->>A: No additional preference
+    A->>R: Exploration / recovery route
+    R-->>A: New ranked candidates
+    A-->>U: New top-10
+```
 
-## Files
+This distinguishes whether semantic recovery is merely producing deep candidates or is actually improving the recommendation surface.
+
+---
+
+# Repository Structure
 
 ```text
-data/public_set.jsonl             200 labeled development sessions
-docs/competition_specification.md participant rules and evaluation protocol
-docs/agent_api_contract.json      machine-readable Agent contract
-docs/evaluation_config.json       scoring configuration
-docs/baseline_results.json        reproducible weak-starter reference score
-starter/agent.py                  editable weak starter
-evaluator/local_evaluator.py      public-set simulator and scorer
+.
+├── assets/
+│   ├── catalog_lsa.npy
+│   ├── semantic_asins.json
+│   └── semantic_pipeline.joblib
+│
+├── data/
+│   ├── catalog.jsonl
+│   └── public_set.jsonl
+│
+├── evaluator/
+│   └── local_evaluator.py
+│
+├── experiments/
+│   ├── v8_hard_constraints.json
+│   ├── v8_1_money_safe_constraints.json
+│   ├── v9_safe_personalization.json
+│   ├── v10_2_concept_smoke.json
+│   ├── v10_2_concept_robustness.json
+│   └── v11_end_to_end_shadow.json
+│
+├── scripts/
+│   ├── build_semantic_index.py
+│   ├── concept_robustness_eval.py
+│   └── end_to_end_shadow_eval.py
+│
+├── src/
+│   ├── dialogue.py
+│   ├── hard_constraints.py
+│   ├── intent.py
+│   ├── profile.py
+│   ├── questions.py
+│   ├── reranker.py
+│   ├── retrieval.py
+│   ├── semantic.py
+│   └── state.py
+│
+├── starter/
+│   └── agent.py
+│
+└── tests/
 ```
 
-## Judging and Submission Policy
+---
 
-- Participant submission requirements: `docs/submission_rules.md`
-- Organizer-only final judging controls: `organizer/JUDGING_RUNBOOK.md`
-- Organizer private release checklist: `organizer/private_release_checklist.md`
-- Judging day operations SOP: `organizer/JUDGING_DAY_SOP.md`
+# Setup
 
-## Data Source
+Python 3.10+ is recommended.
 
-The catalog and sessions are derived from Amazon Reviews 2023 by McAuley Lab, UCSD. See `DATA_ATTRIBUTION.md` before using or redistributing the data.
-Sessions are sampled deterministically from the official Clothing 5-core leave-last-out split and joined to the frozen catalog.
+Create the environment:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+Install dependencies:
+
+```powershell
+pip install -r requirements.txt
+```
+
+Run the full automated test suite:
+
+```powershell
+python -m unittest -v
+```
+
+---
+
+# Official Public Evaluation
+
+Run:
+
+```powershell
+python -m evaluator.local_evaluator --output experiments\latest_public_eval.json
+```
+
+Do not modify:
+
+- evaluator logic;
+- public labels;
+- target ASINs;
+- official evaluation configuration.
+
+---
+
+# Robustness Evaluation
+
+Run the domain-gated retrieval benchmark:
+
+```powershell
+python -m scripts.concept_robustness_eval --cases 130 --output experiments\v10_2_concept_robustness.json
+```
+
+Run the end-to-end top-10 benchmark:
+
+```powershell
+python -m scripts.end_to_end_shadow_eval --output experiments\v11_end_to_end_shadow.json
+```
+
+---
+
+# Design Principles
+
+### Precision before breadth
+
+Dense retrieval is not automatically better than lexical search.
+
+The system keeps BM25 as its default high-precision retrieval route.
+
+### Semantic retrieval as recovery
+
+Semantic search is activated when there is evidence that lexical retrieval may be insufficient.
+
+### Explicit session intent wins
+
+Current user requirements always outrank historical profile information.
+
+### No fabricated preferences
+
+Aggregate profile tags influence clarification strategy, never concrete product values.
+
+### Deterministic and reproducible
+
+The current production pipeline does not require an external paid LLM API.
+
+This minimizes:
+
+- latency;
+- cost;
+- nondeterminism;
+- external dependencies.
+
+### Public-set restraint
+
+Production changes are not accepted solely because they improve the 200 public sessions.
+
+Catalogue-derived shadow tests provide an additional evaluation axis for private-set robustness.
+
+---
+
+# Team Workflow
+
+Recommended Git workflow:
+
+```text
+main
+│
+├── feature/<feature-name>
+├── fix/<bug-name>
+└── experiment/<experiment-name>
+```
+
+For each change:
+
+1. create a branch;
+2. implement the change;
+3. run `python -m unittest -v`;
+4. run the relevant evaluation;
+5. compare against the protected benchmark;
+6. commit only if the change is justified;
+7. open a pull request into `main`.
+
+---
+
+# Protected Public Benchmark
+
+Treat this as the current regression baseline:
+
+```text
+Hit Rate@10      1.000000
+MRR              0.815145
+MTTC             2.035
+Efficiency       0.8965
+Technical Score  0.923844
+```
+
+A production change that reduces Hit Rate@10 should normally be rejected unless there is compelling evidence of better private-set generalization.
+
+---
+
+# Competition Constraints
+
+Key constraints from the participant kit:
+
+- frozen 50,000-product catalogue;
+- maximum 10 turns per session;
+- exact `parent_asin` recommendation matching;
+- 200 labeled public sessions;
+- 800 private evaluation sessions;
+- catalogue is read-only;
+- participant-visible metadata only;
+- no modification of evaluator/public labels.
+
+---
+
+# Current Status
+
+Completed:
+
+- multi-turn conversational memory;
+- override handling;
+- field-aware lexical retrieval;
+- constraint-aware reranking;
+- popularity tie-breaking;
+- adaptive exploration;
+- semantic candidate recovery;
+- buying/browsing intent routing;
+- candidate-aware clarification;
+- context-safe budget filtering;
+- safe profile personalization;
+- catalogue-derived robustness benchmark.
+
+In progress:
+
+- V11 end-to-end shadow top-10 analysis.
+
+Next production change will be chosen based on V11 rather than assumed in advance.
