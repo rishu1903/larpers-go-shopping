@@ -414,6 +414,109 @@ class SemanticExplorationFusionTest(
             "popular",
         )
 
+    def test_default_relevance_scale_reproduces_v12_formula(
+        self,
+    ) -> None:
+        configure_semantic_exploration_weight(
+            1.0
+        )
+
+        state = self._state()
+
+        candidate = {
+            "title":
+                "Walking Shoes",
+
+            "categories":
+                "Walking Shoes",
+
+            "source":
+                "semantic",
+        }
+
+        self.assertEqual(
+            semantic_exploration_bonus(
+                candidate,
+                state,
+                semantic_rank=10,
+            ),
+            semantic_exploration_bonus(
+                candidate,
+                state,
+                semantic_rank=10,
+                relevance_scale=1.0,
+            ),
+        )
+
+    def test_relevance_scale_multiplies_the_bonus_proportionally(
+        self,
+    ) -> None:
+        configure_semantic_exploration_weight(
+            1.0
+        )
+
+        state = self._state()
+
+        candidate = {
+            "title":
+                "Walking Shoes",
+
+            "categories":
+                "Walking Shoes",
+
+            "source":
+                "semantic",
+        }
+
+        unscaled = semantic_exploration_bonus(
+            candidate,
+            state,
+            semantic_rank=5,
+            relevance_scale=1.0,
+        )
+
+        scaled = semantic_exploration_bonus(
+            candidate,
+            state,
+            semantic_rank=5,
+            relevance_scale=8.0,
+        )
+
+        self.assertAlmostEqual(
+            scaled,
+            unscaled * 8.0,
+        )
+
+    def test_relevance_scale_does_not_bypass_existing_guardrails(
+        self,
+    ) -> None:
+        configure_semantic_exploration_weight(
+            1.0
+        )
+
+        state = self._state()
+
+        hybrid = {
+            "title":
+                "Walking Shoes",
+
+            "categories":
+                "Walking Shoes",
+
+            "source":
+                "hybrid",
+        }
+
+        self.assertEqual(
+            semantic_exploration_bonus(
+                hybrid,
+                state,
+                semantic_rank=1,
+                relevance_scale=100.0,
+            ),
+            0.0,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
