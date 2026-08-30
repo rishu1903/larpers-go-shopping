@@ -328,9 +328,16 @@ class AnthropicLLMClient:
 
     def __init__(
         self,
-        model: str = "claude-sonnet-5",
+        model: str = "claude-haiku-4-5-20251001",
         api_key: str | None = None,
     ) -> None:
+        # Haiku 4.5 is the cheapest current-generation
+        # model ($1/$5 per MTok in/out vs. $2/$10 for
+        # Sonnet 5) -- this extraction task is a small,
+        # tightly-schemad tool call, not open-ended
+        # reasoning, so it doesn't need a larger model.
+        # Override via the `model` argument if a future
+        # evaluation shows accuracy needs it.
 
         # Imported here, not at module scope, so
         # importing this module never requires the
