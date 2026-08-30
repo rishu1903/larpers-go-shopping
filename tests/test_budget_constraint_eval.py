@@ -9,12 +9,7 @@ from scripts.budget_constraint_eval import CASES, evaluate_case
 # this branch. Each fix commit removes the entries it resolves; by the
 # final commit on this branch this set is empty and
 # ``test_all_cases_pass`` below covers the full table unconditionally.
-KNOWN_FAILING: frozenset[str] = frozenset(
-    {
-        "numeric_edge_bare_decimal_budget",
-        "numeric_edge_bare_decimal_under",
-    }
-)
+KNOWN_FAILING: frozenset[str] = frozenset()
 
 # Cases that are expected to keep failing after every commit on this
 # branch: real, evidenced gaps that are explicitly out of scope for this
