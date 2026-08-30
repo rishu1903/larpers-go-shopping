@@ -166,6 +166,27 @@ _MAX_PATTERNS = (
         rf"{_NUMBER}",
         re.IGNORECASE,
     ),
+
+    re.compile(
+        rf"\bcheaper than\s+"
+        rf"(?:[$]\s*)?{_NUMBER}",
+        re.IGNORECASE,
+    ),
+
+    # cap/ceiling/capped at/of $X
+    #
+    # Deliberately distinct wording from the
+    # existing "over"/"above" MIN patterns above --
+    # "capped at $50" does not overlap with "over
+    # $50" or "above $50", so this does not risk
+    # also satisfying a MIN pattern on the same
+    # number.
+    re.compile(
+        rf"\b(?:cap|ceiling|capped)\s+"
+        rf"(?:at|of)\s+"
+        rf"(?:[$]\s*)?{_NUMBER}",
+        re.IGNORECASE,
+    ),
 )
 
 

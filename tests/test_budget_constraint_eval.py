@@ -11,9 +11,6 @@ from scripts.budget_constraint_eval import CASES, evaluate_case
 # ``test_all_cases_pass`` below covers the full table unconditionally.
 KNOWN_FAILING: frozenset[str] = frozenset(
     {
-        "paraphrase_cheaper_than",
-        "paraphrase_cap_of",
-        "paraphrase_capped_at",
         "numeric_edge_bare_decimal_budget",
         "numeric_edge_bare_decimal_under",
     }
