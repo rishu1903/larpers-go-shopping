@@ -215,6 +215,46 @@ _MIN_PATTERNS = (
 )
 
 
+# --------------------------------------------------
+# NEGATION
+# --------------------------------------------------
+#
+# A bound keyword immediately preceded by a negation
+# word inverts the meaning of the phrase instead of
+# stating it:
+#
+#     not over $100
+#     not under $80
+#
+# Without this guard, the "over"/"under" patterns
+# above would match regardless of the negation and
+# silently produce the opposite of what the shopper
+# said.
+
+_NEGATION_PREFIX_RE = re.compile(
+    r"\b(?:not|n't|never)\s+$",
+    re.IGNORECASE,
+)
+
+
+def _is_negated_at(
+    text: str,
+    start: int,
+    window: int = 12,
+) -> bool:
+
+    prefix = text[
+        max(0, start - window):start
+    ]
+
+    return (
+        _NEGATION_PREFIX_RE.search(
+            prefix
+        )
+        is not None
+    )
+
+
 @dataclass(
     frozen=True
 )
@@ -489,7 +529,10 @@ def parse_budget_constraint(
             normalized
         )
 
-        if match:
+        if match and not _is_negated_at(
+            normalized,
+            match.start(),
+        ):
 
             min_price = _number(
                 match.group(1)
@@ -503,7 +546,10 @@ def parse_budget_constraint(
             normalized
         )
 
-        if match:
+        if match and not _is_negated_at(
+            normalized,
+            match.start(),
+        ):
 
             max_price = _number(
                 match.group(1)
