@@ -288,6 +288,7 @@ class SessionState:
             additional_no_pref
             .group(1)
             .lower()
+            
             == "other"
         ):
 

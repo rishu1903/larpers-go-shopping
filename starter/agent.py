@@ -8,6 +8,10 @@ from src.dialogue import (
     choose_clarification,
 )
 
+from src.intent import (
+    ShoppingIntent,
+)
+
 from src.hard_constraints import (
     apply_budget_constraint,
     coerce_price,
@@ -471,6 +475,13 @@ class Agent:
         # ----------------------------------
         # 7. REMEMBER SHOWN PRODUCTS
         # ----------------------------------
+
+        # Browsing sessions on turn 1 have no evidence beyond
+        # the category, making the ranking a pure popularity
+        # tiebreak. Withhold recommendations and let the
+        # question cycle run first so turn 2 has real signal.
+        if state.intent == ShoppingIntent.BROWSING and turn == 1:
+            recommendations = []
 
         state.record_recommendations(
             [

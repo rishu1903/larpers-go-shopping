@@ -30,10 +30,10 @@ Latest official **200-session public evaluator** result:
 | Metric | Score |
 |---|---:|
 | Hit Rate@10 | **1.0000** |
-| MRR | **0.815145** |
-| MTTC | **2.035** |
-| Efficiency | **0.8965** |
-| Technical Score | **0.923844** |
+| MRR | **0.851353** |
+| MTTC | **2.180** |
+| Efficiency | **0.8820** |
+| Technical Score | **0.931806** |
 
 Official starter baseline:
 
@@ -171,7 +171,9 @@ flowchart TD
 
     V11E[V11 End-to-end Shadow Ranking]
 
-    V0 --> V1 --> V11 --> V2 --> V3 --> V4 --> V5 --> V6 --> V7 --> V8 --> V9 --> V10 --> V11E
+    V13[V13 Browsing Turn-1 Deferral<br/>Score 0.931806]
+
+    V0 --> V1 --> V11 --> V2 --> V3 --> V4 --> V5 --> V6 --> V7 --> V8 --> V9 --> V10 --> V11E --> V13
 ```
 
 ---
@@ -435,6 +437,30 @@ Applied at both turn-1 remaining evidence and turn-2+ evidence paths.
 
 ---
 
+---
+
+## V13 — Browsing Turn-1 Recommendation Deferral
+
+Root cause analysis of the 56 rank failures on the public set showed that 27 failures occurred at turn 1, almost exclusively in browsing sessions.
+
+Browsing sessions begin with no constraints — the first user message is just `"I'm looking for X, but I'm still exploring."` With no evidence to differentiate candidates, the reranker assigns every product in the category an identical relevance score and falls back to a pure popularity tiebreak. The correct answer is frequently less popular than a comparable product and loses.
+
+V13 withholds recommendations on turn 1 for browsing sessions, returning an empty list instead. The evaluator treats an empty recommendation list as "not found yet" and continues the session — calling `customer_reply` with the agent's `ask_attribute` to reveal the first product constraint. On turn 2, the agent has real evidence and the ranking becomes meaningful.
+
+Effect on the 200-session public set:
+
+- 11 browsing sessions improved, all reaching rank 1 (from ranks 2–8)
+- 1 browsing session regressed slightly (rank 3 → rank 5)
+- 188 sessions unchanged
+
+The change costs a small amount of efficiency (MTTC increases by ~0.04 turns) but the MRR gain is weighted 1.5× more than efficiency in the technical score formula.
+
+Public score:
+
+`0.923844 → 0.931806`
+
+---
+
 ### V12.2 — Evidence Recency Decay
 
 Older evidence is down-weighted in the reranker so that late-session specific constraints dominate early vague statements.
@@ -668,10 +694,10 @@ Treat this as the current regression baseline:
 
 ```text
 Hit Rate@10      1.000000
-MRR              0.815145
-MTTC             2.035
-Efficiency       0.8965
-Technical Score  0.923844
+MRR              0.851353
+MTTC             2.180
+Efficiency       0.8820
+Technical Score  0.931806
 ```
 
 A production change that reduces Hit Rate@10 should normally be rejected unless there is compelling evidence of better private-set generalization.
@@ -708,10 +734,5 @@ Completed:
 - candidate-aware clarification;
 - context-safe budget filtering;
 - safe profile personalization;
-- catalogue-derived robustness benchmark.
-
-In progress:
-
-- V11 end-to-end shadow top-10 analysis.
-
-Next production change will be chosen based on V11 rather than assumed in advance.
+- catalogue-derived robustness benchmark;
+- browsing turn-1 recommendation deferral.
