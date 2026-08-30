@@ -421,18 +421,16 @@ This supports the current design:
 
 # V11 — End-to-End Shadow Ranking
 
-V10.2 measures whether relevant products reach the candidate pool.
+V10.2 measures whether relevant products enter the candidate pool.
 
-V11 evaluates whether the **actual production agent** can turn those candidates into final top-10 recommendations.
-
-It exercises the public competition interface:
+V11 exercises the actual production interface:
 
 ```text
 Agent.reset(...)
 Agent.respond(...)
 ```
 
-For each V10.2 case:
+against the same catalogue-derived paraphrase benchmark and measures the final top-10 recommendations shown to the user.
 
 ```mermaid
 sequenceDiagram
@@ -441,17 +439,67 @@ sequenceDiagram
     participant R as Retrieval + Reranker
 
     U->>A: Buying-style paraphrased requirement
-    A->>R: Normal production retrieval
+    A->>R: Normal precision-first retrieval
     R-->>A: Ranked candidates
-    A-->>U: Top-10 + clarification
+    A-->>U: Turn-1 top 10
 
     U->>A: No additional preference
-    A->>R: Exploration / recovery route
-    R-->>A: New ranked candidates
-    A-->>U: New top-10
+    A->>R: Exploration / semantic recovery
+    R-->>A: Unseen alternatives
+    A-->>U: Turn-2 top 10
 ```
 
-This distinguishes whether semantic recovery is merely producing deep candidates or is actually improving the recommendation surface.
+## V11 Results
+
+Across the 130 domain-gated shadow cases:
+
+| Metric | Result |
+|---|---:|
+| Turn-1 Hit@10 | **77.69%** |
+| Turn-1 MRR@10 | **0.4988** |
+| New turn-2 rescues | **14** |
+| Cumulative hit by turn 2 | **88.46%** |
+| Rescue rate among initial misses | **48.28%** |
+| Missed after both turns | **15 / 130** |
+
+The production agent deliberately avoids repeating already-seen products during exploration. Therefore a turn-1 hit remains a successful session even when the target is not repeated on turn 2.
+
+V11 shows that exploration is valuable: almost half of the cases that missed on the first recommendation set were recovered by the second.
+
+However, semantic promotion remains an opportunity. Of the six V10.2 cases in which semantic retrieval found a relevant product that lexical retrieval completely missed at depth 100, only one was promoted into the final top 10 during exploration.
+
+This motivates the next experiment:
+
+> Improve semantic candidate fusion during exploration without changing the protected turn-1 lexical ranking path.
+
+## V12 — Semantic-Aware Exploration Fusion
+
+V11 showed that semantic retrieval could recover products missed by lexical search, but many semantic-only candidates were not promoted into the final recommendation set.
+
+V12 adds a bounded semantic reciprocal-rank signal during **exploration only**. The normal buying path remains unchanged.
+
+Semantic promotion is deliberately conservative:
+
+- only semantic-only candidates receive the bonus;
+- hybrid/lexical candidates receive no additional semantic boost;
+- candidates must remain compatible with the active product category;
+- semantic retrieval rank is used instead of raw cosine similarity;
+- the feature activates only during exploration.
+
+A label-free ablation tested weights from `0.0` to `1.5`. A weight of `1.0` was selected because it was the smallest value that improved session coverage while preserving ranking quality.
+
+| Metric | V11 | V12 |
+|---|---:|---:|
+| Shadow Turn-1 Hit@10 | 77.69% | 77.69% |
+| Shadow cumulative Hit@10 | 88.46% | **89.23%** |
+| Turn-2 rescues | 14 | **15** |
+| Remaining misses | 15 | **14** |
+| Semantic-only rescues | 1 / 6 | **2 / 6** |
+| Public Hit@10 | 1.000 | **1.000** |
+| Public MRR | 0.815145 | **0.815145** |
+| Public TechnicalScore | 0.923844 | **0.923844** |
+
+The result suggests semantic retrieval is useful as a targeted recovery mechanism, but should remain subordinate to the stronger lexical relevance path.
 
 ---
 
@@ -672,8 +720,10 @@ Completed:
 - safe profile personalization;
 - catalogue-derived robustness benchmark.
 
-In progress:
-
+Completed:
 - V11 end-to-end shadow top-10 analysis.
+
+Next:
+- semantic-aware exploration candidate fusion.
 
 Next production change will be chosen based on V11 rather than assumed in advance.
