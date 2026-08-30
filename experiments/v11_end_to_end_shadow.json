@@ -1,12 +1,14 @@
 {
-  "benchmark": "end-to-end production top-10 shadow evaluation",
+  "benchmark": "end-to-end production two-turn shadow evaluation",
   "uses_public_labels": false,
   "source_benchmark": "experiments\\v10_2_concept_robustness.json",
   "methodology": {
     "uses_public_agent_api": true,
     "initial_turn_is_buying_style": true,
     "second_turn_exhausts_other_clarification": true,
-    "evaluates_final_top_10": true,
+    "evaluates_final_top_10_each_turn": true,
+    "session_success_is_cumulative": true,
+    "first_turn_hit_is_not_invalidated_by_later_diversification": true,
     "complete_concept_positive_sets_reconstructed": true
   },
   "config": {
@@ -25,39 +27,45 @@
       "macro_recall_at_10": 0.333189,
       "mean_recommendation_count": 10.0
     },
-    "after_exploration": {
+    "exploration_turn_only": {
       "sample_count": 130,
-      "hit_rate_at_10": 0.7,
-      "mrr_at_10": 0.359362,
-      "macro_precision_at_10": 0.199231,
-      "macro_recall_at_10": 0.205304,
+      "hit_rate_at_10": 0.723077,
+      "mrr_at_10": 0.365986,
+      "macro_precision_at_10": 0.203846,
+      "macro_recall_at_10": 0.208937,
       "mean_recommendation_count": 10.0
     },
+    "session_by_turn_2": {
+      "sample_count": 130,
+      "cumulative_hit_rate_by_turn_2": 0.892308,
+      "first_turn_hits": 101,
+      "second_turn_rescues": 15,
+      "misses_after_turn_2": 14,
+      "rescue_rate_among_initial_misses": 0.517241,
+      "first_hit_mrr": 0.559466,
+      "macro_recall_across_20": 0.542127,
+      "mean_recommendation_overlap": 0.0
+    },
     "transition": {
-      "rescued_after_exploration": 14,
-      "lost_after_exploration": 24,
-      "hit_both": 77,
-      "miss_both": 15
+      "rescued_after_exploration": 15,
+      "initial_only": 22,
+      "hit_both": 79,
+      "miss_both": 14
     },
     "v10_2_semantic_rescue_subset": {
       "sample_count": 6,
-      "initial": {
+      "session": {
         "sample_count": 6,
-        "hit_rate_at_10": 0.0,
-        "mrr_at_10": 0.0,
-        "macro_precision_at_10": 0.0,
-        "macro_recall_at_10": 0.0,
-        "mean_recommendation_count": 10.0
+        "cumulative_hit_rate_by_turn_2": 0.333333,
+        "first_turn_hits": 0,
+        "second_turn_rescues": 2,
+        "misses_after_turn_2": 4,
+        "rescue_rate_among_initial_misses": 0.333333,
+        "first_hit_mrr": 0.222222,
+        "macro_recall_across_20": 0.104167,
+        "mean_recommendation_overlap": 0.0
       },
-      "after_exploration": {
-        "sample_count": 6,
-        "hit_rate_at_10": 0.166667,
-        "mrr_at_10": 0.166667,
-        "macro_precision_at_10": 0.066667,
-        "macro_recall_at_10": 0.083333,
-        "mean_recommendation_count": 10.0
-      },
-      "rescued_into_top_10": 1
+      "rescued_into_top_10_on_turn_2": 2
     },
     "by_concept": {
       "adjustable": {
@@ -72,12 +80,22 @@
         "after_exploration": {
           "sample_count": 10,
           "hit_rate_at_10": 0.8,
-          "mrr_at_10": 0.304286,
+          "mrr_at_10": 0.300952,
           "macro_precision_at_10": 0.27,
           "macro_recall_at_10": 0.172175,
           "mean_recommendation_count": 10.0
         },
-        "rescued_after_exploration": 2
+        "session": {
+          "sample_count": 10,
+          "cumulative_hit_rate_by_turn_2": 0.9,
+          "first_turn_hits": 7,
+          "second_turn_rescues": 2,
+          "misses_after_turn_2": 1,
+          "rescue_rate_among_initial_misses": 0.666667,
+          "first_hit_mrr": 0.473333,
+          "macro_recall_across_20": 0.289509,
+          "mean_recommendation_overlap": 0.0
+        }
       },
       "breathable": {
         "initial": {
@@ -96,7 +114,17 @@
           "macro_recall_at_10": 0.254221,
           "mean_recommendation_count": 10.0
         },
-        "rescued_after_exploration": 1
+        "session": {
+          "sample_count": 10,
+          "cumulative_hit_rate_by_turn_2": 0.9,
+          "first_turn_hits": 8,
+          "second_turn_rescues": 1,
+          "misses_after_turn_2": 1,
+          "rescue_rate_among_initial_misses": 0.5,
+          "first_hit_mrr": 0.672619,
+          "macro_recall_across_20": 0.716342,
+          "mean_recommendation_overlap": 0.0
+        }
       },
       "hiking": {
         "initial": {
@@ -109,13 +137,23 @@
         },
         "after_exploration": {
           "sample_count": 10,
-          "hit_rate_at_10": 0.6,
-          "mrr_at_10": 0.249167,
-          "macro_precision_at_10": 0.12,
-          "macro_recall_at_10": 0.173317,
+          "hit_rate_at_10": 0.7,
+          "mrr_at_10": 0.349167,
+          "macro_precision_at_10": 0.17,
+          "macro_recall_at_10": 0.218772,
           "mean_recommendation_count": 10.0
         },
-        "rescued_after_exploration": 3
+        "session": {
+          "sample_count": 10,
+          "cumulative_hit_rate_by_turn_2": 0.9,
+          "first_turn_hits": 6,
+          "second_turn_rescues": 3,
+          "misses_after_turn_2": 1,
+          "rescue_rate_among_initial_misses": 0.75,
+          "first_hit_mrr": 0.5025,
+          "macro_recall_across_20": 0.490733,
+          "mean_recommendation_overlap": 0.0
+        }
       },
       "hooded": {
         "initial": {
@@ -128,13 +166,23 @@
         },
         "after_exploration": {
           "sample_count": 10,
-          "hit_rate_at_10": 0.8,
-          "mrr_at_10": 0.469444,
-          "macro_precision_at_10": 0.29,
-          "macro_recall_at_10": 0.204529,
+          "hit_rate_at_10": 0.9,
+          "mrr_at_10": 0.502778,
+          "macro_precision_at_10": 0.3,
+          "macro_recall_at_10": 0.217029,
           "mean_recommendation_count": 10.0
         },
-        "rescued_after_exploration": 1
+        "session": {
+          "sample_count": 10,
+          "cumulative_hit_rate_by_turn_2": 0.9,
+          "first_turn_hits": 7,
+          "second_turn_rescues": 2,
+          "misses_after_turn_2": 1,
+          "rescue_rate_among_initial_misses": 0.666667,
+          "first_hit_mrr": 0.577778,
+          "macro_recall_across_20": 0.492754,
+          "mean_recommendation_overlap": 0.0
+        }
       },
       "insulated": {
         "initial": {
@@ -148,12 +196,22 @@
         "after_exploration": {
           "sample_count": 10,
           "hit_rate_at_10": 0.8,
-          "mrr_at_10": 0.485833,
-          "macro_precision_at_10": 0.27,
-          "macro_recall_at_10": 0.281146,
+          "mrr_at_10": 0.419167,
+          "macro_precision_at_10": 0.26,
+          "macro_recall_at_10": 0.275263,
           "mean_recommendation_count": 10.0
         },
-        "rescued_after_exploration": 1
+        "session": {
+          "sample_count": 10,
+          "cumulative_hit_rate_by_turn_2": 1.0,
+          "first_turn_hits": 9,
+          "second_turn_rescues": 1,
+          "misses_after_turn_2": 0,
+          "rescue_rate_among_initial_misses": 1.0,
+          "first_hit_mrr": 0.691667,
+          "macro_recall_across_20": 0.653521,
+          "mean_recommendation_overlap": 0.0
+        }
       },
       "lightweight": {
         "initial": {
@@ -166,13 +224,23 @@
         },
         "after_exploration": {
           "sample_count": 10,
-          "hit_rate_at_10": 0.8,
-          "mrr_at_10": 0.290833,
-          "macro_precision_at_10": 0.17,
-          "macro_recall_at_10": 0.218391,
+          "hit_rate_at_10": 0.9,
+          "mrr_at_10": 0.293611,
+          "macro_precision_at_10": 0.18,
+          "macro_recall_at_10": 0.221421,
           "mean_recommendation_count": 10.0
         },
-        "rescued_after_exploration": 1
+        "session": {
+          "sample_count": 10,
+          "cumulative_hit_rate_by_turn_2": 1.0,
+          "first_turn_hits": 9,
+          "second_turn_rescues": 1,
+          "misses_after_turn_2": 0,
+          "rescue_rate_among_initial_misses": 1.0,
+          "first_hit_mrr": 0.578333,
+          "macro_recall_across_20": 0.600119,
+          "mean_recommendation_overlap": 0.0
+        }
       },
       "non_slip": {
         "initial": {
@@ -191,7 +259,17 @@
           "macro_recall_at_10": 0.103011,
           "mean_recommendation_count": 10.0
         },
-        "rescued_after_exploration": 1
+        "session": {
+          "sample_count": 10,
+          "cumulative_hit_rate_by_turn_2": 0.9,
+          "first_turn_hits": 8,
+          "second_turn_rescues": 1,
+          "misses_after_turn_2": 1,
+          "rescue_rate_among_initial_misses": 0.5,
+          "first_hit_mrr": 0.45873,
+          "macro_recall_across_20": 0.38147,
+          "mean_recommendation_overlap": 0.0
+        }
       },
       "pockets": {
         "initial": {
@@ -205,12 +283,22 @@
         "after_exploration": {
           "sample_count": 10,
           "hit_rate_at_10": 0.8,
-          "mrr_at_10": 0.5,
-          "macro_precision_at_10": 0.34,
-          "macro_recall_at_10": 0.340151,
+          "mrr_at_10": 0.486667,
+          "macro_precision_at_10": 0.33,
+          "macro_recall_at_10": 0.331818,
           "mean_recommendation_count": 10.0
         },
-        "rescued_after_exploration": 2
+        "session": {
+          "sample_count": 10,
+          "cumulative_hit_rate_by_turn_2": 0.9,
+          "first_turn_hits": 7,
+          "second_turn_rescues": 2,
+          "misses_after_turn_2": 1,
+          "rescue_rate_among_initial_misses": 0.666667,
+          "first_hit_mrr": 0.8,
+          "macro_recall_across_20": 0.685152,
+          "mean_recommendation_overlap": 0.0
+        }
       },
       "running": {
         "initial": {
@@ -229,7 +317,17 @@
           "macro_recall_at_10": 0.233379,
           "mean_recommendation_count": 10.0
         },
-        "rescued_after_exploration": 1
+        "session": {
+          "sample_count": 10,
+          "cumulative_hit_rate_by_turn_2": 0.9,
+          "first_turn_hits": 8,
+          "second_turn_rescues": 1,
+          "misses_after_turn_2": 1,
+          "rescue_rate_among_initial_misses": 0.5,
+          "first_hit_mrr": 0.608333,
+          "macro_recall_across_20": 0.647971,
+          "mean_recommendation_overlap": 0.0
+        }
       },
       "stretch": {
         "initial": {
@@ -243,12 +341,22 @@
         "after_exploration": {
           "sample_count": 10,
           "hit_rate_at_10": 0.8,
-          "mrr_at_10": 0.213889,
-          "macro_precision_at_10": 0.18,
-          "macro_recall_at_10": 0.198073,
+          "mrr_at_10": 0.263889,
+          "macro_precision_at_10": 0.19,
+          "macro_recall_at_10": 0.198534,
           "mean_recommendation_count": 10.0
         },
-        "rescued_after_exploration": 0
+        "session": {
+          "sample_count": 10,
+          "cumulative_hit_rate_by_turn_2": 0.9,
+          "first_turn_hits": 9,
+          "second_turn_rescues": 0,
+          "misses_after_turn_2": 1,
+          "rescue_rate_among_initial_misses": 0.0,
+          "first_hit_mrr": 0.675,
+          "macro_recall_across_20": 0.63799,
+          "mean_recommendation_overlap": 0.0
+        }
       },
       "water_resistant": {
         "initial": {
@@ -267,7 +375,17 @@
           "macro_recall_at_10": 0.125,
           "mean_recommendation_count": 10.0
         },
-        "rescued_after_exploration": 0
+        "session": {
+          "sample_count": 10,
+          "cumulative_hit_rate_by_turn_2": 0.7,
+          "first_turn_hits": 7,
+          "second_turn_rescues": 0,
+          "misses_after_turn_2": 3,
+          "rescue_rate_among_initial_misses": 0.0,
+          "first_hit_mrr": 0.209524,
+          "macro_recall_across_20": 0.384286,
+          "mean_recommendation_overlap": 0.0
+        }
       },
       "waterproof": {
         "initial": {
@@ -281,12 +399,22 @@
         "after_exploration": {
           "sample_count": 10,
           "hit_rate_at_10": 0.5,
-          "mrr_at_10": 0.333333,
+          "mrr_at_10": 0.316667,
           "macro_precision_at_10": 0.14,
           "macro_recall_at_10": 0.143566,
           "mean_recommendation_count": 10.0
         },
-        "rescued_after_exploration": 1
+        "session": {
+          "sample_count": 10,
+          "cumulative_hit_rate_by_turn_2": 0.7,
+          "first_turn_hits": 6,
+          "second_turn_rescues": 1,
+          "misses_after_turn_2": 3,
+          "rescue_rate_among_initial_misses": 0.25,
+          "first_hit_mrr": 0.353571,
+          "macro_recall_across_20": 0.416941,
+          "mean_recommendation_overlap": 0.0
+        }
       },
       "winter": {
         "initial": {
@@ -305,7 +433,17 @@
           "macro_recall_at_10": 0.221995,
           "mean_recommendation_count": 10.0
         },
-        "rescued_after_exploration": 0
+        "session": {
+          "sample_count": 10,
+          "cumulative_hit_rate_by_turn_2": 1.0,
+          "first_turn_hits": 10,
+          "second_turn_rescues": 0,
+          "misses_after_turn_2": 0,
+          "rescue_rate_among_initial_misses": 0.0,
+          "first_hit_mrr": 0.671667,
+          "macro_recall_across_20": 0.650859,
+          "mean_recommendation_overlap": 0.0
+        }
       }
     }
   },
@@ -350,6 +488,7 @@
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
           "B096H9H6LP",
+          "B0072BSOVC",
           "B0028Y50TW",
           "B01LZKEJR1",
           "B005ADL1UA",
@@ -357,19 +496,27 @@
           "B086HX15PV",
           "B07NQJPFB4",
           "B07CH6QZDT",
-          "B0141R0YGC",
-          "B0B2XL9LPM"
+          "B0141R0YGC"
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 5,
-        "reciprocal_rank": 0.2,
+        "first_relevant_rank": 6,
+        "reciprocal_rank": 0.166667,
         "relevant_hits": 1,
         "precision_at_10": 0.1,
         "recall_at_10": 0.25,
         "relevant_ranks": [
-          5
+          6
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 6,
+        "first_hit_reciprocal_rank": 0.166667,
+        "relevant_hits_across_20": 1,
+        "recall_across_20": 0.25,
+        "recommendation_overlap": 0
       },
       "transition": "rescued_after_exploration"
     },
@@ -436,6 +583,15 @@
           9
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 4,
+        "first_hit_reciprocal_rank": 0.25,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 0.5,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -477,16 +633,16 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B07ZQKPXHY",
-          "B003FEPJ6I",
-          "B07V5JK8N4",
-          "B0BS3JHR2D",
-          "B007KJ62NI",
-          "B09DKGWFFS",
-          "B0864GV5ZG",
-          "B07ZX36FVH",
-          "B0992F13GP",
-          "B007NMHY84"
+          "B078YHYSSC",
+          "B097SZT9N4",
+          "B0BWJZZ69B",
+          "B082F5GXNZ",
+          "B09HHGMS9F",
+          "B0885YS157",
+          "B0827LGNTQ",
+          "B08D6KFBK6",
+          "B092ZHMHFK",
+          "B09DP7PXRG"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -496,6 +652,15 @@
         "precision_at_10": 0.0,
         "recall_at_10": 0.0,
         "relevant_ranks": []
+      },
+      "session": {
+        "hit_by_turn_2": false,
+        "first_hit_turn": null,
+        "first_relevant_rank": null,
+        "first_hit_reciprocal_rank": 0.0,
+        "relevant_hits_across_20": 0,
+        "recall_across_20": 0.0,
+        "recommendation_overlap": 0
       },
       "transition": "miss_both"
     },
@@ -567,6 +732,15 @@
           7
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 7,
+        "recall_across_20": 0.583333,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -635,6 +809,15 @@
           9
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 5,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -697,6 +880,15 @@
         "relevant_ranks": [
           4
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 4,
+        "first_hit_reciprocal_rank": 0.25,
+        "relevant_hits_across_20": 1,
+        "recall_across_20": 0.5,
+        "recommendation_overlap": 0
       },
       "transition": "rescued_after_exploration"
     },
@@ -761,7 +953,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 6,
+        "first_hit_reciprocal_rank": 0.166667,
+        "relevant_hits_across_20": 1,
+        "recall_across_20": 0.2,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_pockets_9dbe27157d_p2",
@@ -835,6 +1036,15 @@
           6
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 11,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -895,6 +1105,15 @@
         "precision_at_10": 0.0,
         "recall_at_10": 0.0,
         "relevant_ranks": []
+      },
+      "session": {
+        "hit_by_turn_2": false,
+        "first_hit_turn": null,
+        "first_relevant_rank": null,
+        "first_hit_reciprocal_rank": 0.0,
+        "relevant_hits_across_20": 0,
+        "recall_across_20": 0.0,
+        "recommendation_overlap": 0
       },
       "transition": "miss_both"
     },
@@ -962,6 +1181,15 @@
           10
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 4,
+        "first_hit_reciprocal_rank": 0.25,
+        "relevant_hits_across_20": 3,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -1025,7 +1253,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 6,
+        "first_hit_reciprocal_rank": 0.166667,
+        "relevant_hits_across_20": 1,
+        "recall_across_20": 0.142857,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_waterproof_2b71cdf482_p2",
@@ -1090,6 +1327,15 @@
           2,
           10
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 4,
+        "first_hit_reciprocal_rank": 0.25,
+        "relevant_hits_across_20": 3,
+        "recall_across_20": 0.230769,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -1161,6 +1407,15 @@
           5
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 4,
+        "first_hit_reciprocal_rank": 0.25,
+        "relevant_hits_across_20": 7,
+        "recall_across_20": 0.636364,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -1221,6 +1476,15 @@
         "precision_at_10": 0.0,
         "recall_at_10": 0.0,
         "relevant_ranks": []
+      },
+      "session": {
+        "hit_by_turn_2": false,
+        "first_hit_turn": null,
+        "first_relevant_rank": null,
+        "first_hit_reciprocal_rank": 0.0,
+        "relevant_hits_across_20": 0,
+        "recall_across_20": 0.0,
+        "recommendation_overlap": 0
       },
       "transition": "miss_both"
     },
@@ -1286,7 +1550,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 3,
+        "first_hit_reciprocal_rank": 0.333333,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 0.666667,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_hiking_0a76cd020b_p3",
@@ -1359,6 +1632,15 @@
           5,
           6
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 11,
+        "recall_across_20": 0.255814,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -1435,6 +1717,15 @@
           9
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 12,
+        "recall_across_20": 0.8,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -1500,6 +1791,15 @@
           5
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 3,
+        "first_hit_reciprocal_rank": 0.333333,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 0.285714,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -1547,27 +1847,36 @@
         "recommendations": [
           "B06WLHD6PL",
           "B07W4CFNFG",
+          "B0838227K3",
           "B01LP0RKVA",
           "B07XC73BK3",
           "B09T6FH4L4",
           "B09QPFYZXD",
           "B09P6ZPDD8",
           "B07W7DX2NF",
-          "B094VTWLRL",
-          "B07YS3Q7YV"
+          "B094VTWLRL"
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 3,
-        "reciprocal_rank": 0.333333,
+        "first_relevant_rank": 4,
+        "reciprocal_rank": 0.25,
         "relevant_hits": 3,
         "precision_at_10": 0.3,
         "recall_at_10": 0.048387,
         "relevant_ranks": [
-          3,
-          8,
-          9
+          4,
+          9,
+          10
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 4,
+        "first_hit_reciprocal_rank": 0.25,
+        "relevant_hits_across_20": 6,
+        "recall_across_20": 0.096774,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -1635,7 +1944,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 4,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_pockets_e468298cba_p2",
@@ -1685,7 +2003,7 @@
           "B0193YUVIE",
           "B0BR74ZWQD",
           "B07BQFRFXH",
-          "B0159WBZGQ"
+          "B0882KRRHR"
         ],
         "recommendation_count": 10,
         "hit": true,
@@ -1698,6 +2016,15 @@
           1,
           2
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
       },
       "transition": "rescued_after_exploration"
     },
@@ -1763,7 +2090,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 3,
+        "first_hit_reciprocal_rank": 0.333333,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_stretch_e770961037_p1",
@@ -1838,6 +2174,15 @@
           9
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 12,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -1879,16 +2224,16 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B07SQLH6MX",
-          "B0BJW2X35V",
-          "B08GX3F6RT",
-          "B0BYCB96ZM",
-          "B085L7QNPB",
-          "B01D1ZFNGG",
-          "B0BC89PMSZ",
-          "B07JBQ17PS",
-          "B08CZZDWFT",
-          "B0B5N6Q15W"
+          "B00QQMK23G",
+          "B08JJ4VKHS",
+          "B0BQW5V4JB",
+          "B07B5N7SF8",
+          "B01M1I3VKK",
+          "B08HK4JYX7",
+          "B019IIXTX4",
+          "B0167LW76A",
+          "B07ZHQTFKC",
+          "B07Q1GMV76"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -1898,6 +2243,15 @@
         "precision_at_10": 0.0,
         "recall_at_10": 0.0,
         "relevant_ranks": []
+      },
+      "session": {
+        "hit_by_turn_2": false,
+        "first_hit_turn": null,
+        "first_relevant_rank": null,
+        "first_hit_reciprocal_rank": 0.0,
+        "relevant_hits_across_20": 0,
+        "recall_across_20": 0.0,
+        "recommendation_overlap": 0
       },
       "transition": "miss_both"
     },
@@ -1940,6 +2294,7 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
+          "B09W8HSXPT",
           "B071K7TFQV",
           "B07ZDFGXR3",
           "B09KSZ6JNY",
@@ -1948,8 +2303,7 @@
           "B00LG837SM",
           "B01J4BJL7S",
           "B005GC5CSW",
-          "B07212MG9D",
-          "B001G601L0"
+          "B07212MG9D"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -1959,6 +2313,15 @@
         "precision_at_10": 0.0,
         "recall_at_10": 0.0,
         "relevant_ranks": []
+      },
+      "session": {
+        "hit_by_turn_2": false,
+        "first_hit_turn": null,
+        "first_relevant_rank": null,
+        "first_hit_reciprocal_rank": 0.0,
+        "relevant_hits_across_20": 0,
+        "recall_across_20": 0.0,
+        "recommendation_overlap": 0
       },
       "transition": "miss_both"
     },
@@ -2027,6 +2390,15 @@
           4
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 4,
+        "recall_across_20": 0.444444,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -2091,6 +2463,15 @@
           7,
           10
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 5,
+        "first_hit_reciprocal_rank": 0.2,
+        "relevant_hits_across_20": 3,
+        "recall_across_20": 0.3,
+        "recommendation_overlap": 0
       },
       "transition": "rescued_after_exploration"
     },
@@ -2158,7 +2539,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 4,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_hiking_6dba7c2648_p3",
@@ -2222,7 +2612,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_hooded_4bc3c1ce24_p2",
@@ -2295,6 +2694,15 @@
           10
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 3,
+        "first_hit_reciprocal_rank": 0.333333,
+        "relevant_hits_across_20": 10,
+        "recall_across_20": 0.625,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -2357,6 +2765,15 @@
         "relevant_ranks": [
           3
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 3,
+        "first_hit_reciprocal_rank": 0.333333,
+        "relevant_hits_across_20": 1,
+        "recall_across_20": 0.5,
+        "recommendation_overlap": 0
       },
       "transition": "rescued_after_exploration"
     },
@@ -2422,6 +2839,15 @@
         "relevant_ranks": [
           8
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 0.333333,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -2489,6 +2915,15 @@
           7,
           8
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 4,
+        "recall_across_20": 0.307692,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -2562,6 +2997,15 @@
           7
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 9,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -2628,6 +3072,15 @@
           7
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 6,
+        "first_hit_reciprocal_rank": 0.166667,
+        "relevant_hits_across_20": 3,
+        "recall_across_20": 0.75,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -2678,31 +3131,41 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B073H78ZW2",
-          "B071W9P2WM",
-          "B09N6S5VY6",
           "B09WTM3QKQ",
-          "B097NZFP3L",
-          "B07XVYHH81",
-          "B087HH1FT3",
-          "B077BPY1FL",
-          "B00JWLW92A",
-          "B01FWJSSO8"
+          "B0BT8PMKPV",
+          "B0068INUB4",
+          "B00O19RE4Q",
+          "B0725R2TLT",
+          "B007JRCBAY",
+          "B09L5KY5CH",
+          "B088THK3RH",
+          "B01MUBHNOR",
+          "B0BQDTGHMZ"
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 2,
-        "reciprocal_rank": 0.5,
-        "relevant_hits": 5,
-        "precision_at_10": 0.5,
-        "recall_at_10": 0.023041,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "relevant_hits": 6,
+        "precision_at_10": 0.6,
+        "recall_at_10": 0.02765,
         "relevant_ranks": [
+          1,
           2,
-          3,
-          4,
-          5,
-          9
+          7,
+          8,
+          9,
+          10
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 14,
+        "recall_across_20": 0.064516,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -2765,6 +3228,15 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
+      "session": {
+        "hit_by_turn_2": false,
+        "first_hit_turn": null,
+        "first_relevant_rank": null,
+        "first_hit_reciprocal_rank": 0.0,
+        "relevant_hits_across_20": 0,
+        "recall_across_20": 0.0,
+        "recommendation_overlap": 0
+      },
       "transition": "miss_both"
     },
     {
@@ -2806,16 +3278,16 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B012B5USWG",
-          "B07X3LLR9R",
-          "B08CCZBPHB",
-          "B08YYT8TNY",
-          "B08WM7CVLC",
-          "B0BLRS4D39",
-          "B004F12I5K",
-          "B003LYBBQO",
           "B00823JIFA",
-          "B00T9MJQXC"
+          "B07SNQYPY6",
+          "B07FP3CFKK",
+          "B06X8ZHV3C",
+          "B08929W3MW",
+          "B083HWSJ5Q",
+          "B07TSQHTGC",
+          "B08FLD24NK",
+          "B084JKY4S5",
+          "B083NKWX42"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -2825,6 +3297,15 @@
         "precision_at_10": 0.0,
         "recall_at_10": 0.0,
         "relevant_ranks": []
+      },
+      "session": {
+        "hit_by_turn_2": false,
+        "first_hit_turn": null,
+        "first_relevant_rank": null,
+        "first_hit_reciprocal_rank": 0.0,
+        "relevant_hits_across_20": 0,
+        "recall_across_20": 0.0,
+        "recommendation_overlap": 0
       },
       "transition": "miss_both"
     },
@@ -2890,7 +3371,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_adjustable_22ceb9738f_p3",
@@ -2958,6 +3448,15 @@
           6
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 5,
+        "recall_across_20": 0.833333,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -3021,6 +3520,15 @@
           1,
           10
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
       },
       "transition": "rescued_after_exploration"
     },
@@ -3086,7 +3594,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_hooded_4d13297893_p3",
@@ -3157,6 +3674,15 @@
           4
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 8,
+        "recall_across_20": 0.333333,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -3224,7 +3750,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 5,
+        "recall_across_20": 0.833333,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_lightweight_707b41518f_p3",
@@ -3291,6 +3826,15 @@
         "relevant_ranks": [
           3
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 5,
+        "recall_across_20": 0.714286,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -3363,6 +3907,15 @@
           6
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 8,
+        "recall_across_20": 0.8,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -3423,6 +3976,15 @@
         "precision_at_10": 0.0,
         "recall_at_10": 0.0,
         "relevant_ranks": []
+      },
+      "session": {
+        "hit_by_turn_2": false,
+        "first_hit_turn": null,
+        "first_relevant_rank": null,
+        "first_hit_reciprocal_rank": 0.0,
+        "relevant_hits_across_20": 0,
+        "recall_across_20": 0.0,
+        "recommendation_overlap": 0
       },
       "transition": "miss_both"
     },
@@ -3495,6 +4057,15 @@
           9
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 8,
+        "recall_across_20": 0.222222,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -3561,7 +4132,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 4,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_water_resistant_30cc4ab1b3_p1",
@@ -3627,6 +4207,15 @@
           6
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 7,
+        "first_hit_reciprocal_rank": 0.142857,
+        "relevant_hits_across_20": 3,
+        "recall_across_20": 0.6,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -3691,7 +4280,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 7,
+        "first_hit_reciprocal_rank": 0.142857,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_winter_31153b22f7_p3",
@@ -3755,6 +4353,15 @@
         "relevant_ranks": [
           3
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 10,
+        "first_hit_reciprocal_rank": 0.1,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 0.4,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -3823,6 +4430,15 @@
           8
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 5,
+        "first_hit_reciprocal_rank": 0.2,
+        "relevant_hits_across_20": 4,
+        "recall_across_20": 0.363636,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -3890,6 +4506,15 @@
           5
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 4,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -3953,6 +4578,15 @@
           1
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 1,
+        "recall_across_20": 0.25,
+        "recommendation_overlap": 0
+      },
       "transition": "rescued_after_exploration"
     },
     {
@@ -3994,27 +4628,38 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
+          "B07Z8X9Z5H",
+          "B07H5CDLZH",
+          "B09C2H8PJ9",
           "B09R2HH28Z",
           "B08N1DJ5LX",
           "B01G9BREKM",
           "B07M6L5BL4",
           "B000IZMN9I",
           "B00HGU2RP8",
-          "B07KRK3KY3",
-          "B0BLZ36WN2",
-          "B081SMNPMP",
-          "B089NDB6SK"
+          "B07KRK3KY3"
         ],
         "recommendation_count": 10,
-        "hit": false,
-        "first_relevant_rank": null,
-        "reciprocal_rank": 0.0,
-        "relevant_hits": 0,
-        "precision_at_10": 0.0,
-        "recall_at_10": 0.0,
-        "relevant_ranks": []
+        "hit": true,
+        "first_relevant_rank": 3,
+        "reciprocal_rank": 0.333333,
+        "relevant_hits": 1,
+        "precision_at_10": 0.1,
+        "recall_at_10": 0.125,
+        "relevant_ranks": [
+          3
+        ]
       },
-      "transition": "miss_both"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 3,
+        "first_hit_reciprocal_rank": 0.333333,
+        "relevant_hits_across_20": 1,
+        "recall_across_20": 0.125,
+        "recommendation_overlap": 0
+      },
+      "transition": "rescued_after_exploration"
     },
     {
       "case_id": "concept_insulated_8a12a10192_p1",
@@ -4086,6 +4731,15 @@
           8,
           10
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 10,
+        "recall_across_20": 0.192308,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -4159,6 +4813,15 @@
           7
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 9,
+        "recall_across_20": 0.818182,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -4219,6 +4882,15 @@
         "precision_at_10": 0.0,
         "recall_at_10": 0.0,
         "relevant_ranks": []
+      },
+      "session": {
+        "hit_by_turn_2": false,
+        "first_hit_turn": null,
+        "first_relevant_rank": null,
+        "first_hit_reciprocal_rank": 0.0,
+        "relevant_hits_across_20": 0,
+        "recall_across_20": 0.0,
+        "recommendation_overlap": 0
       },
       "transition": "miss_both"
     },
@@ -4300,6 +4972,15 @@
           10
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 17,
+        "recall_across_20": 0.566667,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -4364,7 +5045,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 0.666667,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_stretch_b088e4730d_p2",
@@ -4433,6 +5123,15 @@
           7
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 6,
+        "recall_across_20": 0.115385,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -4474,16 +5173,16 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
+          "B07JCJYS6M",
+          "B08GPGW8W8",
+          "B00GV46IW8",
+          "B07HQKTYM5",
           "B00P1SN6GG",
           "B00SWBMVE2",
           "B00EB929N2",
           "B00KTZTXW2",
           "B01M6WDJ0W",
-          "B078PHC8HJ",
-          "B0BBVN65BN",
-          "B08DCHHQH2",
-          "B077ZGY7GQ",
-          "B07XDK92F2"
+          "B078PHC8HJ"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -4493,6 +5192,15 @@
         "precision_at_10": 0.0,
         "recall_at_10": 0.0,
         "relevant_ranks": []
+      },
+      "session": {
+        "hit_by_turn_2": false,
+        "first_hit_turn": null,
+        "first_relevant_rank": null,
+        "first_hit_reciprocal_rank": 0.0,
+        "relevant_hits_across_20": 0,
+        "recall_across_20": 0.0,
+        "recommendation_overlap": 0
       },
       "transition": "miss_both"
     },
@@ -4556,6 +5264,15 @@
         "relevant_ranks": [
           1
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 1,
+        "recall_across_20": 0.5,
+        "recommendation_overlap": 0
       },
       "transition": "rescued_after_exploration"
     },
@@ -4625,7 +5342,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 6,
+        "recall_across_20": 0.666667,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_adjustable_d536f9ac24_p1",
@@ -4701,6 +5427,15 @@
           10
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 13,
+        "recall_across_20": 0.216667,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -4762,6 +5497,15 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
+      "session": {
+        "hit_by_turn_2": false,
+        "first_hit_turn": null,
+        "first_relevant_rank": null,
+        "first_hit_reciprocal_rank": 0.0,
+        "relevant_hits_across_20": 0,
+        "recall_across_20": 0.0,
+        "recommendation_overlap": 0
+      },
       "transition": "miss_both"
     },
     {
@@ -4805,27 +5549,40 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B093LL9PGF",
-          "B0BZZL9XJQ",
           "B09Z7ZX54L",
+          "B0BZZL9XJQ",
+          "B08T5YWZXN",
+          "B09WQ3MTLB",
+          "B07P61QD2W",
+          "B093LL9PGF",
+          "B095P8RTCR",
           "B07NS11YQC",
           "B0C148CJC3",
-          "B00BPDGQ2M",
-          "B00BT7FNDC",
-          "B004Q6ILUA",
-          "B073C62KRX",
-          "B00K5Z8BVA"
+          "B00BPDGQ2M"
         ],
         "recommendation_count": 10,
-        "hit": false,
-        "first_relevant_rank": null,
-        "reciprocal_rank": 0.0,
-        "relevant_hits": 0,
-        "precision_at_10": 0.0,
-        "recall_at_10": 0.0,
-        "relevant_ranks": []
+        "hit": true,
+        "first_relevant_rank": 3,
+        "reciprocal_rank": 0.333333,
+        "relevant_hits": 3,
+        "precision_at_10": 0.3,
+        "recall_at_10": 0.272727,
+        "relevant_ranks": [
+          3,
+          4,
+          5
+        ]
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 5,
+        "first_hit_reciprocal_rank": 0.2,
+        "relevant_hits_across_20": 4,
+        "recall_across_20": 0.363636,
+        "recommendation_overlap": 0
+      },
+      "transition": "hit_both"
     },
     {
       "case_id": "concept_hooded_0aafea5b99_p1",
@@ -4886,6 +5643,15 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
+      "session": {
+        "hit_by_turn_2": false,
+        "first_hit_turn": null,
+        "first_relevant_rank": null,
+        "first_hit_reciprocal_rank": 0.0,
+        "relevant_hits_across_20": 0,
+        "recall_across_20": 0.0,
+        "recommendation_overlap": 0
+      },
       "transition": "miss_both"
     },
     {
@@ -4931,6 +5697,8 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
+          "B09LRJ6NQX",
+          "B07JCJYS6M",
           "B00P1SN6GG",
           "B00PI431KY",
           "B078PHC8HJ",
@@ -4938,26 +5706,32 @@
           "B096N6JC1P",
           "B077ZGY7GQ",
           "B07HRQW641",
-          "B07GX9ZC3K",
-          "B081N6F8TY",
-          "B07TXZ1G8N"
+          "B07GX9ZC3K"
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 1,
-        "reciprocal_rank": 1.0,
-        "relevant_hits": 7,
-        "precision_at_10": 0.7,
-        "recall_at_10": 0.411765,
+        "first_relevant_rank": 3,
+        "reciprocal_rank": 0.333333,
+        "relevant_hits": 6,
+        "precision_at_10": 0.6,
+        "recall_at_10": 0.352941,
         "relevant_ranks": [
-          1,
-          2,
           3,
           4,
           5,
           6,
-          10
+          7,
+          8
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 9,
+        "recall_across_20": 0.529412,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -5024,6 +5798,15 @@
         "relevant_ranks": [
           5
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 3,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -5098,6 +5881,15 @@
           10
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 10,
+        "recall_across_20": 0.188679,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -5169,6 +5961,15 @@
           8,
           9
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 9,
+        "recall_across_20": 0.818182,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -5242,6 +6043,15 @@
           8
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 9,
+        "recall_across_20": 0.183673,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -5307,6 +6117,15 @@
         "relevant_ranks": [
           9
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 4,
+        "first_hit_reciprocal_rank": 0.25,
+        "relevant_hits_across_20": 3,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -5380,6 +6199,15 @@
           7
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 9,
+        "recall_across_20": 0.6,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -5424,16 +6252,16 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B09VTLWWGZ",
-          "B00BV3B93W",
-          "B014X1GDKM",
-          "B0033X0Y5W",
-          "B07VK9DQ9K",
-          "B09K7HSZ19",
-          "B01LX3ETX6",
-          "B07XDK92F2",
-          "B07R4YP5TH",
-          "B07F84CKNC"
+          "B08242X27K",
+          "B0871R9JDP",
+          "B07PR8GZS5",
+          "B07HGWH9DW",
+          "B07R4DKRZW",
+          "B098Q7ZNHQ",
+          "B08VDZ1TDR",
+          "B0BB61SR1P",
+          "B081N6F8TY",
+          "B089QYV4SD"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -5444,7 +6272,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 7,
+        "first_hit_reciprocal_rank": 0.142857,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_winter_aa189807a4_p1",
@@ -5511,6 +6348,15 @@
         "relevant_ranks": [
           1
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 5,
+        "recall_across_20": 0.333333,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -5580,6 +6426,15 @@
           7,
           8
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 6,
+        "recall_across_20": 0.272727,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -5653,6 +6508,15 @@
           5
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 9,
+        "recall_across_20": 0.75,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -5715,6 +6579,15 @@
         "relevant_ranks": [
           5
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 5,
+        "first_hit_reciprocal_rank": 0.2,
+        "relevant_hits_across_20": 1,
+        "recall_across_20": 0.5,
+        "recommendation_overlap": 0
       },
       "transition": "rescued_after_exploration"
     },
@@ -5792,6 +6665,15 @@
           9
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 13,
+        "recall_across_20": 0.866667,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -5857,6 +6739,15 @@
           1
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 4,
+        "first_hit_reciprocal_rank": 0.25,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -5903,27 +6794,38 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
+          "B08T5YWZXN",
+          "B08Z8DKYKP",
+          "B0B181TTCN",
           "B093LL9PGF",
           "B00DUGJBO2",
           "B00DUGJLM4",
           "B0108R9G9A",
           "B07TXQF52F",
-          "B07NS11YQC",
-          "B0967CP9J3",
-          "B0BT6TXHGR",
-          "B08T5YWZXN",
-          "B09V7J9FN4"
+          "B09BYYDMV1",
+          "B09QJ6TJCQ"
         ],
         "recommendation_count": 10,
-        "hit": false,
-        "first_relevant_rank": null,
-        "reciprocal_rank": 0.0,
-        "relevant_hits": 0,
-        "precision_at_10": 0.0,
-        "recall_at_10": 0.0,
-        "relevant_ranks": []
+        "hit": true,
+        "first_relevant_rank": 9,
+        "reciprocal_rank": 0.111111,
+        "relevant_hits": 1,
+        "precision_at_10": 0.1,
+        "recall_at_10": 0.030303,
+        "relevant_ranks": [
+          9
+        ]
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 3,
+        "first_hit_reciprocal_rank": 0.333333,
+        "relevant_hits_across_20": 5,
+        "recall_across_20": 0.151515,
+        "recommendation_overlap": 0
+      },
+      "transition": "hit_both"
     },
     {
       "case_id": "concept_non_slip_9392712a45_p3",
@@ -6000,6 +6902,15 @@
           10
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 14,
+        "recall_across_20": 0.7,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -6074,6 +6985,15 @@
           9
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 11,
+        "recall_across_20": 0.55,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -6143,6 +7063,15 @@
           7
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 3,
+        "first_hit_reciprocal_rank": 0.333333,
+        "relevant_hits_across_20": 6,
+        "recall_across_20": 0.857143,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -6184,16 +7113,16 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B01LP0RKVA",
-          "B0B49VLFQQ",
-          "B09B6TVMQC",
-          "B0888WGM7M",
-          "B0888X1JKQ",
-          "B09NR5CY13",
-          "B07DWR8J3W",
-          "B07N8CX6R2",
-          "B07G8SWBWZ",
-          "B07P3FMFGJ"
+          "B08JMB2V9K",
+          "B0095LORHC",
+          "B0BQLB26JY",
+          "B000XW7XVY",
+          "B07KQM11QP",
+          "B0BRX7VNNR",
+          "B00OKLCQ0C",
+          "B07FR49R3H",
+          "B07CB4N9B4",
+          "B0036EBAC4"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -6203,6 +7132,15 @@
         "precision_at_10": 0.0,
         "recall_at_10": 0.0,
         "relevant_ranks": []
+      },
+      "session": {
+        "hit_by_turn_2": false,
+        "first_hit_turn": null,
+        "first_relevant_rank": null,
+        "first_hit_reciprocal_rank": 0.0,
+        "relevant_hits_across_20": 0,
+        "recall_across_20": 0.0,
+        "recommendation_overlap": 0
       },
       "transition": "miss_both"
     },
@@ -6268,7 +7206,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 7,
+        "first_hit_reciprocal_rank": 0.142857,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 0.5,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_waterproof_a08d9e06c6_p1",
@@ -6311,28 +7258,37 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
+          "B0B181TTCN",
+          "B08Z8DKYKP",
+          "B0767DVYHD",
           "B01HQB1RYI",
           "B07PSKG82X",
           "B00Y9R760C",
           "B07Z7S3SSL",
           "B07TXQF52F",
-          "B0967CP9J3",
-          "B0BT6TXHGR",
-          "B00FAPYPNS",
-          "B0B181TTCN",
-          "B09SQF8TJJ"
+          "B07R1ZX96G",
+          "B08T5YWZXN"
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 3,
-        "reciprocal_rank": 0.333333,
+        "first_relevant_rank": 6,
+        "reciprocal_rank": 0.166667,
         "relevant_hits": 2,
         "precision_at_10": 0.2,
         "recall_at_10": 0.25,
         "relevant_ranks": [
-          3,
-          5
+          6,
+          8
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 3,
+        "recall_across_20": 0.375,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -6411,6 +7367,15 @@
           10
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 14,
+        "recall_across_20": 0.25,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -6484,6 +7449,15 @@
           10
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 10,
+        "recall_across_20": 0.15873,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -6551,6 +7525,15 @@
         "relevant_ranks": [
           3
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 5,
+        "recall_across_20": 0.714286,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -6620,6 +7603,15 @@
           5,
           7
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 6,
+        "recall_across_20": 0.75,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -6696,6 +7688,15 @@
           8
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 12,
+        "recall_across_20": 0.26087,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -6761,6 +7762,15 @@
           8,
           9
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 3,
+        "recall_across_20": 0.75,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -6837,6 +7847,15 @@
           7
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 12,
+        "recall_across_20": 0.387097,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -6900,6 +7919,15 @@
           6
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 6,
+        "first_hit_reciprocal_rank": 0.166667,
+        "relevant_hits_across_20": 1,
+        "recall_across_20": 0.125,
+        "recommendation_overlap": 0
+      },
       "transition": "rescued_after_exploration"
     },
     {
@@ -6945,29 +7973,37 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
+          "B0BYJMLV5X",
+          "B07L45HM4M",
           "B0BDG9PJPY",
           "B0873ZZ76X",
           "B07R1JH679",
-          "B01B5KF9OA",
-          "B01JK926U8",
-          "B00LV0B37M",
-          "B0812MM266",
-          "B08ZFLFNWT",
+          "B01FWQZ1V4",
+          "B094DZCZ9F",
           "B008G5174E",
-          "B004R1NJCE"
+          "B07DKYDKZG",
+          "B01B5KF9OA"
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 3,
-        "reciprocal_rank": 0.333333,
-        "relevant_hits": 3,
-        "precision_at_10": 0.3,
-        "recall_at_10": 0.25,
+        "first_relevant_rank": 5,
+        "reciprocal_rank": 0.2,
+        "relevant_hits": 2,
+        "precision_at_10": 0.2,
+        "recall_at_10": 0.166667,
         "relevant_ranks": [
-          3,
-          6,
-          9
+          5,
+          8
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 5,
+        "recall_across_20": 0.416667,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -7033,6 +8069,15 @@
         "relevant_ranks": [
           7
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 4,
+        "first_hit_reciprocal_rank": 0.25,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -7100,6 +8145,15 @@
           6
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 3,
+        "recall_across_20": 0.6,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -7164,7 +8218,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 4,
+        "first_hit_reciprocal_rank": 0.25,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_waterproof_923af1fbc4_p1",
@@ -7224,6 +8287,15 @@
         "precision_at_10": 0.0,
         "recall_at_10": 0.0,
         "relevant_ranks": []
+      },
+      "session": {
+        "hit_by_turn_2": false,
+        "first_hit_turn": null,
+        "first_relevant_rank": null,
+        "first_hit_reciprocal_rank": 0.0,
+        "relevant_hits_across_20": 0,
+        "recall_across_20": 0.0,
+        "recommendation_overlap": 0
       },
       "transition": "miss_both"
     },
@@ -7290,6 +8362,15 @@
           1
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 6,
+        "first_hit_reciprocal_rank": 0.166667,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -7355,6 +8436,15 @@
         "relevant_ranks": [
           4
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 3,
+        "first_hit_reciprocal_rank": 0.333333,
+        "relevant_hits_across_20": 3,
+        "recall_across_20": 0.375,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -7424,6 +8514,15 @@
           8
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 7,
+        "first_hit_reciprocal_rank": 0.142857,
+        "relevant_hits_across_20": 5,
+        "recall_across_20": 0.714286,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -7486,6 +8585,15 @@
         "relevant_ranks": [
           8
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 8,
+        "first_hit_reciprocal_rank": 0.125,
+        "relevant_hits_across_20": 1,
+        "recall_across_20": 0.333333,
+        "recommendation_overlap": 0
       },
       "transition": "rescued_after_exploration"
     },
@@ -7559,6 +8667,15 @@
           4,
           5
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 10,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -7635,6 +8752,15 @@
           10
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 12,
+        "recall_across_20": 0.444444,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -7682,13 +8808,13 @@
           "B06XSD7HG2",
           "B086HG2T2F",
           "B01GRVO3V2",
+          "B0882KRRHR",
           "B07HB5WMLB",
+          "B097F2JXYB",
+          "B00OZ3F53U",
           "B07168BBPZ",
           "B07Y7YBDBL",
-          "B07N83DQGP",
-          "B0951Y2XQK",
-          "B08PBZQMP6",
-          "B08R8DCSDH"
+          "B07N83DQGP"
         ],
         "recommendation_count": 10,
         "hit": true,
@@ -7699,8 +8825,17 @@
         "recall_at_10": 0.5,
         "relevant_ranks": [
           3,
-          4
+          5
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 4,
+        "first_hit_reciprocal_rank": 0.25,
+        "relevant_hits_across_20": 4,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -7769,6 +8904,15 @@
           10
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 7,
+        "first_hit_reciprocal_rank": 0.142857,
+        "relevant_hits_across_20": 4,
+        "recall_across_20": 0.16,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -7816,10 +8960,10 @@
           "B07928Z2WF",
           "B00JGU31ME",
           "B0756SB578",
+          "B07D3M7JCN",
           "B014FD4WU6",
           "B01N3TCMOP",
-          "B0BQBLKYLZ",
-          "B07FCDBDPD"
+          "B0BQBLKYLZ"
         ],
         "recommendation_count": 10,
         "hit": true,
@@ -7832,8 +8976,17 @@
           1,
           3,
           5,
-          9
+          10
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 4,
+        "recall_across_20": 0.5,
+        "recommendation_overlap": 0
       },
       "transition": "rescued_after_exploration"
     },
@@ -7901,6 +9054,15 @@
           6
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 4,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
       "transition": "rescued_after_exploration"
     },
     {
@@ -7966,6 +9128,15 @@
         "relevant_ranks": [
           6
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 3,
+        "recall_across_20": 0.6,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -8036,6 +9207,15 @@
           9
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 4,
+        "first_hit_reciprocal_rank": 0.25,
+        "relevant_hits_across_20": 6,
+        "recall_across_20": 0.5,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -8103,6 +9283,15 @@
           3
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 4,
+        "recall_across_20": 0.363636,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -8168,6 +9357,15 @@
           1
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 5,
+        "first_hit_reciprocal_rank": 0.2,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -8212,16 +9410,16 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
+          "B07L1XZHQ1",
+          "B003LYBBQO",
+          "B07DL3HTVV",
+          "B07YF1GS42",
+          "B0B7SL9W6D",
+          "B0CH9D6Z78",
           "B06VWVWQ4L",
           "B06X8ZHV3C",
-          "B077PR14SF",
-          "B076P6QCK2",
-          "B07YF1GS42",
-          "B07SNQYPY6",
-          "B08CHF32CS",
-          "B074K54K6P",
-          "B0B7X4XRWP",
-          "B07S5KG6G1"
+          "B002UZXWX0",
+          "B00150K3CE"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -8232,7 +9430,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 3,
+        "first_hit_reciprocal_rank": 0.333333,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 0.125,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_breathable_da4a1df044_p2",
@@ -8304,6 +9511,15 @@
           10
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 9,
+        "recall_across_20": 0.818182,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -8347,28 +9563,39 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
+          "B08T5YWZXN",
+          "B08ZDQM7CP",
+          "B095P8RTCR",
+          "B0967CP9J3",
+          "B0924L7TMG",
           "B0BZZL9XJQ",
           "B093LL9PGF",
           "B09Z24DPVY",
           "B07DZQX8J2",
-          "B08T5YWZXN",
-          "B0B181TTCN",
-          "B092C1ML9P",
-          "B01B1YGOT4",
-          "B07PNMTXMX",
-          "B0C6LBSTNB"
+          "B0B181TTCN"
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 3,
-        "reciprocal_rank": 0.333333,
-        "relevant_hits": 2,
-        "precision_at_10": 0.2,
-        "recall_at_10": 0.181818,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "relevant_hits": 4,
+        "precision_at_10": 0.4,
+        "recall_at_10": 0.363636,
         "relevant_ranks": [
-          3,
-          5
+          1,
+          2,
+          4,
+          8
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 5,
+        "recall_across_20": 0.454545,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -8432,6 +9659,15 @@
         "relevant_ranks": [
           9
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 9,
+        "first_hit_reciprocal_rank": 0.111111,
+        "relevant_hits_across_20": 1,
+        "recall_across_20": 0.333333,
+        "recommendation_overlap": 0
       },
       "transition": "rescued_after_exploration"
     },
@@ -8497,7 +9733,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_lightweight_2ab829b367_p3",
@@ -8542,16 +9787,16 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
+          "B0BX6JK787",
+          "B00HFIUFA0",
+          "B0BWJYSBGL",
           "B0BL39Y8JG",
-          "B09LCFJR57",
-          "B07YY6PZKD",
-          "B0BDDWSPYR",
-          "B07561K3NN",
-          "B09837RRL7",
-          "B089M2VZT2",
-          "B07X4W1J52",
-          "B0BWXHHBFC",
-          "B097YG84XR"
+          "B01AC3GD8W",
+          "B0BKW2MXRT",
+          "B08V88FV87",
+          "B08M5XHWSJ",
+          "B08NDXJQQB",
+          "B09KQXHM17"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -8562,7 +9807,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 5,
+        "first_hit_reciprocal_rank": 0.2,
+        "relevant_hits_across_20": 3,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_non_slip_65d1be0337_p3",
@@ -8625,7 +9879,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 9,
+        "first_hit_reciprocal_rank": 0.111111,
+        "relevant_hits_across_20": 1,
+        "recall_across_20": 0.333333,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_pockets_24442e855b_p2",
@@ -8696,7 +9959,16 @@
         "recall_at_10": 0.0,
         "relevant_ranks": []
       },
-      "transition": "lost_after_exploration"
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 9,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_running_beb2ae31ab_p3",
@@ -8762,6 +10034,15 @@
         "relevant_ranks": [
           7
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 4,
+        "recall_across_20": 0.8,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -8832,6 +10113,15 @@
           4
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 4,
+        "first_hit_reciprocal_rank": 0.25,
+        "relevant_hits_across_20": 6,
+        "recall_across_20": 1.0,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -8896,6 +10186,15 @@
         "relevant_ranks": [
           1
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 7,
+        "first_hit_reciprocal_rank": 0.142857,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 0.5,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     },
@@ -8974,6 +10273,15 @@
           9
         ]
       },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 14,
+        "recall_across_20": 0.7,
+        "recommendation_overlap": 0
+      },
       "transition": "hit_both"
     },
     {
@@ -9043,6 +10351,15 @@
           3,
           8
         ]
+      },
+      "session": {
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 1,
+        "first_hit_reciprocal_rank": 1.0,
+        "relevant_hits_across_20": 7,
+        "recall_across_20": 0.777778,
+        "recommendation_overlap": 0
       },
       "transition": "hit_both"
     }

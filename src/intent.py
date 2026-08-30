@@ -3,6 +3,8 @@ from __future__ import annotations
 from enum import Enum
 import re
 
+from src import override_semantic
+
 
 class ShoppingIntent(
     str,
@@ -95,6 +97,85 @@ NARROWING_PATTERNS = (
 )
 
 
+# --------------------------------------------------
+# INTENT OVERRIDE SIGNALS
+# --------------------------------------------------
+#
+# A reversal cue: the shopper is discarding an
+# earlier preference rather than adding to it.
+#
+# This is deliberately a set of alternative phrasings
+# rather than one fixed sentence, since an override
+# can be expressed many ways ("scratch that",
+# "disregard", "never mind", "changed my mind", ...)
+# without ever using the words "ignore my earlier
+# preference".
+#
+# Matching does not require the word "actually" —
+# that was an accidental artifact of one specific
+# evaluator template, not a meaningful signal on its
+# own.
+#
+# This regex list is the fast, free, zero-dependency
+# stage of override detection. It is intentionally
+# not exhaustive: phrasing outside this list falls
+# through to a local semantic fallback (see
+# src/override_semantic.py) rather than being
+# enumerated here forever.
+
+REVERSAL_PATTERNS = (
+    r"\bignore (?:my earlier preference|what i said)\b",
+    r"\bdisregard (?:my earlier preference|what i said)\b",
+    r"\bforget (?:my earlier preference|what i said)\b",
+    r"\bscratch that\b",
+    r"\bnever ?mind\b",
+    r"\bchange[d]? my mind\b",
+    r"\bon second thought\b",
+)
+
+
+def is_override(
+    user_message: str,
+) -> bool:
+    """
+    Return whether the message is reversing an
+    earlier preference rather than adding to it.
+
+    Two-stage: a free, deterministic regex check
+    first, then a local semantic fallback for
+    phrasing the regex list doesn't cover. The
+    semantic stage fails closed (never raises, never
+    requires network access) — see
+    src/override_semantic.py.
+
+    Shared by infer_intent() and
+    SessionState.update() so override detection has
+    exactly one implementation instead of two
+    independently drifting checks.
+    """
+
+    text = re.sub(
+        r"\s+",
+        " ",
+        user_message.lower(),
+    ).strip()
+
+    if (
+        _matches_any(
+            text,
+            REVERSAL_PATTERNS,
+        )
+        or
+        "what i need is"
+        in text
+    ):
+        return True
+
+    return override_semantic.semantic_override(
+        user_message,
+    )
+
+
 def _matches_any(
     text: str,
     patterns: tuple[str, ...],
@@ -168,12 +249,8 @@ def infer_intent(
     # An override is the clearest possible signal
     # that the shopper now has a concrete need.
 
-    if (
-        "ignore my earlier preference"
-        in text
-        or
-        "what i need is"
-        in text
+    if is_override(
+        user_message,
     ):
 
         return (

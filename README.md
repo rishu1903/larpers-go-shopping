@@ -503,6 +503,29 @@ The result suggests semantic retrieval is useful as a targeted recovery mechanis
 
 ---
 
+## V13 — Semantic Fallback for Override Detection
+
+Override detection (`src/intent.py`, `src/state.py`) previously relied on literal regex/substring matching keyed almost entirely to one exact sentence template from `evaluator/local_evaluator.py`. A dedicated robustness test (`tests/test_override_robustness.py`) showed only 2/10 realistic paraphrases ("scratch that", "disregard", dropping the word "actually", plain buying language) triggered the full override behavior.
+
+V13 makes override detection two-stage:
+
+1. A broadened, free, deterministic regex stage (`REVERSAL_PATTERNS` in `src/intent.py`) — no longer requires the word "actually", and covers several common reversal cues (ignore/disregard/forget, scratch that, never mind, changed my mind, on second thought) instead of one literal sentence.
+2. A local, offline semantic fallback (`src/override_semantic.py`) for phrasing outside that list — a small pretrained sentence-embedding model (`all-MiniLM-L6-v2`) scored by **margin** between a positive (reversal) and negative (ordinary preference / decline-to-answer) exemplar set, not by absolute similarity to positives alone.
+
+The margin design exists because absolute similarity did not work: empirically, ordinary shopping-preference sentences — especially the evaluator's own "I don't have a preference for X" boilerplate — scored as high or higher than genuine overrides against a positive-only exemplar set (see `scripts/tune_override_threshold.py`). A general-purpose sentence embedding mostly captures shared topic ("this is about a shopping preference"), not the specific pragmatic act being performed, so a positive/negative margin was needed instead of one threshold.
+
+The broadened regex list alone now resolves all 10 known paraphrases in the test corpus; the semantic stage is a fallback for phrasing beyond that list.
+
+**Chosen over an external LLM API** specifically because `docs/submission_rules.md` states official final scoring "may disable network access." A local model loaded from a cached path has no such failure mode; unlike a generative LLM it produces one float score with no free-text output to parse, so it cannot fail on malformed output either.
+
+**Fails closed.** Any missing dependency, missing cached model, or inference error causes the semantic stage to return "not an override" rather than raising — `respond()` always completes, degrading to regex-only detection rather than failing the session. Verified by removing the local model cache and by simulating a missing `sentence-transformers` install; both fall back cleanly with zero exceptions.
+
+**Known limit:** this only detects an *announced* reversal (a cue phrase signaling "discard what I said before"). It cannot detect an implicit contradiction between turns with no such cue (e.g. stating a flatly contradictory preference with no meta-comment at all).
+
+Public benchmark after this change: unchanged (Hit@10 1.000, MRR 0.815145, Technical Score 0.923844) — see `experiments/latest_public_eval.json`.
+
+---
+
 # Repository Structure
 
 ```text
@@ -530,12 +553,14 @@ The result suggests semantic retrieval is useful as a targeted recovery mechanis
 ├── scripts/
 │   ├── build_semantic_index.py
 │   ├── concept_robustness_eval.py
-│   └── end_to_end_shadow_eval.py
+│   ├── end_to_end_shadow_eval.py
+│   └── tune_override_threshold.py
 │
 ├── src/
 │   ├── dialogue.py
 │   ├── hard_constraints.py
 │   ├── intent.py
+│   ├── override_semantic.py
 │   ├── profile.py
 │   ├── questions.py
 │   ├── reranker.py
@@ -567,6 +592,15 @@ Install dependencies:
 ```powershell
 pip install -r requirements.txt
 ```
+
+`sentence-transformers` (the optional semantic fallback for override detection) pulls in `torch`. To avoid downloading large CUDA wheels on a CPU-only machine, install torch first:
+
+```powershell
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements.txt
+```
+
+The agent works correctly without this dependency installed — it falls back to regex-only override detection. See "V13 — Semantic Fallback for Override Detection" above.
 
 Run the full automated test suite:
 

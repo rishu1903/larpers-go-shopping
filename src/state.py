@@ -11,6 +11,7 @@ from src.hard_constraints import (
 from src.intent import (
     ShoppingIntent,
     infer_intent,
+    is_override,
 )
 
 
@@ -265,17 +266,13 @@ class SessionState:
         # 3. INTENT OVERRIDE
         # ----------------------------------
 
-        is_override = (
-            "actually"
-            in user_message.lower()
-
-            and
-
-            "ignore my earlier preference"
-            in user_message.lower()
+        override_triggered = (
+            is_override(
+                user_message,
+            )
         )
 
-        if is_override:
+        if override_triggered:
 
             self.override_seen = True
 
