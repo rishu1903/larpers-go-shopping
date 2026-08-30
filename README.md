@@ -526,6 +526,28 @@ Public benchmark after this change: unchanged (Hit@10 1.000, MRR 0.815145, Techn
 
 ---
 
+## V14 — Component-Scoped Item Context (opt-in)
+
+V13's override detection answers *whether* a message is a reversal. It doesn't answer *what specifically it reverses*. `SessionState.update()`'s purge (`src/state.py`) only ever removed evidence tagged `turn == 1`, because turn number was the only identity stored evidence had. Two gaps followed directly from that:
+
+- **Position gap**: a stale preference stated on turn 2+ was never purged — only whatever happened to land on turn 1. (`tests/test_override_robustness.py`'s scaffold only exercises stale-on-turn-1; the evaluator's own generator always places the stale value on turn 1 too, so this gap was invisible to both.)
+- **Attribution gap**: even a turn-1-scoped purge has no concept of *which part* of the item a value describes. "The zipper need to be silver... nevermind, gold" has no way to know "gold" replaces the zipper's color rather than the item's own color, because nothing records that "silver" was ever about the zipper specifically.
+
+V14 adds `src/llm_client.py` and `src/state_tracker.py`: an LLM call extracts `(component, attribute_type, value, polarity)` operations from each message (e.g. `zipper.color = gold`), and `Evidence` (`src/state.py`) gains matching `component`/`attribute_type` fields. Purging is then keyed on that identity, scanned across the *entire* evidence list, not a hardcoded turn number — fixing both gaps as one mechanism instead of two separate patches.
+
+**Deliberately opt-in, OFF by default.** This directly extends — not replaces — V13's reasoning and the "Deterministic and reproducible" design principle above (*"the current production pipeline does not require an external paid LLM API"*). `NullLLMClient` (`src/llm_client.py`) is the default `get_default_client()` result whenever `ANTHROPIC_API_KEY` is unset, and it always returns no operations — `SessionState.update()` then falls through to exactly the pre-existing V1.1-era deterministic path (`turn == 1` purge + regex/embedding override detection), unchanged. Verified: the public evaluator score after this change is byte-identical to the protected baseline (Hit@10 1.000, MRR 0.815145, Technical Score 0.923844 — see `experiments/latest_public_eval.json`), because no credentials are configured in this environment.
+
+**Fails closed at every layer**, same contract as V13: a missing `anthropic` dependency, missing/invalid key, network failure, or malformed tool response all fall back to an empty op list rather than raising (`AnthropicLLMClient.extract_state_ops`, `src/llm_client.py`) — `_parse_ops` additionally drops individual malformed operations rather than discarding an entire valid batch over one bad entry, since a provider's output is untrusted input.
+
+**Why LLM instead of extending the rule-based taxonomy further** (e.g. `src/questions.py`'s `ATTRIBUTE_VALUES`): resolving "gold" against "the zipper" instead of "the jacket" is a coreference problem, not a keyword-matching one — it requires knowing what "it" refers to, which changes with the conversation. A fixed keyword list also has no path to covering an open-ended vocabulary of components/finishes (rose gold, brushed nickel, ...) the way contextual language understanding does. This is a tradeoff, not a free upgrade: it reintroduces the network dependency and nondeterminism V13 explicitly chose to avoid, which is exactly why it stays opt-in rather than becoming the default path. `docs/submission_rules.md` allows this for prototyping but flags that official scoring may disable network access — treat this as a documented, disableable enhancement layer, not something official-scoring correctness should depend on.
+
+**Known limits:**
+
+- Retrieval (`src/retrieval.py`) has no negative/exclusion clause yet, so `polarity="exclude"` slots are captured but not yet used to actively filter results — the same limitation V13-era negation handling has today ("I don't want blue" is stored but not excluded from search). Wiring that in is separate follow-up work.
+- No live-call test coverage exists (no key is configured in this environment); `tests/test_llm_client.py` and `tests/test_state_tracker.py` validate parsing/purge/fallback logic against a deterministic `StubLLMClient`, not a real provider response.
+
+---
+
 # Repository Structure
 
 ```text
@@ -560,13 +582,15 @@ Public benchmark after this change: unchanged (Hit@10 1.000, MRR 0.815145, Techn
 │   ├── dialogue.py
 │   ├── hard_constraints.py
 │   ├── intent.py
+│   ├── llm_client.py
 │   ├── override_semantic.py
 │   ├── profile.py
 │   ├── questions.py
 │   ├── reranker.py
 │   ├── retrieval.py
 │   ├── semantic.py
-│   └── state.py
+│   ├── state.py
+│   └── state_tracker.py
 │
 ├── starter/
 │   └── agent.py

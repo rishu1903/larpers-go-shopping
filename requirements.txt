@@ -11,3 +11,12 @@ joblib>=1.4,<2
 #   pip install torch --index-url https://download.pytorch.org/whl/cpu
 #   pip install sentence-transformers
 sentence-transformers>=3.0,<4
+
+# Optional: LLM-driven component-scoped item-context
+# tracking (src/llm_client.py, src/state_tracker.py).
+# OFF by default -- only activates if ANTHROPIC_API_KEY
+# is set. With no key, SessionState.update() uses only
+# the deterministic path above; this dependency is not
+# imported at all. See "V14 -- Component-Scoped Item
+# Context" in README.md.
+# anthropic>=0.40,<1

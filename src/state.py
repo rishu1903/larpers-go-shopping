@@ -14,6 +14,14 @@ from src.intent import (
     is_override,
 )
 
+from src.llm_client import (
+    LLMClient,
+)
+
+from src.state_tracker import (
+    update_item_context,
+)
+
 
 _NO_PREFERENCE_RE = re.compile(
     r"i don't have "
@@ -115,6 +123,15 @@ class Evidence:
     turn: int
     text: str
 
+    # Populated only when this entry was produced by
+    # the LLM-driven item-context tracker
+    # (src/state_tracker.py). None for evidence added
+    # by the deterministic fallback path -- such
+    # entries have no (component, attribute_type)
+    # identity to purge by, only a turn number.
+    component: str | None = None
+    attribute_type: str | None = None
+
 
 @dataclass
 class SessionState:
@@ -193,6 +210,7 @@ class SessionState:
         self,
         user_message: str,
         turn: int,
+        client: LLMClient | None = None,
     ) -> None:
 
         # ----------------------------------
@@ -262,51 +280,92 @@ class SessionState:
                 True
             )
 
-        # ----------------------------------
-        # 3. INTENT OVERRIDE
-        # ----------------------------------
-
-        override_triggered = (
-            is_override(
-                user_message,
+        cleaned = (
+            _clean_customer_message(
+                user_message
             )
         )
 
-        if override_triggered:
+        # ----------------------------------
+        # 3. LLM-DRIVEN ITEM CONTEXT
+        # ----------------------------------
+        #
+        # Component+attribute-scoped state tracking
+        # (src/state_tracker.py). When it applies a
+        # change, it purges stale evidence by identity
+        # (e.g. "zipper color") across the whole
+        # conversation instead of by a hardcoded turn
+        # number, and sets override_seen/
+        # clarification_exhausted itself whenever it
+        # actually overwrites an existing slot -- even
+        # without an explicit reversal cue phrase.
+        #
+        # With no provider configured (the default),
+        # NullLLMClient always returns no ops, so
+        # llm_applied is False and behavior below is
+        # byte-for-byte identical to the pre-existing
+        # deterministic path.
 
-            self.override_seen = True
+        llm_applied = False
 
-            self.clarification_exhausted = (
-                False
+        if cleaned:
+
+            llm_applied = (
+                update_item_context(
+                    state=self,
+                    user_message=user_message,
+                    turn=turn,
+                    client=client,
+                )
             )
 
-            # Remove mutable Turn-1 evidence.
-            self.evidence = [
-                item
+        # ----------------------------------
+        # 3b. DETERMINISTIC OVERRIDE FALLBACK
+        # ----------------------------------
 
-                for item
-                in self.evidence
+        if not llm_applied:
 
-                if item.turn != 1
-            ]
+            override_triggered = (
+                is_override(
+                    user_message,
+                )
+            )
 
-            # Budget is also mutable evidence.
-            #
-            # If the stale preference being
-            # discarded originated on Turn 1,
-            # remove its structured form too.
-            if (
-                self.budget_source_turn
-                == 1
-            ):
+            if override_triggered:
 
-                self.budget_constraint = (
-                    None
+                self.override_seen = True
+
+                self.clarification_exhausted = (
+                    False
                 )
 
-                self.budget_source_turn = (
-                    None
-                )
+                # Remove mutable Turn-1 evidence.
+                self.evidence = [
+                    item
+
+                    for item
+                    in self.evidence
+
+                    if item.turn != 1
+                ]
+
+                # Budget is also mutable evidence.
+                #
+                # If the stale preference being
+                # discarded originated on Turn 1,
+                # remove its structured form too.
+                if (
+                    self.budget_source_turn
+                    == 1
+                ):
+
+                    self.budget_constraint = (
+                        None
+                    )
+
+                    self.budget_source_turn = (
+                        None
+                    )
 
         # ----------------------------------
         # 4. STRUCTURED BUDGET EXTRACTION
@@ -335,12 +394,12 @@ class SessionState:
         # ----------------------------------
         # 5. POSITIVE PRODUCT EVIDENCE
         # ----------------------------------
-
-        cleaned = (
-            _clean_customer_message(
-                user_message
-            )
-        )
+        #
+        # Skipped when the LLM path already recorded
+        # this turn's content as component-scoped
+        # evidence -- otherwise the same preference
+        # would be stored twice, once tagged and once
+        # as an untagged duplicate.
 
         if not cleaned:
             return
@@ -360,6 +419,8 @@ class SessionState:
             )
 
             if (
+                not llm_applied
+                and
                 separator
                 and
                 remaining.strip()
@@ -376,12 +437,14 @@ class SessionState:
 
             return
 
-        self.evidence.append(
-            Evidence(
-                turn=turn,
-                text=cleaned,
+        if not llm_applied:
+
+            self.evidence.append(
+                Evidence(
+                    turn=turn,
+                    text=cleaned,
+                )
             )
-        )
 
     def active_text(
         self,
