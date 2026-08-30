@@ -29,6 +29,16 @@ _ADDITIONAL_NO_PREFERENCE_RE = re.compile(
 )
 
 
+_FAILURE_REPLY_PREFIX = (
+    "those options are not quite right yet"
+)
+
+
+_OVERRIDE_MARKER = (
+    "ignore my earlier preference"
+)
+
+
 def _clean_customer_message(
     message: str,
 ) -> str:
@@ -46,7 +56,7 @@ def _clean_customer_message(
     lowered = text.lower()
 
     if lowered.startswith(
-        "those options are not quite right yet"
+        _FAILURE_REPLY_PREFIX
     ):
         return ""
 
@@ -65,17 +75,14 @@ def _clean_customer_message(
             r"^I'm looking for\s+",
             "",
         ),
-
         (
             r"\bA key requirement is:\s*",
             " ",
         ),
-
         (
             r"^For that, what matters is:\s*",
             "",
         ),
-
         (
             r"^Actually, ignore my earlier preference\.\s*"
             r"What I need is:\s*",
@@ -188,11 +195,102 @@ class SessionState:
         default_factory=set
     )
 
+    # ----------------------------------
+    # V13 FAILURE-AWARE STATE
+    # ----------------------------------
+    #
+    # These fields observe explicit customer
+    # rejection without changing V12 ranking by
+    # themselves. The V13 orchestration layer can
+    # use them during controlled shadow ablations.
+
+    intent_epoch: int = 0
+
+    miss_streak: int = 0
+
+    failure_events: list[
+        tuple[
+            int,
+            int,
+        ]
+    ] = field(
+        default_factory=list
+    )
+
+    last_recommendations: list[
+        str
+    ] = field(
+        default_factory=list
+    )
+
+    failed_recommendations_by_epoch: dict[
+        int,
+        set[str],
+    ] = field(
+        default_factory=dict
+    )
+
+    def _observe_failure(
+        self,
+        user_message: str,
+        turn: int,
+    ) -> None:
+        """
+        Attribute an explicit rejection to the
+        previous recommendation set.
+
+        The failure message is treated as a runtime
+        strategy signal, not searchable product
+        evidence.
+        """
+
+        lowered = re.sub(
+            r"\s+",
+            " ",
+            user_message.lower(),
+        ).strip()
+
+        if not lowered.startswith(
+            _FAILURE_REPLY_PREFIX
+        ):
+            return
+
+        self.miss_streak += 1
+
+        self.failure_events.append(
+            (
+                self.intent_epoch,
+                turn,
+            )
+        )
+
+        failed = (
+            self
+            .failed_recommendations_by_epoch
+            .setdefault(
+                self.intent_epoch,
+                set(),
+            )
+        )
+
+        failed.update(
+            self.last_recommendations
+        )
+
     def update(
         self,
         user_message: str,
         turn: int,
     ) -> None:
+
+        # ----------------------------------
+        # 0. OBSERVE RECOMMENDATION FAILURE
+        # ----------------------------------
+
+        self._observe_failure(
+            user_message=user_message,
+            turn=turn,
+        )
 
         # ----------------------------------
         # 1. UPDATE SHOPPING INTENT
@@ -265,25 +363,41 @@ class SessionState:
         # 3. INTENT OVERRIDE
         # ----------------------------------
 
+        lowered_message = (
+            user_message.lower()
+        )
+
         is_override = (
             "actually"
-            in user_message.lower()
+            in lowered_message
 
             and
 
-            "ignore my earlier preference"
-            in user_message.lower()
+            _OVERRIDE_MARKER
+            in lowered_message
         )
 
         if is_override:
 
             self.override_seen = True
 
+            # A new intent starts a new failure epoch.
+            #
+            # Historical rejection evidence remains
+            # available for diagnostics but does not
+            # poison the new intent's miss streak.
+            self.intent_epoch += 1
+
+            self.miss_streak = 0
+
+            self.last_recommendations = []
+
             self.clarification_exhausted = (
                 False
             )
 
-            # Remove mutable Turn-1 evidence.
+            # Preserve category while deleting stale
+            # mutable Turn-1 evidence.
             self.evidence = [
                 item
 
@@ -294,10 +408,6 @@ class SessionState:
             ]
 
             # Budget is also mutable evidence.
-            #
-            # If the stale preference being
-            # discarded originated on Turn 1,
-            # remove its structured form too.
             if (
                 self.budget_source_turn
                 == 1
@@ -314,10 +424,6 @@ class SessionState:
         # ----------------------------------
         # 4. STRUCTURED BUDGET EXTRACTION
         # ----------------------------------
-        #
-        # A newly stated budget supersedes the
-        # previous budget instead of intersecting
-        # indefinitely with stale constraints.
 
         parsed_budget = (
             parse_budget_constraint(
@@ -420,16 +526,28 @@ class SessionState:
         parent_asins: list[str],
     ) -> None:
         """
-        Remember products already shown.
+        Remember shown products and retain the
+        most recent recommendation set.
+
+        This lets a later explicit customer rejection
+        be attributed to the products that caused it.
         """
 
-        self.recommended_asins.update(
+        normalized = [
             str(
                 parent_asin
             )
 
             for parent_asin
             in parent_asins
+        ]
+
+        self.last_recommendations = (
+            normalized
+        )
+
+        self.recommended_asins.update(
+            normalized
         )
 
     def record_question(
@@ -446,3 +564,31 @@ class SessionState:
             self.asked_attributes.add(
                 attribute
             )
+
+    def failed_recommendations(
+        self,
+        epoch: int | None = None,
+    ) -> set[str]:
+        """
+        Return rejected ASINs for one intent epoch.
+
+        V13A does not yet use this set as a hard
+        product filter. It exists so future strategy
+        logic can distinguish same-intent negatives
+        from products shown before an override.
+        """
+
+        selected_epoch = (
+            self.intent_epoch
+            if epoch is None
+            else epoch
+        )
+
+        return set(
+            self
+            .failed_recommendations_by_epoch
+            .get(
+                selected_epoch,
+                set(),
+            )
+        )

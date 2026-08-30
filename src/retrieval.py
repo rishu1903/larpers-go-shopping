@@ -7,6 +7,11 @@ from src.intent import (
     ShoppingIntent,
 )
 
+from src.orchestration import (
+    RetrievalPlan,
+    retrieval_plan,
+)
+
 from src.semantic import (
     SemanticRetriever,
 )
@@ -175,47 +180,31 @@ def should_use_semantic(
     exploration: bool,
 ) -> bool:
     """
-    Decide whether the dense retrieval route
-    should be activated.
+    Decide whether dense retrieval should
+    be activated.
 
-    BUYING
-    -------
+    Buying:
+        Prefer high-precision lexical retrieval.
 
-    Prefer the high-precision lexical path.
+    Browsing:
+        Use semantic recall only when the
+        lexical pool is sparse.
 
-    BROWSING
-    --------
-
-    Activate semantic recall when lexical
-    retrieval produces too small a candidate
-    pool.
-
-    EXPLORATION
-    -----------
-
-    Always enable semantic recall because
-    clarification has already been exhausted.
-
-    This gives us explicit route-aware retrieval
-    without blindly injecting dense candidates
-    into every query.
+    Exploration:
+        Always use semantic recall.
     """
 
     if exploration:
         return True
 
-    if (
+    return (
         state.intent
         == ShoppingIntent.BROWSING
 
         and
 
         lexical_count < 50
-    ):
-
-        return True
-
-    return False
+    )
 
 
 def _candidate_from_row(
@@ -226,8 +215,8 @@ def _candidate_from_row(
     ],
 ) -> dict:
     """
-    Convert one FTS row to the structure
-    expected by the reranking layer.
+    Convert one FTS row to the candidate
+    structure expected by reranking.
     """
 
     parent_asin = str(
@@ -289,32 +278,19 @@ def retrieve_candidates(
     ],
     semantic: SemanticRetriever | None,
     exploration: bool = False,
+    plan_override: RetrievalPlan | None = None,
 ) -> list[dict]:
     """
-    Execute the route-aware candidate
-    retrieval policy.
+    Execute route-aware candidate retrieval.
 
-    BUYING
-    ======
+    Normal operation obtains its plan from
+    orchestration.retrieval_plan().
 
-        BM25 Top 100
-
-    BROWSING
-    ========
-
-        BM25 Top 100
-
-        If lexical recall is sparse:
-
-            +
-        Semantic Top 100
-
-    EXPLORATION
-    ===========
-
-        BM25 Top 500
-            +
-        Semantic Top 250
+    V13 protected recovery may explicitly pass
+    a frozen V12 plan or a deeper recovery plan.
+    This lets the Agent compare both candidate
+    universes independently instead of allowing
+    expansion to reorder the V12 path.
     """
 
     expression = (
@@ -323,16 +299,26 @@ def retrieve_candidates(
         )
     )
 
+    plan = (
+        plan_override
+
+        if (
+            plan_override
+            is not None
+        )
+
+        else
+
+        retrieval_plan(
+            state=state,
+            exploration=exploration,
+        )
+    )
+
     # ----------------------------------
     # ROUTE 1:
     # FIELD-AWARE BM25
     # ----------------------------------
-
-    lexical_limit = (
-        500
-        if exploration
-        else 100
-    )
 
     lexical: list[
         dict
@@ -368,7 +354,7 @@ def retrieve_candidates(
                 ),
                 (
                     expression,
-                    lexical_limit,
+                    plan.lexical_limit,
                 ),
             )
             .fetchall()
@@ -405,7 +391,6 @@ def retrieve_candidates(
 
         not use_semantic
     ):
-
         return lexical
 
     # ----------------------------------
@@ -413,25 +398,20 @@ def retrieve_candidates(
     # DENSE SEMANTIC RETRIEVAL
     # ----------------------------------
 
-    semantic_limit = (
-        250
-        if exploration
-        else 100
-    )
-
     semantic_hits = (
         semantic.search(
             state.active_text(),
-            top_n=semantic_limit,
+            top_n=(
+                plan.semantic_limit
+            ),
         )
     )
 
     if not semantic_hits:
-
         return lexical
 
     # ----------------------------------
-    # FUSE THE TWO CANDIDATE ROUTES
+    # FUSE CANDIDATE ROUTES
     # ----------------------------------
 
     by_asin = {
@@ -477,7 +457,7 @@ def retrieve_candidates(
     ]
 
     # ----------------------------------
-    # LOAD SEMANTIC-ONLY PRODUCT METADATA
+    # LOAD SEMANTIC-ONLY METADATA
     # ----------------------------------
 
     if missing_rowids:
@@ -540,27 +520,28 @@ def retrieve_candidates(
 
         if (
             asin
-            in semantic_score_by_asin
+            not in semantic_score_by_asin
+        ):
+            continue
+
+        candidate[
+            "semantic_score"
+        ] = (
+            semantic_score_by_asin[
+                asin
+            ]
+        )
+
+        if (
+            candidate[
+                "source"
+            ]
+            == "lexical"
         ):
 
             candidate[
-                "semantic_score"
-            ] = (
-                semantic_score_by_asin[
-                    asin
-                ]
-            )
-
-            if (
-                candidate[
-                    "source"
-                ]
-                == "lexical"
-            ):
-
-                candidate[
-                    "source"
-                ] = "hybrid"
+                "source"
+            ] = "hybrid"
 
     lexical_asins = {
         candidate[
@@ -571,9 +552,6 @@ def retrieve_candidates(
         in lexical
     }
 
-    # Preserve the proven lexical ordering
-    # first, while allowing semantic retrieval
-    # to expand the candidate universe.
     semantic_only = [
         by_asin[
             asin
@@ -595,7 +573,9 @@ def retrieve_candidates(
         )
     ]
 
+    # Preserve lexical ordering first.
     return (
         lexical
-        + semantic_only
+        +
+        semantic_only
     )

@@ -13,6 +13,14 @@ from src.hard_constraints import (
     coerce_price,
 )
 
+from src.orchestration import (
+    RetrievalPlan,
+    retrieval_plan,
+    select_protected_recovery,
+    should_use_protected_recovery,
+    v12_retrieval_plan,
+)
+
 from src.reranker import (
     rerank_candidates,
     rerank_for_exploration,
@@ -47,8 +55,11 @@ def _text(
     ):
         return " ".join(
             f"{key} {item}"
-            for key, item
-            in value.items()
+
+            for (
+                key,
+                item,
+            ) in value.items()
         )
 
     if isinstance(
@@ -57,11 +68,14 @@ def _text(
     ):
         return " ".join(
             str(item)
+
             for item
             in value
         )
 
-    return str(value)
+    return str(
+        value
+    )
 
 
 class Agent:
@@ -85,6 +99,8 @@ class Agent:
         Candidate-aware Clarification
             ↓
         Adaptive Exploration
+            ↓
+        Failure-Aware Protected Recovery
     """
 
     def __init__(
@@ -179,8 +195,10 @@ class Agent:
                 start=1,
             ):
 
-                product = json.loads(
-                    line
+                product = (
+                    json.loads(
+                        line
+                    )
                 )
 
                 parent_asin = str(
@@ -202,12 +220,11 @@ class Agent:
                     or 0
                 )
 
-                # Price is deliberately NOT placed
-                # in the FTS text index.
+                # Price is deliberately excluded
+                # from the full-text index.
                 #
-                # It is structured numeric metadata
-                # and will be used for actual hard
-                # constraint enforcement.
+                # It remains structured numeric
+                # metadata for real filtering.
                 self._prices[
                     parent_asin
                 ] = coerce_price(
@@ -296,42 +313,40 @@ class Agent:
         self._sessions[
             session_id
         ] = SessionState(
-            user_profile=user_profile
-        )
-
-    def respond(
-        self,
-        session_id: str,
-        user_message: str,
-        turn: int,
-        top_k: int,
-    ) -> dict:
-
-        if (
-            session_id
-            not in self._sessions
-        ):
-            raise RuntimeError(
-                "reset must be called "
-                "before respond"
+            user_profile=(
+                user_profile
             )
-
-        state = self._sessions[
-            session_id
-        ]
-
-        # ----------------------------------
-        # 1. UPDATE CONVERSATIONAL STATE
-        # ----------------------------------
-
-        state.update(
-            user_message=user_message,
-            turn=turn,
         )
 
-        # ----------------------------------
-        # 2. RETRIEVE CANDIDATES
-        # ----------------------------------
+    def _rank_for_plan(
+        self,
+        state: SessionState,
+        *,
+        exploration: bool,
+        plan_override: (
+            RetrievalPlan
+            | None
+        ) = None,
+    ) -> list[dict]:
+        """
+        Execute one complete candidate plan:
+
+            retrieval
+                ↓
+            price attachment
+                ↓
+            hard filtering
+                ↓
+            reranking
+                ↓
+            seen-item filtering
+
+        V13 uses this helper twice only after an
+        explicit recommendation failure:
+
+        1. frozen V12 continuation;
+        2. expanded failure-recovery plan.
+        """
 
         candidates = (
             retrieve_candidates(
@@ -354,15 +369,14 @@ class Agent:
                 ),
 
                 exploration=(
-                    state
-                    .clarification_exhausted
+                    exploration
+                ),
+
+                plan_override=(
+                    plan_override
                 ),
             )
         )
-
-        # ----------------------------------
-        # 3. ATTACH STRUCTURED PRICE
-        # ----------------------------------
 
         for candidate in candidates:
 
@@ -374,16 +388,6 @@ class Agent:
                 ]
             )
 
-        # ----------------------------------
-        # 4. APPLY HARD CONSTRAINTS
-        # ----------------------------------
-        #
-        # This happens BEFORE reranking.
-        #
-        # A product that violates a hard budget
-        # is ineligible regardless of lexical,
-        # semantic or popularity score.
-
         candidates = (
             apply_budget_constraint(
                 candidates,
@@ -391,85 +395,192 @@ class Agent:
             )
         )
 
-        recommendations: list[
-            dict
-        ] = []
+        if not candidates:
+            return []
 
-        question_candidates: list[
-            dict
-        ] = []
+        if exploration:
 
-        if candidates:
-
-            # ----------------------------------
-            # 5. SELECT RANKING POLICY
-            # ----------------------------------
-
-            if (
-                state
-                .clarification_exhausted
-            ):
-
-                ranked = (
-                    rerank_for_exploration(
-                        candidates,
-                        state,
-                    )
+            ranked = (
+                rerank_for_exploration(
+                    candidates,
+                    state,
                 )
-
-                ranked = [
-                    candidate
-
-                    for candidate
-                    in ranked
-
-                    if (
-                        candidate[
-                            "parent_asin"
-                        ]
-
-                        not in
-
-                        state
-                        .recommended_asins
-                    )
-                ]
-
-            else:
-
-                ranked = (
-                    rerank_candidates(
-                        candidates,
-                        state,
-                    )
-                )
-
-            # Candidate-aware dialogue policy
-            # analyses the currently feasible
-            # product set, not products that
-            # violate hard requirements.
-            question_candidates = (
-                ranked[:30]
             )
 
-            # ----------------------------------
-            # 6. RETURN TOP K
-            # ----------------------------------
-
-            recommendations = [
-                {
-                    "parent_asin":
-                        candidate[
-                            "parent_asin"
-                        ]
-                }
+            return [
+                candidate
 
                 for candidate
-                in ranked[:top_k]
+                in ranked
+
+                if (
+                    candidate[
+                        "parent_asin"
+                    ]
+
+                    not in
+
+                    state
+                    .recommended_asins
+                )
             ]
 
+        return (
+            rerank_candidates(
+                candidates,
+                state,
+            )
+        )
+
+    def respond(
+        self,
+        session_id: str,
+        user_message: str,
+        turn: int,
+        top_k: int,
+    ) -> dict:
+
+        if (
+            session_id
+            not in self._sessions
+        ):
+            raise RuntimeError(
+                "reset must be called "
+                "before respond"
+            )
+
+        state = (
+            self._sessions[
+                session_id
+            ]
+        )
+
         # ----------------------------------
-        # 7. REMEMBER SHOWN PRODUCTS
+        # 1. UPDATE CONVERSATIONAL STATE
+        # ----------------------------------
+
+        state.update(
+            user_message=user_message,
+            turn=turn,
+        )
+
+        exploration = (
+            state
+            .clarification_exhausted
+        )
+
+        # ----------------------------------
+        # 2. RANK CANDIDATES
+        # ----------------------------------
+        #
+        # Normal path:
+        #
+        #     exactly the existing V12/V13A
+        #     candidate plan.
+        #
+        # Failure recovery:
+        #
+        #     rank frozen V12 continuation
+        #             +
+        #     rank expanded recovery pool
+        #
+        # The final selector protects nearly
+        # the entire V12 Top-K and gives only
+        # a bounded slot budget to new deep
+        # candidates.
+
+        if (
+            should_use_protected_recovery(
+                state=state,
+                exploration=exploration,
+            )
+        ):
+
+            baseline_ranked = (
+                self._rank_for_plan(
+                    state,
+                    exploration=True,
+                    plan_override=(
+                        v12_retrieval_plan(
+                            exploration=True
+                        )
+                    ),
+                )
+            )
+
+            expanded_ranked = (
+                self._rank_for_plan(
+                    state,
+                    exploration=True,
+                    plan_override=(
+                        retrieval_plan(
+                            state=state,
+                            exploration=True,
+                        )
+                    ),
+                )
+            )
+
+            ranked = (
+                select_protected_recovery(
+                    baseline_ranked=(
+                        baseline_ranked
+                    ),
+                    expanded_ranked=(
+                        expanded_ranked
+                    ),
+                    top_k=top_k,
+                )
+            )
+
+            # Clarification has already been
+            # exhausted on this branch.
+            #
+            # Retain the V12 pool for any
+            # downstream dialogue diagnostics.
+            question_candidates = (
+                baseline_ranked[
+                    :30
+                ]
+            )
+
+        else:
+
+            ranked = (
+                self._rank_for_plan(
+                    state,
+                    exploration=(
+                        exploration
+                    ),
+                )
+            )
+
+            question_candidates = (
+                ranked[
+                    :30
+                ]
+            )
+
+        # ----------------------------------
+        # 3. RETURN TOP K
+        # ----------------------------------
+
+        recommendations = [
+            {
+                "parent_asin":
+                    candidate[
+                        "parent_asin"
+                    ]
+            }
+
+            for candidate
+            in ranked[
+                :top_k
+            ]
+        ]
+
+        # ----------------------------------
+        # 4. REMEMBER SHOWN PRODUCTS
         # ----------------------------------
 
         state.record_recommendations(
@@ -484,7 +595,7 @@ class Agent:
         )
 
         # ----------------------------------
-        # 8. CHOOSE NEXT QUESTION
+        # 5. CHOOSE NEXT QUESTION
         # ----------------------------------
 
         (
@@ -513,7 +624,10 @@ class Agent:
                 recommendations,
 
             "usage": {
-                "prompt_tokens": 0,
-                "completion_tokens": 0,
+                "prompt_tokens":
+                    0,
+
+                "completion_tokens":
+                    0,
             },
         }

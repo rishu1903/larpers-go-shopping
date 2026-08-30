@@ -1,0 +1,915 @@
+{
+  "benchmark": "V13 protected failure-recovery shadow ablation",
+  "uses_public_labels": false,
+  "methodology": {
+    "starts_from_v12_residual_misses": true,
+    "v12_turn_1_and_2_exactly_protected": true,
+    "explicit_failure_message_used": true,
+    "step_0_is_same_depth_continuation_control": true,
+    "later_failure_turns_compute_v12_and_expanded_plans": true,
+    "v12_recommendation_prefix_is_protected": true,
+    "recovery_candidates_must_be_absent_from_v12_candidate_pool": true,
+    "recovery_slots": 1,
+    "max_turn": 5,
+    "shadow_technical_score_is_not_official": true
+  },
+  "config": {
+    "catalog": "data\\catalog.jsonl",
+    "source": "experiments\\v10_2_concept_robustness.json",
+    "v12": "experiments\\v12_end_to_end_shadow.json",
+    "steps": [
+      0.0,
+      0.75
+    ],
+    "recovery_slots": 1,
+    "evaluated_residual_case_count": 4,
+    "expected_residual_case_count": 14,
+    "total_shadow_cases": 130
+  },
+  "runs": [
+    {
+      "depth_step": 0.0,
+      "enabled": false,
+      "recovery_slots": 1,
+      "summary": {
+        "evaluated_residual_case_count": 4,
+        "expected_residual_case_count": 14,
+        "full_residual_set": false,
+        "rescued_after_turn_2": 2,
+        "residual_rescue_rate": 0.5,
+        "rescues_by_turn": {
+          "3": 1,
+          "4": 1,
+          "5": 0
+        },
+        "remaining_within_evaluated": 2,
+        "mean_rescue_reciprocal_rank": 0.166667,
+        "runtime_seconds": 1.278,
+        "rescued_case_ids": [
+          "concept_hiking_bb6edd2521_p1",
+          "concept_adjustable_ac798cf79d_p1"
+        ],
+        "remaining_case_ids": [
+          "concept_running_e91bab31b1_p3",
+          "concept_water_resistant_e23daeb2e6_p3"
+        ],
+        "full_shadow_metrics": null
+      },
+      "cases": [
+        {
+          "case_id": "concept_hiking_bb6edd2521_p1",
+          "concept": "hiking",
+          "category": "Boots",
+          "paraphrase": "something suitable for trails and uneven terrain",
+          "relevant_count": 9,
+          "first_hit_turn": 4,
+          "first_hit_rank": 6,
+          "first_hit_reciprocal_rank": 0.166667,
+          "turns": [
+            {
+              "turn": 1,
+              "user_message": "I'm looking for Boots. A key requirement is: something suitable for trails and uneven terrain.",
+              "ask_attribute": "other",
+              "recommendations": [
+                "B09Y5GF1GL",
+                "B00ZUYI166",
+                "B09NCJVMGX",
+                "B07VCQT55H",
+                "B07BYR6T7W",
+                "B071YRXBY2",
+                "B09699PSB5",
+                "B07TRCD9TC",
+                "B097XSNQQN",
+                "B00MJYP67M"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "precision",
+              "lexical_limit": 100,
+              "semantic_limit": 100
+            },
+            {
+              "turn": 2,
+              "user_message": "I don't have an additional preference for other.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B078YHYSSC",
+                "B097SZT9N4",
+                "B0BWJZZ69B",
+                "B082F5GXNZ",
+                "B09HHGMS9F",
+                "B0885YS157",
+                "B0827LGNTQ",
+                "B08D6KFBK6",
+                "B092ZHMHFK",
+                "B09DP7PXRG"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            },
+            {
+              "turn": 3,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B074G1JP8Z",
+                "B0B2LBQ4CH",
+                "B07ZQKPXHY",
+                "B003FEPJ6I",
+                "B07V5JK8N4",
+                "B0BS3JHR2D",
+                "B007KJ62NI",
+                "B08FSTW789",
+                "B099JMRVGF",
+                "B0BY7W9C9N"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 1,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            },
+            {
+              "turn": 4,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B0020MMQBW",
+                "B07HSYYG89",
+                "B09FXJKV8R",
+                "B07SVXSX49",
+                "B00CZOHFVQ",
+                "B0797W5MT4",
+                "B099JXKQDV",
+                "B0BQM89G79",
+                "B088LZD147",
+                "B07TVRX12B"
+              ],
+              "first_relevant_rank": 6,
+              "miss_streak": 2,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            }
+          ]
+        },
+        {
+          "case_id": "concept_running_e91bab31b1_p3",
+          "concept": "running",
+          "category": "Tops, Tees & Blouses T-Shirts",
+          "paraphrase": "something appropriate for regular jogs and workouts",
+          "relevant_count": 21,
+          "first_hit_turn": null,
+          "first_hit_rank": null,
+          "first_hit_reciprocal_rank": 0.0,
+          "turns": [
+            {
+              "turn": 1,
+              "user_message": "I'm looking for Tops, Tees & Blouses T-Shirts. A key requirement is: something appropriate for regular jogs and workouts.",
+              "ask_attribute": "other",
+              "recommendations": [
+                "B073XHKSXP",
+                "B091DHBFYF",
+                "B07B75XMHH",
+                "B091PYS9P3",
+                "B07V32L556",
+                "B092M9PXJ6",
+                "B08P4FVL8J",
+                "B08ZRVWNC2",
+                "B096RPJHN7",
+                "B08GLZJPL7"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "precision",
+              "lexical_limit": 100,
+              "semantic_limit": 100
+            },
+            {
+              "turn": 2,
+              "user_message": "I don't have an additional preference for other.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B09XJDLX5F",
+                "B0889K1JQD",
+                "B083HT5XST",
+                "B08N4FFHGT",
+                "B0888X1JKQ",
+                "B0B3JHB938",
+                "B0B8Z9L5PX",
+                "B0894QLSZR",
+                "B0897P3CNK",
+                "B07ZX1QPRB"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            },
+            {
+              "turn": 3,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B09RTHWNQC",
+                "B0CCV6544C",
+                "B00E9OVWDC",
+                "B07D2H18V5",
+                "B08L7KT665",
+                "B074JHWL2P",
+                "B074FSX7KK",
+                "B08C9V25YL",
+                "B00JFFSCX8",
+                "B086YKWRK6"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 1,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            },
+            {
+              "turn": 4,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B099DPVWF9",
+                "B087CTHVDB",
+                "B088FGHKZJ",
+                "B07GVGG7VS",
+                "B00CRHJQMW",
+                "B00JPT3BTO",
+                "B00C77PB4O",
+                "B07WSD47ZC",
+                "B07WZYLF44",
+                "B07KNSRXTN"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 2,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            },
+            {
+              "turn": 5,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B0B7PXR6YQ",
+                "B08FRSB78T",
+                "B08GCXMRNY",
+                "B09685SVS1",
+                "B07PDRKKFS",
+                "B07NHTCM9S",
+                "B07PXWGJDD",
+                "B08XWXJ4X2",
+                "B094HNW6BQ",
+                "B083TNKRLZ"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 3,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            }
+          ]
+        },
+        {
+          "case_id": "concept_adjustable_ac798cf79d_p1",
+          "concept": "adjustable",
+          "category": "Baby Boys Sneakers",
+          "paraphrase": "something whose fit can be changed as needed",
+          "relevant_count": 4,
+          "first_hit_turn": 3,
+          "first_hit_rank": 6,
+          "first_hit_reciprocal_rank": 0.166667,
+          "turns": [
+            {
+              "turn": 1,
+              "user_message": "I'm looking for Baby Boys Sneakers. A key requirement is: something whose fit can be changed as needed.",
+              "ask_attribute": "other",
+              "recommendations": [
+                "B0073D4YAO",
+                "B07V6Y6D6Q",
+                "B0CF23VTNG",
+                "B094DCVP8Q",
+                "B08R9J9X6B",
+                "B08D776GM5",
+                "B07XXM8DR7",
+                "B0019CI90Q",
+                "B07522NX78",
+                "B0028Y50TW"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "precision",
+              "lexical_limit": 100,
+              "semantic_limit": 100
+            },
+            {
+              "turn": 2,
+              "user_message": "I don't have an additional preference for other.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B086HX15PV",
+                "B07X35JNC4",
+                "B06XX8TLP9",
+                "B08Y7NHC2R",
+                "B07RM6FNNS",
+                "B075FQMMG9",
+                "B08QM6KT59",
+                "B07Z1T91BL",
+                "B08DMG43XZ",
+                "B07GQ9N5PB"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            },
+            {
+              "turn": 3,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B082W53FJC",
+                "B08CZTB3ZZ",
+                "B07VCVNG4X",
+                "B09DBRW4DZ",
+                "B09N3CCFTV",
+                "B00BB9WK5C",
+                "B07NQJPFB4",
+                "B00Z20QUV6",
+                "B07LBRKLH7",
+                "B079693QVG"
+              ],
+              "first_relevant_rank": 6,
+              "miss_streak": 1,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            }
+          ]
+        },
+        {
+          "case_id": "concept_water_resistant_e23daeb2e6_p3",
+          "concept": "water_resistant",
+          "category": "Accessories Hats & Caps",
+          "paraphrase": "something suitable for occasional wet conditions",
+          "relevant_count": 3,
+          "first_hit_turn": null,
+          "first_hit_rank": null,
+          "first_hit_reciprocal_rank": 0.0,
+          "turns": [
+            {
+              "turn": 1,
+              "user_message": "I'm looking for Accessories Hats & Caps. A key requirement is: something suitable for occasional wet conditions.",
+              "ask_attribute": "other",
+              "recommendations": [
+                "B07H29RGQ4",
+                "B07WLNX6VW",
+                "B01MSYKE17",
+                "B08H8GM56V",
+                "B07JHQGHR9",
+                "B09Z2632HP",
+                "B07TN1845M",
+                "B07RNQHLKX",
+                "B092JJHWL5",
+                "B08GKQBFLN"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "precision",
+              "lexical_limit": 100,
+              "semantic_limit": 100
+            },
+            {
+              "turn": 2,
+              "user_message": "I don't have an additional preference for other.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B00QQMK23G",
+                "B08JJ4VKHS",
+                "B0BQW5V4JB",
+                "B07B5N7SF8",
+                "B01M1I3VKK",
+                "B08HK4JYX7",
+                "B019IIXTX4",
+                "B0167LW76A",
+                "B07ZHQTFKC",
+                "B07Q1GMV76"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            },
+            {
+              "turn": 3,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B01KTV400A",
+                "B00E0EP5VQ",
+                "B0919PK6CC",
+                "B07SQLH6MX",
+                "B0BJW2X35V",
+                "B08GX3F6RT",
+                "B0BYCB96ZM",
+                "B085L7QNPB",
+                "B01D1ZFNGG",
+                "B0BC89PMSZ"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 1,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            },
+            {
+              "turn": 4,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B07JBQ17PS",
+                "B08CZZDWFT",
+                "B0B5N6Q15W",
+                "B0BN5PTZP3",
+                "B0C1N3WLDD",
+                "B09WHWTQ7X",
+                "B076MFQRFP",
+                "B00GS7MBKG",
+                "B00I98DC7I",
+                "B07RYNJWFR"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 2,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            },
+            {
+              "turn": 5,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B01KO0BFF4",
+                "B0B9W9YYHW",
+                "B0B6BTLLKR",
+                "B0BJ1NBG7C",
+                "B08N4SJJ4D",
+                "B0761VL1ZW",
+                "B009PTWFA0",
+                "B00VRL02RM",
+                "B077D16MP8",
+                "B0B4KH11PV"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 3,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            }
+          ]
+        }
+      ],
+      "comparison_to_step_0": {
+        "incremental_rescues": 0,
+        "lost_rescues": 0,
+        "accelerated_rescues": 0,
+        "delayed_rescues": 0,
+        "incremental_rescue_case_ids": [],
+        "lost_rescue_case_ids": [],
+        "accelerated_case_ids": [],
+        "delayed_case_ids": []
+      }
+    },
+    {
+      "depth_step": 0.75,
+      "enabled": true,
+      "recovery_slots": 1,
+      "summary": {
+        "evaluated_residual_case_count": 4,
+        "expected_residual_case_count": 14,
+        "full_residual_set": false,
+        "rescued_after_turn_2": 3,
+        "residual_rescue_rate": 0.75,
+        "rescues_by_turn": {
+          "3": 2,
+          "4": 1,
+          "5": 0
+        },
+        "remaining_within_evaluated": 1,
+        "mean_rescue_reciprocal_rank": 0.136508,
+        "runtime_seconds": 2.658,
+        "rescued_case_ids": [
+          "concept_hiking_bb6edd2521_p1",
+          "concept_running_e91bab31b1_p3",
+          "concept_adjustable_ac798cf79d_p1"
+        ],
+        "remaining_case_ids": [
+          "concept_water_resistant_e23daeb2e6_p3"
+        ],
+        "full_shadow_metrics": null
+      },
+      "cases": [
+        {
+          "case_id": "concept_hiking_bb6edd2521_p1",
+          "concept": "hiking",
+          "category": "Boots",
+          "paraphrase": "something suitable for trails and uneven terrain",
+          "relevant_count": 9,
+          "first_hit_turn": 4,
+          "first_hit_rank": 7,
+          "first_hit_reciprocal_rank": 0.142857,
+          "turns": [
+            {
+              "turn": 1,
+              "user_message": "I'm looking for Boots. A key requirement is: something suitable for trails and uneven terrain.",
+              "ask_attribute": "other",
+              "recommendations": [
+                "B09Y5GF1GL",
+                "B00ZUYI166",
+                "B09NCJVMGX",
+                "B07VCQT55H",
+                "B07BYR6T7W",
+                "B071YRXBY2",
+                "B09699PSB5",
+                "B07TRCD9TC",
+                "B097XSNQQN",
+                "B00MJYP67M"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "precision",
+              "lexical_limit": 100,
+              "semantic_limit": 100
+            },
+            {
+              "turn": 2,
+              "user_message": "I don't have an additional preference for other.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B078YHYSSC",
+                "B097SZT9N4",
+                "B0BWJZZ69B",
+                "B082F5GXNZ",
+                "B09HHGMS9F",
+                "B0885YS157",
+                "B0827LGNTQ",
+                "B08D6KFBK6",
+                "B092ZHMHFK",
+                "B09DP7PXRG"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            },
+            {
+              "turn": 3,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B074G1JP8Z",
+                "B0B2LBQ4CH",
+                "B07ZQKPXHY",
+                "B003FEPJ6I",
+                "B07V5JK8N4",
+                "B0BS3JHR2D",
+                "B007KJ62NI",
+                "B08FSTW789",
+                "B099JMRVGF",
+                "B07D44JK89"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 1,
+              "strategy": "failure_recovery_1",
+              "lexical_limit": 875,
+              "semantic_limit": 438
+            },
+            {
+              "turn": 4,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B0BY7W9C9N",
+                "B0020MMQBW",
+                "B07HSYYG89",
+                "B09FXJKV8R",
+                "B07SVXSX49",
+                "B00CZOHFVQ",
+                "B0797W5MT4",
+                "B099JXKQDV",
+                "B0BQM89G79",
+                "B07DD82V4M"
+              ],
+              "first_relevant_rank": 7,
+              "miss_streak": 2,
+              "strategy": "failure_recovery_2",
+              "lexical_limit": 1250,
+              "semantic_limit": 625
+            }
+          ]
+        },
+        {
+          "case_id": "concept_running_e91bab31b1_p3",
+          "concept": "running",
+          "category": "Tops, Tees & Blouses T-Shirts",
+          "paraphrase": "something appropriate for regular jogs and workouts",
+          "relevant_count": 21,
+          "first_hit_turn": 3,
+          "first_hit_rank": 10,
+          "first_hit_reciprocal_rank": 0.1,
+          "turns": [
+            {
+              "turn": 1,
+              "user_message": "I'm looking for Tops, Tees & Blouses T-Shirts. A key requirement is: something appropriate for regular jogs and workouts.",
+              "ask_attribute": "other",
+              "recommendations": [
+                "B073XHKSXP",
+                "B091DHBFYF",
+                "B07B75XMHH",
+                "B091PYS9P3",
+                "B07V32L556",
+                "B092M9PXJ6",
+                "B08P4FVL8J",
+                "B08ZRVWNC2",
+                "B096RPJHN7",
+                "B08GLZJPL7"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "precision",
+              "lexical_limit": 100,
+              "semantic_limit": 100
+            },
+            {
+              "turn": 2,
+              "user_message": "I don't have an additional preference for other.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B09XJDLX5F",
+                "B0889K1JQD",
+                "B083HT5XST",
+                "B08N4FFHGT",
+                "B0888X1JKQ",
+                "B0B3JHB938",
+                "B0B8Z9L5PX",
+                "B0894QLSZR",
+                "B0897P3CNK",
+                "B07ZX1QPRB"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            },
+            {
+              "turn": 3,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B09RTHWNQC",
+                "B0CCV6544C",
+                "B00E9OVWDC",
+                "B07D2H18V5",
+                "B08L7KT665",
+                "B074JHWL2P",
+                "B074FSX7KK",
+                "B08C9V25YL",
+                "B00JFFSCX8",
+                "B07DHKDB5B"
+              ],
+              "first_relevant_rank": 10,
+              "miss_streak": 1,
+              "strategy": "failure_recovery_1",
+              "lexical_limit": 875,
+              "semantic_limit": 438
+            }
+          ]
+        },
+        {
+          "case_id": "concept_adjustable_ac798cf79d_p1",
+          "concept": "adjustable",
+          "category": "Baby Boys Sneakers",
+          "paraphrase": "something whose fit can be changed as needed",
+          "relevant_count": 4,
+          "first_hit_turn": 3,
+          "first_hit_rank": 6,
+          "first_hit_reciprocal_rank": 0.166667,
+          "turns": [
+            {
+              "turn": 1,
+              "user_message": "I'm looking for Baby Boys Sneakers. A key requirement is: something whose fit can be changed as needed.",
+              "ask_attribute": "other",
+              "recommendations": [
+                "B0073D4YAO",
+                "B07V6Y6D6Q",
+                "B0CF23VTNG",
+                "B094DCVP8Q",
+                "B08R9J9X6B",
+                "B08D776GM5",
+                "B07XXM8DR7",
+                "B0019CI90Q",
+                "B07522NX78",
+                "B0028Y50TW"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "precision",
+              "lexical_limit": 100,
+              "semantic_limit": 100
+            },
+            {
+              "turn": 2,
+              "user_message": "I don't have an additional preference for other.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B086HX15PV",
+                "B07X35JNC4",
+                "B06XX8TLP9",
+                "B08Y7NHC2R",
+                "B07RM6FNNS",
+                "B075FQMMG9",
+                "B08QM6KT59",
+                "B07Z1T91BL",
+                "B08DMG43XZ",
+                "B07GQ9N5PB"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            },
+            {
+              "turn": 3,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B082W53FJC",
+                "B08CZTB3ZZ",
+                "B07VCVNG4X",
+                "B09DBRW4DZ",
+                "B09N3CCFTV",
+                "B00BB9WK5C",
+                "B07NQJPFB4",
+                "B00Z20QUV6",
+                "B07LBRKLH7",
+                "B07YJTHSRZ"
+              ],
+              "first_relevant_rank": 6,
+              "miss_streak": 1,
+              "strategy": "failure_recovery_1",
+              "lexical_limit": 875,
+              "semantic_limit": 438
+            }
+          ]
+        },
+        {
+          "case_id": "concept_water_resistant_e23daeb2e6_p3",
+          "concept": "water_resistant",
+          "category": "Accessories Hats & Caps",
+          "paraphrase": "something suitable for occasional wet conditions",
+          "relevant_count": 3,
+          "first_hit_turn": null,
+          "first_hit_rank": null,
+          "first_hit_reciprocal_rank": 0.0,
+          "turns": [
+            {
+              "turn": 1,
+              "user_message": "I'm looking for Accessories Hats & Caps. A key requirement is: something suitable for occasional wet conditions.",
+              "ask_attribute": "other",
+              "recommendations": [
+                "B07H29RGQ4",
+                "B07WLNX6VW",
+                "B01MSYKE17",
+                "B08H8GM56V",
+                "B07JHQGHR9",
+                "B09Z2632HP",
+                "B07TN1845M",
+                "B07RNQHLKX",
+                "B092JJHWL5",
+                "B08GKQBFLN"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "precision",
+              "lexical_limit": 100,
+              "semantic_limit": 100
+            },
+            {
+              "turn": 2,
+              "user_message": "I don't have an additional preference for other.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B00QQMK23G",
+                "B08JJ4VKHS",
+                "B0BQW5V4JB",
+                "B07B5N7SF8",
+                "B01M1I3VKK",
+                "B08HK4JYX7",
+                "B019IIXTX4",
+                "B0167LW76A",
+                "B07ZHQTFKC",
+                "B07Q1GMV76"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 0,
+              "strategy": "exploration_v12",
+              "lexical_limit": 500,
+              "semantic_limit": 250
+            },
+            {
+              "turn": 3,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B01KTV400A",
+                "B00E0EP5VQ",
+                "B0919PK6CC",
+                "B07SQLH6MX",
+                "B0BJW2X35V",
+                "B08GX3F6RT",
+                "B0BYCB96ZM",
+                "B085L7QNPB",
+                "B01D1ZFNGG",
+                "B084L61X98"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 1,
+              "strategy": "failure_recovery_1",
+              "lexical_limit": 875,
+              "semantic_limit": 438
+            },
+            {
+              "turn": 4,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B0BC89PMSZ",
+                "B07JBQ17PS",
+                "B08CZZDWFT",
+                "B0B5N6Q15W",
+                "B0BN5PTZP3",
+                "B0C1N3WLDD",
+                "B09WHWTQ7X",
+                "B076MFQRFP",
+                "B00GS7MBKG",
+                "B01N5HF8DG"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 2,
+              "strategy": "failure_recovery_2",
+              "lexical_limit": 1250,
+              "semantic_limit": 625
+            },
+            {
+              "turn": 5,
+              "user_message": "Those options are not quite right yet. Ask me about one specific attribute.",
+              "ask_attribute": null,
+              "recommendations": [
+                "B00I98DC7I",
+                "B07RYNJWFR",
+                "B01KO0BFF4",
+                "B0B9W9YYHW",
+                "B0B6BTLLKR",
+                "B0BJ1NBG7C",
+                "B08N4SJJ4D",
+                "B0761VL1ZW",
+                "B009PTWFA0",
+                "B0822ZYJT4"
+              ],
+              "first_relevant_rank": null,
+              "miss_streak": 3,
+              "strategy": "failure_recovery_2",
+              "lexical_limit": 1250,
+              "semantic_limit": 625
+            }
+          ]
+        }
+      ],
+      "comparison_to_step_0": {
+        "incremental_rescues": 1,
+        "lost_rescues": 0,
+        "accelerated_rescues": 0,
+        "delayed_rescues": 0,
+        "incremental_rescue_case_ids": [
+          "concept_running_e91bab31b1_p3"
+        ],
+        "lost_rescue_case_ids": [],
+        "accelerated_case_ids": [],
+        "delayed_case_ids": []
+      }
+    }
+  ]
+}
