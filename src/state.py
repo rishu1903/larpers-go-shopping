@@ -218,11 +218,15 @@ class SessionState:
         default_factory=set
     )
 
+    current_turn: int = 0
+
     def update(
         self,
         user_message: str,
         turn: int,
     ) -> None:
+
+        self.current_turn = turn
 
         # ----------------------------------
         # 1. UPDATE SHOPPING INTENT
