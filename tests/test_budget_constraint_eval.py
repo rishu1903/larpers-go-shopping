@@ -16,7 +16,6 @@ KNOWN_FAILING: frozenset[str] = frozenset(
         "paraphrase_capped_at",
         "numeric_edge_bare_decimal_budget",
         "numeric_edge_bare_decimal_under",
-        "state_paraphrased_override_clears_budget",
     }
 )
 
