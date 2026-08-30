@@ -1,0 +1,182 @@
+{
+  "benchmark": "V14 structured context state evaluation",
+  "uses_public_labels": false,
+  "changes_production_ranking": false,
+  "summary": {
+    "case_count": 13,
+    "passed": 13,
+    "failed": 0,
+    "pass_rate": 1.0
+  },
+  "capabilities": {
+    "incremental_slot_accumulation": true,
+    "question_grounded_binding": true,
+    "multi_value_attributes": true,
+    "selective_override_observation": true,
+    "specific_slot_clearing": true,
+    "intent_epoch_tracking": true,
+    "confidence_lifecycle": true,
+    "legacy_retrieval_text_preserved": true
+  },
+  "cases": [
+    {
+      "case": "accumulates_independent_slots",
+      "passed": true,
+      "detail": {
+        "snapshot": {
+          "category": "shirts",
+          "material": "merino blend",
+          "color": "black"
+        }
+      }
+    },
+    {
+      "case": "selective_override",
+      "passed": true,
+      "detail": {
+        "snapshot": {
+          "category": "shirts",
+          "material": "cotton",
+          "color": "blue"
+        },
+        "color_history": [
+          {
+            "value": "black",
+            "status": "superseded",
+            "intent_epoch": 0
+          },
+          {
+            "value": "blue",
+            "status": "active",
+            "intent_epoch": 1
+          }
+        ]
+      }
+    },
+    {
+      "case": "no_preference_clears_only_one_slot",
+      "passed": true,
+      "detail": {
+        "snapshot": {
+          "category": "shirts",
+          "color": "black"
+        }
+      }
+    },
+    {
+      "case": "arbitrary_material_from_question",
+      "passed": true,
+      "detail": {
+        "material": "alpaca blend"
+      }
+    },
+    {
+      "case": "arbitrary_brand_from_question",
+      "passed": true,
+      "detail": {
+        "brand": "North Ridge"
+      }
+    },
+    {
+      "case": "other_detects_multiple_slots",
+      "passed": true,
+      "detail": {
+        "snapshot": {
+          "category": "shirts",
+          "material": "cotton",
+          "color": "black"
+        }
+      }
+    },
+    {
+      "case": "budget_is_structured",
+      "passed": true,
+      "detail": {
+        "budget": {
+          "value": "up to $80",
+          "strength": "hard",
+          "provenance": "budget_parser"
+        }
+      }
+    },
+    {
+      "case": "unknown_override_is_safe",
+      "passed": true,
+      "detail": {
+        "before": {
+          "category": "sweaters",
+          "material": "merino blend"
+        },
+        "after": {
+          "category": "sweaters",
+          "material": "merino blend"
+        }
+      }
+    },
+    {
+      "case": "failure_epoch_does_not_delete_valid_slots",
+      "passed": true,
+      "detail": {
+        "intent_epoch": 1,
+        "miss_streak": 0,
+        "snapshot": {
+          "category": "shirts",
+          "material": "cotton",
+          "color": "blue"
+        }
+      }
+    },
+    {
+      "case": "v13_active_text_is_preserved",
+      "passed": true,
+      "detail": {
+        "production_active_text": "shirts cotton black blue",
+        "structured_snapshot": {
+          "category": "shirts",
+          "material": "cotton",
+          "color": "blue"
+        }
+      }
+    },
+    {
+      "case": "multiple_features_accumulate",
+      "passed": true,
+      "detail": {
+        "feature_values": [
+          "waterproof",
+          "lightweight",
+          "breathable"
+        ]
+      }
+    },
+    {
+      "case": "override_replaces_feature_set_only",
+      "passed": true,
+      "detail": {
+        "structured_values": {
+          "category": [
+            "jackets"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "feature": [
+            "breathable",
+            "hooded"
+          ]
+        }
+      }
+    },
+    {
+      "case": "clear_removes_all_feature_values",
+      "passed": true,
+      "detail": {
+        "structured_values": {
+          "category": [
+            "jackets"
+          ]
+        }
+      }
+    }
+  ]
+}
