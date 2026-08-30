@@ -1,0 +1,7490 @@
+{
+  "benchmark": "V14B catalogue-derived structured context distillation",
+  "uses_public_labels": false,
+  "production_enabled": false,
+  "methodology": {
+    "scenario": "retain one valid material while selectively overriding a stale color",
+    "relevance": "same-category products whose participant-visible metadata contains both the retained material and replacement color",
+    "stale_color_overlap_with_positive_set": 0,
+    "public_targets_used": false
+  },
+  "legacy": {
+    "sample_count": 100,
+    "hit_rate_at_10": 0.79,
+    "mrr": 0.539607
+  },
+  "structured": {
+    "sample_count": 100,
+    "hit_rate_at_10": 0.88,
+    "mrr": 0.603563
+  },
+  "delta": {
+    "hit_rate_at_10": 0.09,
+    "mrr": 0.063956
+  },
+  "transitions": {
+    "gained": 9,
+    "lost": 0,
+    "hit_both": 79,
+    "miss_both": 12
+  },
+  "cases": [
+    {
+      "case_id": "v14_0da366aab0d7",
+      "category": "Shorts",
+      "material": "leather",
+      "stale_color": "blue",
+      "new_color": "black",
+      "relevant_asins": [
+        "B0936LW7WN",
+        "B09MTBNMRL"
+      ],
+      "category_size": 71,
+      "transition": "miss_both",
+      "legacy": {
+        "recommendations": [
+          "B0C614ZPK3",
+          "B07NBTQ6FB",
+          "B07S984836",
+          "B072LZJ7T6",
+          "B00U8IKGG2",
+          "B08XKLLXYL",
+          "B08ML6TH57",
+          "B07T4Z8FQS",
+          "B07H8T5H4G",
+          "B07DYQZQ1T"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Shorts black",
+        "distilled_active_text": "Shorts leather black",
+        "structured_values": {
+          "category": [
+            "Shorts"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0C614ZPK3",
+          "B07NBTQ6FB",
+          "B00U8IKGG2",
+          "B08XKLLXYL",
+          "B08ML6TH57",
+          "B07H8T5H4G",
+          "B07DYQZQ1T",
+          "B08CHCX78B",
+          "B085BS1FRM",
+          "B088M472RS"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Shorts black",
+        "distilled_active_text": "Shorts leather black",
+        "structured_values": {
+          "category": [
+            "Shorts"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_2829671eb1c2",
+      "category": "Thermal Underwear Bottoms",
+      "material": "spandex",
+      "stale_color": "white",
+      "new_color": "black",
+      "relevant_asins": [
+        "B01AULA5OY",
+        "B08NPBQKKG"
+      ],
+      "category_size": 18,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07Z4S5BP8",
+          "B08NPBQKKG",
+          "B07VWCXT2T",
+          "B01AULA5OY",
+          "B01LG9Z6BQ",
+          "B076DLTYP3",
+          "B0784NX5SP",
+          "B00VRC25PS",
+          "B08JGCSHXP",
+          "B07MS24FXW"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Thermal Underwear Bottoms black",
+        "distilled_active_text": "Thermal Underwear Bottoms spandex black",
+        "structured_values": {
+          "category": [
+            "Thermal Underwear Bottoms"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07Z4S5BP8",
+          "B08NPBQKKG",
+          "B07VWCXT2T",
+          "B01AULA5OY",
+          "B01LG9Z6BQ",
+          "B076DLTYP3",
+          "B0784NX5SP",
+          "B00VRC25PS",
+          "B08JGCSHXP",
+          "B07MS24FXW"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Thermal Underwear Bottoms black",
+        "distilled_active_text": "Thermal Underwear Bottoms spandex black",
+        "structured_values": {
+          "category": [
+            "Thermal Underwear Bottoms"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_8f1eed819cf1",
+      "category": "Active Shirts & Tees Tank Tops",
+      "material": "spandex",
+      "stale_color": "green",
+      "new_color": "pink",
+      "relevant_asins": [
+        "B0799Q7PVJ",
+        "B07HFPDDHT",
+        "B0879CGSY6"
+      ],
+      "category_size": 70,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07HFPDDHT",
+          "B0879CGSY6",
+          "B0825S89BN",
+          "B07RZW7PK2",
+          "B07J5JXKXH",
+          "B096FXGVF5",
+          "B08NY63L9W",
+          "B08NY678PP",
+          "B085FYDQB3",
+          "B09ZH7HNCG"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Active Shirts & Tees Tank Tops pink",
+        "distilled_active_text": "Active Shirts & Tees Tank Tops spandex pink",
+        "structured_values": {
+          "category": [
+            "Active Shirts & Tees Tank Tops"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07HFPDDHT",
+          "B0879CGSY6",
+          "B0825S89BN",
+          "B07RZW7PK2",
+          "B07J5JXKXH",
+          "B096FXGVF5",
+          "B08NY63L9W",
+          "B08NY678PP",
+          "B085FYDQB3",
+          "B09ZH7HNCG"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Active Shirts & Tees Tank Tops pink",
+        "distilled_active_text": "Active Shirts & Tees Tank Tops spandex pink",
+        "structured_values": {
+          "category": [
+            "Active Shirts & Tees Tank Tops"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_d69c359f7949",
+      "category": "Skiing Gloves",
+      "material": "leather",
+      "stale_color": "navy",
+      "new_color": "black",
+      "relevant_asins": [
+        "B005PM1YGM",
+        "B00LFL7LS2",
+        "B019EZ1TG0",
+        "B01MQNC0PF",
+        "B07KF9L9NP",
+        "B07TSP4NFG"
+      ],
+      "category_size": 29,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B009L7HYYI",
+          "B00LFL7LS2",
+          "B019EZ1TG0",
+          "B07KF539C7",
+          "B07KHTHZDT",
+          "B006MIQ422",
+          "B08M4BSFXT",
+          "B07KF9L9NP",
+          "B01MQNC0PF",
+          "B07TSP4NFG"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Skiing Gloves black",
+        "distilled_active_text": "Skiing Gloves leather black",
+        "structured_values": {
+          "category": [
+            "Skiing Gloves"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B009L7HYYI",
+          "B00LFL7LS2",
+          "B019EZ1TG0",
+          "B07KF539C7",
+          "B07KHTHZDT",
+          "B006MIQ422",
+          "B08M4BSFXT",
+          "B07KF9L9NP",
+          "B01MQNC0PF",
+          "B07TSP4NFG"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Skiing Gloves black",
+        "distilled_active_text": "Skiing Gloves leather black",
+        "structured_values": {
+          "category": [
+            "Skiing Gloves"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_6ef3319bcf20",
+      "category": "Underwear Briefs",
+      "material": "spandex",
+      "stale_color": "blue",
+      "new_color": "black",
+      "relevant_asins": [
+        "B00M28VG8S",
+        "B015GXVR7U",
+        "B0916CFZRP"
+      ],
+      "category_size": 51,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B01GK9IITO",
+          "B015GXVR7U",
+          "B019PSW6OK",
+          "B07MMWYN71",
+          "B07ZF6X4V2",
+          "B09PWZG9CJ",
+          "B07CYL2VG3",
+          "B07R7ZG8NJ",
+          "B08B68QQ4K",
+          "B09XT5HRBD"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Underwear Briefs black",
+        "distilled_active_text": "Underwear Briefs spandex black",
+        "structured_values": {
+          "category": [
+            "Underwear Briefs"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07WTC11SR",
+          "B0916CFZRP",
+          "B01GK9IITO",
+          "B015GXVR7U",
+          "B019PSW6OK",
+          "B07MMWYN71",
+          "B07ZF6X4V2",
+          "B08FR29LPP",
+          "B09PWZG9CJ",
+          "B07CYL2VG3"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Underwear Briefs black",
+        "distilled_active_text": "Underwear Briefs spandex black",
+        "structured_values": {
+          "category": [
+            "Underwear Briefs"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_702415627976",
+      "category": "Ties, Cummerbunds & Pocket Squares Neckties",
+      "material": "cotton",
+      "stale_color": "grey",
+      "new_color": "white",
+      "relevant_asins": [
+        "B003ZH1UG8",
+        "B06Y3XY8BV"
+      ],
+      "category_size": 51,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B002B8DUA6",
+          "B003ZH1UG8",
+          "B077PQCH9V",
+          "B0C8C96RPC",
+          "B06Y3XY8BV",
+          "B00U7N8SJU",
+          "B08HSQJ6H5",
+          "B00EHR7P7S",
+          "B079WHHYMR",
+          "B007B2E448"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Ties, Cummerbunds & Pocket Squares Neckties white",
+        "distilled_active_text": "Ties, Cummerbunds & Pocket Squares Neckties cotton white",
+        "structured_values": {
+          "category": [
+            "Ties, Cummerbunds & Pocket Squares Neckties"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B002B8DUA6",
+          "B003ZH1UG8",
+          "B077PQCH9V",
+          "B0C8C96RPC",
+          "B06Y3XY8BV",
+          "B00U7N8SJU",
+          "B08HSQJ6H5",
+          "B00EHR7P7S",
+          "B079WHHYMR",
+          "B007B2E448"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Ties, Cummerbunds & Pocket Squares Neckties white",
+        "distilled_active_text": "Ties, Cummerbunds & Pocket Squares Neckties cotton white",
+        "structured_values": {
+          "category": [
+            "Ties, Cummerbunds & Pocket Squares Neckties"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_d2b78cae8a8d",
+      "category": "Tops, Tees & Shirts Tees",
+      "material": "cotton",
+      "stale_color": "blue",
+      "new_color": "gray",
+      "relevant_asins": [
+        "B00VYV7MD2",
+        "B074H4YQGQ",
+        "B081ZJPGYT"
+      ],
+      "category_size": 66,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B074H4YQGQ",
+          "B00VYV7MD2",
+          "B081ZJPGYT",
+          "B07QNTPNJ6",
+          "B07B75XMHH",
+          "B09535Y4SG",
+          "B07MZV2DFJ",
+          "B077GGJWRS",
+          "B0991QGWLW",
+          "B08VFS1HJY"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Tops, Tees & Shirts Tees gray",
+        "distilled_active_text": "Tops, Tees & Shirts Tees cotton gray",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Shirts Tees"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "gray"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B074H4YQGQ",
+          "B00VYV7MD2",
+          "B081ZJPGYT",
+          "B07QNTPNJ6",
+          "B07B75XMHH",
+          "B07MZV2DFJ",
+          "B077GGJWRS",
+          "B0991QGWLW",
+          "B08VFS1HJY",
+          "B07GZMHQ4G"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Tops, Tees & Shirts Tees gray",
+        "distilled_active_text": "Tops, Tees & Shirts Tees cotton gray",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Shirts Tees"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "gray"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_54924230968a",
+      "category": "Tops, Tees & Blouses Blouses & Button-Down Shirts",
+      "material": "polyester",
+      "stale_color": "orange",
+      "new_color": "purple",
+      "relevant_asins": [
+        "B01IF04T26",
+        "B07B9VXK8V",
+        "B07G347BQJ",
+        "B07Y9F6MXB",
+        "B08254VRMD",
+        "B09W8TQPDK"
+      ],
+      "category_size": 681,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B06XCD6K2J",
+          "B07Y9F6MXB",
+          "B07B9VXK8V",
+          "B00EFG5N48",
+          "B07K2TQM3G",
+          "B07S3FDZQB",
+          "B07RVLSP38",
+          "B093GDM2YT",
+          "B01M66PUT6",
+          "B095SVPHM6"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Tops, Tees & Blouses Blouses & Button-Down Shirts purple",
+        "distilled_active_text": "Tops, Tees & Blouses Blouses & Button-Down Shirts polyester purple",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Blouses & Button-Down Shirts"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "purple"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B06XCD6K2J",
+          "B07Y9F6MXB",
+          "B07B9VXK8V",
+          "B00EFG5N48",
+          "B07K2TQM3G",
+          "B07S3FDZQB",
+          "B07RVLSP38",
+          "B093GDM2YT",
+          "B01M66PUT6",
+          "B095SVPHM6"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Tops, Tees & Blouses Blouses & Button-Down Shirts purple",
+        "distilled_active_text": "Tops, Tees & Blouses Blouses & Button-Down Shirts polyester purple",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Blouses & Button-Down Shirts"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "purple"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_a6493d20903c",
+      "category": "Leggings",
+      "material": "spandex",
+      "stale_color": "grey",
+      "new_color": "white",
+      "relevant_asins": [
+        "B003212Y2G",
+        "B015HJOOZU",
+        "B01F0IWVTE",
+        "B01KIJ8MAC",
+        "B07N85V7YS",
+        "B09LCFJR57"
+      ],
+      "category_size": 195,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B09V5CMRQX",
+          "B0134EGRKK",
+          "B08R155YTX",
+          "B0983GVBR4",
+          "B0B6J4XR6N",
+          "B076V36HWF",
+          "B072F9296R",
+          "B08ZYLK2CH",
+          "B07N85V7YS",
+          "B01HQKGZIC"
+        ],
+        "first_relevant_rank": 9,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.1111111111111111,
+        "legacy_active_text": "Leggings white",
+        "distilled_active_text": "Leggings spandex white",
+        "structured_values": {
+          "category": [
+            "Leggings"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B09V5CMRQX",
+          "B0134EGRKK",
+          "B0983GVBR4",
+          "B0B6J4XR6N",
+          "B076V36HWF",
+          "B072F9296R",
+          "B08ZYLK2CH",
+          "B07N85V7YS",
+          "B01HQKGZIC",
+          "B078YKLT6N"
+        ],
+        "first_relevant_rank": 8,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.125,
+        "legacy_active_text": "Leggings white",
+        "distilled_active_text": "Leggings spandex white",
+        "structured_values": {
+          "category": [
+            "Leggings"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_e239039813ca",
+      "category": "Accessories Hats & Caps",
+      "material": "cotton",
+      "stale_color": "blue",
+      "new_color": "gray",
+      "relevant_asins": [
+        "B075NWMV48",
+        "B08K7GXXNB",
+        "B09K44J4DK"
+      ],
+      "category_size": 192,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B0C77SLZYX",
+          "B09K44J4DK",
+          "B07ZHQTFKC",
+          "B07583JR1F",
+          "B08K7GXXNB",
+          "B07BMTW3DP",
+          "B01HOTTV7M",
+          "B0761VL1ZW",
+          "B01C558R8O",
+          "B007PK5QWK"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Accessories Hats & Caps gray",
+        "distilled_active_text": "Accessories Hats & Caps cotton gray",
+        "structured_values": {
+          "category": [
+            "Accessories Hats & Caps"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "gray"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B09K44J4DK",
+          "B07ZHQTFKC",
+          "B075NWMV48",
+          "B07583JR1F",
+          "B08K7GXXNB",
+          "B07BMTW3DP",
+          "B01HOTTV7M",
+          "B0761VL1ZW",
+          "B007PK5QWK",
+          "B01C558R8O"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Accessories Hats & Caps gray",
+        "distilled_active_text": "Accessories Hats & Caps cotton gray",
+        "structured_values": {
+          "category": [
+            "Accessories Hats & Caps"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "gray"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_790348bc3a62",
+      "category": "Bikinis Sets",
+      "material": "nylon",
+      "stale_color": "black",
+      "new_color": "white",
+      "relevant_asins": [
+        "B07S6LM197",
+        "B082YMXPND"
+      ],
+      "category_size": 197,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B082YMXPND",
+          "B06XPFXMXM",
+          "B08VDFDXM8",
+          "B00F7OJ6XQ",
+          "B00RVBILOS",
+          "B074J6BCHN",
+          "B07MZP6P15",
+          "B07RN8WRP7",
+          "B01IVNN356",
+          "B07P7H8X5P"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Bikinis Sets white",
+        "distilled_active_text": "Bikinis Sets nylon white",
+        "structured_values": {
+          "category": [
+            "Bikinis Sets"
+          ],
+          "material": [
+            "nylon"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B082YMXPND",
+          "B06XPFXMXM",
+          "B08VDFDXM8",
+          "B00F7OJ6XQ",
+          "B00RVBILOS",
+          "B074J6BCHN",
+          "B07MZP6P15",
+          "B07RN8WRP7",
+          "B07S6LM197",
+          "B01IVNN356"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Bikinis Sets white",
+        "distilled_active_text": "Bikinis Sets nylon white",
+        "structured_values": {
+          "category": [
+            "Bikinis Sets"
+          ],
+          "material": [
+            "nylon"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_0689115e4134",
+      "category": "Sleep & Lounge One-Piece Pajamas",
+      "material": "polyester",
+      "stale_color": "brown",
+      "new_color": "pink",
+      "relevant_asins": [
+        "B00V3SDLLI",
+        "B075H5PQRK",
+        "B07JMDPY43"
+      ],
+      "category_size": 28,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07JMDPY43",
+          "B00V3SDLLI",
+          "B075H5PQRK",
+          "B08RCZC8G2",
+          "B08QYV5MXB",
+          "B086GWBZS6",
+          "B01LVW4J43",
+          "B01DML10E8",
+          "B086BCDRL4",
+          "B07RX8WSL1"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sleep & Lounge One-Piece Pajamas pink",
+        "distilled_active_text": "Sleep & Lounge One-Piece Pajamas polyester pink",
+        "structured_values": {
+          "category": [
+            "Sleep & Lounge One-Piece Pajamas"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07JMDPY43",
+          "B00V3SDLLI",
+          "B075H5PQRK",
+          "B08RCZC8G2",
+          "B08QYV5MXB",
+          "B086GWBZS6",
+          "B01LVW4J43",
+          "B01DML10E8",
+          "B086BCDRL4",
+          "B07RX8WSL1"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sleep & Lounge One-Piece Pajamas pink",
+        "distilled_active_text": "Sleep & Lounge One-Piece Pajamas polyester pink",
+        "structured_values": {
+          "category": [
+            "Sleep & Lounge One-Piece Pajamas"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_8bda63ad2d17",
+      "category": "Socks Calf Socks",
+      "material": "polyester",
+      "stale_color": "white",
+      "new_color": "blue",
+      "relevant_asins": [
+        "B07V6GQX7V",
+        "B08T6GWSTQ"
+      ],
+      "category_size": 52,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07V6GQX7V",
+          "B09Z9K4GHF",
+          "B08T6GWSTQ",
+          "B00AB83666",
+          "B01GMRBHP6",
+          "B086ZFPFVJ",
+          "B0765V8JFJ",
+          "B089RRFF23",
+          "B07SSWC53T",
+          "B09B5S86W4"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Socks Calf Socks blue",
+        "distilled_active_text": "Socks Calf Socks polyester blue",
+        "structured_values": {
+          "category": [
+            "Socks Calf Socks"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07V6GQX7V",
+          "B09Z9K4GHF",
+          "B08T6GWSTQ",
+          "B00AB83666",
+          "B01GMRBHP6",
+          "B00H4BT0OU",
+          "B0BGGD6Q3Z",
+          "B086ZFPFVJ",
+          "B0765V8JFJ",
+          "B089RRFF23"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Socks Calf Socks blue",
+        "distilled_active_text": "Socks Calf Socks polyester blue",
+        "structured_values": {
+          "category": [
+            "Socks Calf Socks"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_7c0819135d05",
+      "category": "Shoe Care & Accessories Shoelaces",
+      "material": "polyester",
+      "stale_color": "grey",
+      "new_color": "yellow",
+      "relevant_asins": [
+        "B00OYJ909A",
+        "B07QD8J4H2"
+      ],
+      "category_size": 66,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B09FXP4TDL",
+          "B019F7NQY0",
+          "B005XZ232K",
+          "B07QD8J4H2",
+          "B00OYJ909A",
+          "B0BRXK1KRF",
+          "B0BPP55Y29",
+          "B081VSN1QP",
+          "B06XGRY2CS",
+          "B07KHGT45H"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Shoe Care & Accessories Shoelaces yellow",
+        "distilled_active_text": "Shoe Care & Accessories Shoelaces polyester yellow",
+        "structured_values": {
+          "category": [
+            "Shoe Care & Accessories Shoelaces"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "yellow"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B09FXP4TDL",
+          "B019F7NQY0",
+          "B005XZ232K",
+          "B07QD8J4H2",
+          "B00OYJ909A",
+          "B0BRXK1KRF",
+          "B0BPP55Y29",
+          "B081VSN1QP",
+          "B06XGRY2CS",
+          "B07KHGT45H"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Shoe Care & Accessories Shoelaces yellow",
+        "distilled_active_text": "Shoe Care & Accessories Shoelaces polyester yellow",
+        "structured_values": {
+          "category": [
+            "Shoe Care & Accessories Shoelaces"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "yellow"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_e3b68116a427",
+      "category": "Tops, Tees & Blouses Tees",
+      "material": "cotton",
+      "stale_color": "white",
+      "new_color": "pink",
+      "relevant_asins": [
+        "B01LZUM8AJ",
+        "B08CDJDJXL"
+      ],
+      "category_size": 42,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B08CDJDJXL",
+          "B07452TYVY",
+          "B01LZUM8AJ",
+          "B077JXNCPW",
+          "B096FXGVF5",
+          "B08N4962LL",
+          "B07QS3H343",
+          "B08TTZB5J2",
+          "B084RHPJY4",
+          "B08NY63L9W"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Tops, Tees & Blouses Tees pink",
+        "distilled_active_text": "Tops, Tees & Blouses Tees cotton pink",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Tees"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B08CDJDJXL",
+          "B07452TYVY",
+          "B01LZUM8AJ",
+          "B077JXNCPW",
+          "B096FXGVF5",
+          "B08N4962LL",
+          "B07QS3H343",
+          "B08TTZB5J2",
+          "B084RHPJY4",
+          "B08NY63L9W"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Tops, Tees & Blouses Tees pink",
+        "distilled_active_text": "Tops, Tees & Blouses Tees cotton pink",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Tees"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_6e3c45c1a159",
+      "category": "Sleep & Lounge Sleep Sets",
+      "material": "cotton",
+      "stale_color": "red",
+      "new_color": "blue",
+      "relevant_asins": [
+        "B01596GG2U",
+        "B07PLPXQ2Z",
+        "B07QSJRGXQ"
+      ],
+      "category_size": 37,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07PLPXQ2Z",
+          "B09FY148R7",
+          "B01596GG2U",
+          "B07QSJRGXQ",
+          "B01I25OX4S",
+          "B0C5MH6KT2",
+          "B07YLW6RM2",
+          "B089NDZF3S",
+          "B08CV6FM23",
+          "B08HQRTYWC"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sleep & Lounge Sleep Sets blue",
+        "distilled_active_text": "Sleep & Lounge Sleep Sets cotton blue",
+        "structured_values": {
+          "category": [
+            "Sleep & Lounge Sleep Sets"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07PLPXQ2Z",
+          "B01596GG2U",
+          "B07QSJRGXQ",
+          "B01I25OX4S",
+          "B0C5MH6KT2",
+          "B08Y5N2WKG",
+          "B07YLW6RM2",
+          "B089NDZF3S",
+          "B08CV6FM23",
+          "B08HQRTYWC"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sleep & Lounge Sleep Sets blue",
+        "distilled_active_text": "Sleep & Lounge Sleep Sets cotton blue",
+        "structured_values": {
+          "category": [
+            "Sleep & Lounge Sleep Sets"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_8a1b05cdbfda",
+      "category": "Leggings",
+      "material": "cotton",
+      "stale_color": "blue",
+      "new_color": "white",
+      "relevant_asins": [
+        "B00PXCNPAM",
+        "B01KIJ8MAC",
+        "B07N85V7YS",
+        "B09LCFJR57"
+      ],
+      "category_size": 195,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B09V5CMRQX",
+          "B0134EGRKK",
+          "B08R155YTX",
+          "B0983GVBR4",
+          "B0B6J4XR6N",
+          "B076V36HWF",
+          "B072F9296R",
+          "B08ZYLK2CH",
+          "B07N85V7YS",
+          "B01HQKGZIC"
+        ],
+        "first_relevant_rank": 9,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.1111111111111111,
+        "legacy_active_text": "Leggings white",
+        "distilled_active_text": "Leggings cotton white",
+        "structured_values": {
+          "category": [
+            "Leggings"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B09V5CMRQX",
+          "B0134EGRKK",
+          "B08R155YTX",
+          "B0983GVBR4",
+          "B01KIJ8MAC",
+          "B0B6J4XR6N",
+          "B076V36HWF",
+          "B072F9296R",
+          "B08ZYLK2CH",
+          "B07N85V7YS"
+        ],
+        "first_relevant_rank": 5,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.2,
+        "legacy_active_text": "Leggings white",
+        "distilled_active_text": "Leggings cotton white",
+        "structured_values": {
+          "category": [
+            "Leggings"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_b76506afab6c",
+      "category": "Hats & Caps Baseball Caps",
+      "material": "wool",
+      "stale_color": "navy",
+      "new_color": "black",
+      "relevant_asins": [
+        "B00G4LYW9Y",
+        "B01IMGDI8E",
+        "B073RVRVRY",
+        "B075N8Q1ZC"
+      ],
+      "category_size": 385,
+      "transition": "miss_both",
+      "legacy": {
+        "recommendations": [
+          "B092B5FDGL",
+          "B0764JVVDR",
+          "B07HVN8D7K",
+          "B07GF6DXNZ",
+          "B005R1SRKW",
+          "B08GH7X646",
+          "B07JMDQ73X",
+          "B01ICA006S",
+          "B017FCXBJ2",
+          "B0897BHJPJ"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Hats & Caps Baseball Caps black",
+        "distilled_active_text": "Hats & Caps Baseball Caps wool black",
+        "structured_values": {
+          "category": [
+            "Hats & Caps Baseball Caps"
+          ],
+          "material": [
+            "wool"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B092B5FDGL",
+          "B0764JVVDR",
+          "B07HVN8D7K",
+          "B07GF6DXNZ",
+          "B005R1SRKW",
+          "B08GH7X646",
+          "B07JMDQ73X",
+          "B01ICA006S",
+          "B017FCXBJ2",
+          "B0897BHJPJ"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Hats & Caps Baseball Caps black",
+        "distilled_active_text": "Hats & Caps Baseball Caps wool black",
+        "structured_values": {
+          "category": [
+            "Hats & Caps Baseball Caps"
+          ],
+          "material": [
+            "wool"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_488a173b2082",
+      "category": "Sweaters Cardigans",
+      "material": "wool",
+      "stale_color": "black",
+      "new_color": "gray",
+      "relevant_asins": [
+        "B07559KR3H",
+        "B09BJJ1SJ2"
+      ],
+      "category_size": 315,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07JBW81J4",
+          "B082S97GGY",
+          "B07JKZDG8Q",
+          "B08CXPDWTK",
+          "B08GXCK1BV",
+          "B07559KR3H",
+          "B01N9E4GPQ",
+          "B07Y98KKHS",
+          "B09BJJ1SJ2",
+          "B07RYS77XQ"
+        ],
+        "first_relevant_rank": 6,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.16666666666666666,
+        "legacy_active_text": "Sweaters Cardigans gray",
+        "distilled_active_text": "Sweaters Cardigans wool gray",
+        "structured_values": {
+          "category": [
+            "Sweaters Cardigans"
+          ],
+          "material": [
+            "wool"
+          ],
+          "color": [
+            "gray"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07JBW81J4",
+          "B082S97GGY",
+          "B07JKZDG8Q",
+          "B08CXPDWTK",
+          "B08GXCK1BV",
+          "B07559KR3H",
+          "B01N9E4GPQ",
+          "B07Y98KKHS",
+          "B09BJJ1SJ2",
+          "B07RYS77XQ"
+        ],
+        "first_relevant_rank": 6,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.16666666666666666,
+        "legacy_active_text": "Sweaters Cardigans gray",
+        "distilled_active_text": "Sweaters Cardigans wool gray",
+        "structured_values": {
+          "category": [
+            "Sweaters Cardigans"
+          ],
+          "material": [
+            "wool"
+          ],
+          "color": [
+            "gray"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_011ad54c99f1",
+      "category": "Sweaters Pullovers",
+      "material": "denim",
+      "stale_color": "orange",
+      "new_color": "white",
+      "relevant_asins": [
+        "B0987XVHLZ",
+        "B09JMP7713",
+        "B09JWG3MXR",
+        "B0B31JFX4H"
+      ],
+      "category_size": 379,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B08CXNN66T",
+          "B077S83P8B",
+          "B074WHWS6D",
+          "B08F1SVXHW",
+          "B096VHJVNV",
+          "B08FFMW2V2",
+          "B0957VXH2Y",
+          "B0987XVHLZ",
+          "B098XMBFP9",
+          "B00EKT2LN6"
+        ],
+        "first_relevant_rank": 8,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.125,
+        "legacy_active_text": "Sweaters Pullovers white",
+        "distilled_active_text": "Sweaters Pullovers denim white",
+        "structured_values": {
+          "category": [
+            "Sweaters Pullovers"
+          ],
+          "material": [
+            "denim"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B08CXNN66T",
+          "B077S83P8B",
+          "B074WHWS6D",
+          "B08F1SVXHW",
+          "B096VHJVNV",
+          "B08FFMW2V2",
+          "B0987XVHLZ",
+          "B0957VXH2Y",
+          "B098XMBFP9",
+          "B00EKT2LN6"
+        ],
+        "first_relevant_rank": 7,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.14285714285714285,
+        "legacy_active_text": "Sweaters Pullovers white",
+        "distilled_active_text": "Sweaters Pullovers denim white",
+        "structured_values": {
+          "category": [
+            "Sweaters Pullovers"
+          ],
+          "material": [
+            "denim"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_d9e4fe6a734e",
+      "category": "Dresses",
+      "material": "rayon",
+      "stale_color": "blue",
+      "new_color": "green",
+      "relevant_asins": [
+        "B07PRG4HLM",
+        "B08K8DP1XS",
+        "B0943RBC5D",
+        "B0C5TKHCRK"
+      ],
+      "category_size": 574,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B0C5TKHCRK",
+          "B07Q56WFK8",
+          "B07NT1RFKR",
+          "B07Q599VC8",
+          "B08K8DP1XS",
+          "B091KX3PWR",
+          "B072XJXSG3",
+          "B01FAA40ZA",
+          "B07QJ4NTFJ",
+          "B096S7DCLN"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Dresses green",
+        "distilled_active_text": "Dresses rayon green",
+        "structured_values": {
+          "category": [
+            "Dresses"
+          ],
+          "material": [
+            "rayon"
+          ],
+          "color": [
+            "green"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0C5TKHCRK",
+          "B08K8DP1XS",
+          "B07BNBQ1YN",
+          "B0749MBHLN",
+          "B00CTKMK7U",
+          "B07T7DCLD1",
+          "B076V6R5SN",
+          "B07PRG4HLM",
+          "B07Y2Y3GVW",
+          "B091HGK4GF"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Dresses green",
+        "distilled_active_text": "Dresses rayon green",
+        "structured_values": {
+          "category": [
+            "Dresses"
+          ],
+          "material": [
+            "rayon"
+          ],
+          "color": [
+            "green"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_7534c8cdbcd5",
+      "category": "Pants Casual",
+      "material": "spandex",
+      "stale_color": "grey",
+      "new_color": "blue",
+      "relevant_asins": [
+        "B00JMTNEYY",
+        "B00KQS7CBQ"
+      ],
+      "category_size": 232,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07VGV2Q71",
+          "B01EJUGZJG",
+          "B01EJUGZGO",
+          "B01611CZV8",
+          "B07QZJ76JS",
+          "B07CRVJ2LM",
+          "B082PV619R",
+          "B08P8JFWK9",
+          "B00KQS7CBQ",
+          "B09TRFJ52X"
+        ],
+        "first_relevant_rank": 9,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.1111111111111111,
+        "legacy_active_text": "Pants Casual blue",
+        "distilled_active_text": "Pants Casual spandex blue",
+        "structured_values": {
+          "category": [
+            "Pants Casual"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07VGV2Q71",
+          "B07QZJ76JS",
+          "B07CRVJ2LM",
+          "B082PV619R",
+          "B08P8JFWK9",
+          "B00KQS7CBQ",
+          "B09TRFJ52X",
+          "B089NB6W9Y",
+          "B072JM793W",
+          "B005DKQOAC"
+        ],
+        "first_relevant_rank": 6,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.16666666666666666,
+        "legacy_active_text": "Pants Casual blue",
+        "distilled_active_text": "Pants Casual spandex blue",
+        "structured_values": {
+          "category": [
+            "Pants Casual"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_5d27e6150537",
+      "category": "Sleep & Lounge Bottoms",
+      "material": "polyester",
+      "stale_color": "white",
+      "new_color": "navy",
+      "relevant_asins": [
+        "B073X7VM3J",
+        "B08HCZ35TD",
+        "B092897TY7"
+      ],
+      "category_size": 82,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B073X7VM3J",
+          "B08L7926KL",
+          "B092897TY7",
+          "B0776ZV79T",
+          "B08GCXYG49",
+          "B019X3BGWU",
+          "B08965CTGN",
+          "B08LZ59H82",
+          "B087BZN23H",
+          "B00V3XA5X0"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sleep & Lounge Bottoms navy",
+        "distilled_active_text": "Sleep & Lounge Bottoms polyester navy",
+        "structured_values": {
+          "category": [
+            "Sleep & Lounge Bottoms"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "navy"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B073X7VM3J",
+          "B08L7926KL",
+          "B092897TY7",
+          "B0776ZV79T",
+          "B08GCXYG49",
+          "B019X3BGWU",
+          "B01M29D3YO",
+          "B08LZ59H82",
+          "B07XGHXSHT",
+          "B087BZN23H"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sleep & Lounge Bottoms navy",
+        "distilled_active_text": "Sleep & Lounge Bottoms polyester navy",
+        "structured_values": {
+          "category": [
+            "Sleep & Lounge Bottoms"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "navy"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_aaae6b1db56d",
+      "category": "Shirts Casual Button-Down Shirts",
+      "material": "silk",
+      "stale_color": "white",
+      "new_color": "green",
+      "relevant_asins": [
+        "B07RGTC7HK",
+        "B07V1CDVN2",
+        "B08KSH4DSN"
+      ],
+      "category_size": 288,
+      "transition": "gained",
+      "legacy": {
+        "recommendations": [
+          "B01CMSCGJU",
+          "B01CMSC17M",
+          "B07HNRSJHB",
+          "B09FGPDL81",
+          "B0788L9M7W",
+          "B07Y5273ZJ",
+          "B07VVCND2P",
+          "B09QPFYZXD",
+          "B01ASUDPMG",
+          "B084YZKSWK"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Shirts Casual Button-Down Shirts green",
+        "distilled_active_text": "Shirts Casual Button-Down Shirts silk green",
+        "structured_values": {
+          "category": [
+            "Shirts Casual Button-Down Shirts"
+          ],
+          "material": [
+            "silk"
+          ],
+          "color": [
+            "green"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07V1CDVN2",
+          "B08KSH4DSN",
+          "B01CMSCGJU",
+          "B01CMSC17M",
+          "B07HNRSJHB",
+          "B09FGPDL81",
+          "B0788L9M7W",
+          "B07Y5273ZJ",
+          "B07RGTC7HK",
+          "B07VVCND2P"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Shirts Casual Button-Down Shirts green",
+        "distilled_active_text": "Shirts Casual Button-Down Shirts silk green",
+        "structured_values": {
+          "category": [
+            "Shirts Casual Button-Down Shirts"
+          ],
+          "material": [
+            "silk"
+          ],
+          "color": [
+            "green"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_804eca8acd52",
+      "category": "Swimsuits & Cover Ups One-Pieces",
+      "material": "polyester",
+      "stale_color": "pink",
+      "new_color": "black",
+      "relevant_asins": [
+        "B01MQH15KM",
+        "B01MXF1FMN",
+        "B07BK3TPQ8",
+        "B0832Q5X3W",
+        "B08C8293MX",
+        "B09PG676RS"
+      ],
+      "category_size": 234,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B09QKTM28X",
+          "B00KV9WBNY",
+          "B07FKBJ686",
+          "B09L84HT5J",
+          "B01C1LFXO8",
+          "B08VWCH1JF",
+          "B07N3BX3WZ",
+          "B072J4KSPP",
+          "B01H5BGSO8",
+          "B09PG676RS"
+        ],
+        "first_relevant_rank": 10,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.1,
+        "legacy_active_text": "Swimsuits & Cover Ups One-Pieces black",
+        "distilled_active_text": "Swimsuits & Cover Ups One-Pieces polyester black",
+        "structured_values": {
+          "category": [
+            "Swimsuits & Cover Ups One-Pieces"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B00KV9WBNY",
+          "B07FKBJ686",
+          "B01C1LFXO8",
+          "B08VWCH1JF",
+          "B07N3BX3WZ",
+          "B072J4KSPP",
+          "B01H5BGSO8",
+          "B09PG676RS",
+          "B07C2XM7S5",
+          "B07DVZSHCP"
+        ],
+        "first_relevant_rank": 8,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.125,
+        "legacy_active_text": "Swimsuits & Cover Ups One-Pieces black",
+        "distilled_active_text": "Swimsuits & Cover Ups One-Pieces polyester black",
+        "structured_values": {
+          "category": [
+            "Swimsuits & Cover Ups One-Pieces"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_2d0b639c7278",
+      "category": "Sets Tracksuits",
+      "material": "polyester",
+      "stale_color": "white",
+      "new_color": "gray",
+      "relevant_asins": [
+        "B09DK5SL2J",
+        "B09HBBNDJ1"
+      ],
+      "category_size": 84,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B09DK5SL2J",
+          "B09HBBNDJ1",
+          "B087BYYHSN",
+          "B08V1KVMM8",
+          "B07BK1HHT6",
+          "B07KF7RT65",
+          "B0B853PX2L",
+          "B08GKSVFF6",
+          "B08M3WKDFJ",
+          "B0B49MQBSK"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sets Tracksuits gray",
+        "distilled_active_text": "Sets Tracksuits polyester gray",
+        "structured_values": {
+          "category": [
+            "Sets Tracksuits"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "gray"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B09DK5SL2J",
+          "B09HBBNDJ1",
+          "B08V1KVMM8",
+          "B08GKSVFF6",
+          "B08M3WKDFJ",
+          "B0B49MQBSK",
+          "B092QXY52G",
+          "B01G1LH676",
+          "B08JM5V3YR",
+          "B092DD2LQP"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sets Tracksuits gray",
+        "distilled_active_text": "Sets Tracksuits polyester gray",
+        "structured_values": {
+          "category": [
+            "Sets Tracksuits"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "gray"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_2cfa4dc778a2",
+      "category": "Accessories Belts",
+      "material": "leather",
+      "stale_color": "brown",
+      "new_color": "pink",
+      "relevant_asins": [
+        "B00I1080VW",
+        "B01AN2IGQO",
+        "B07VGQYR8W",
+        "B096BCG6F2"
+      ],
+      "category_size": 258,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07VGQYR8W",
+          "B01AN2IGQO",
+          "B00I1080VW",
+          "B0C99FYL1X",
+          "B096BCG6F2",
+          "B08G44VC2Y",
+          "B07RX2576K",
+          "B07WTZ3SKR",
+          "B07QGCJVRG",
+          "B0B3HNSP7C"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Accessories Belts pink",
+        "distilled_active_text": "Accessories Belts leather pink",
+        "structured_values": {
+          "category": [
+            "Accessories Belts"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07VGQYR8W",
+          "B01AN2IGQO",
+          "B00I1080VW",
+          "B0C99FYL1X",
+          "B096BCG6F2",
+          "B08G44VC2Y",
+          "B07RX2576K",
+          "B0C4HGYDMF",
+          "B071X54486",
+          "B078HG9KCY"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Accessories Belts pink",
+        "distilled_active_text": "Accessories Belts leather pink",
+        "structured_values": {
+          "category": [
+            "Accessories Belts"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_eda2b47c342e",
+      "category": "Bikinis Sets",
+      "material": "polyester",
+      "stale_color": "pink",
+      "new_color": "blue",
+      "relevant_asins": [
+        "B06XPFXMXM",
+        "B07CBXF27H",
+        "B0829KDKM2",
+        "B087NMMDTL",
+        "B091L7HP2Q"
+      ],
+      "category_size": 197,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B083K9516B",
+          "B093L9ZZ7T",
+          "B06XPFXMXM",
+          "B091L7HP2Q",
+          "B097DLPK6W",
+          "B08VDFDXM8",
+          "B087NMMDTL",
+          "B07P6WXVGF",
+          "B0829KDKM2",
+          "B07S7PJDMM"
+        ],
+        "first_relevant_rank": 3,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.3333333333333333,
+        "legacy_active_text": "Bikinis Sets blue",
+        "distilled_active_text": "Bikinis Sets polyester blue",
+        "structured_values": {
+          "category": [
+            "Bikinis Sets"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B083K9516B",
+          "B093L9ZZ7T",
+          "B06XPFXMXM",
+          "B091L7HP2Q",
+          "B097DLPK6W",
+          "B08VDFDXM8",
+          "B087NMMDTL",
+          "B0829KDKM2",
+          "B07P6WXVGF",
+          "B07S7PJDMM"
+        ],
+        "first_relevant_rank": 3,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.3333333333333333,
+        "legacy_active_text": "Bikinis Sets blue",
+        "distilled_active_text": "Bikinis Sets polyester blue",
+        "structured_values": {
+          "category": [
+            "Bikinis Sets"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_a07d820e3240",
+      "category": "Hats & Caps Baseball Caps",
+      "material": "cotton",
+      "stale_color": "green",
+      "new_color": "white",
+      "relevant_asins": [
+        "B079S89LFJ",
+        "B07GF6DXNZ",
+        "B07SYGDSYY",
+        "B07TSGMD5G",
+        "B084J6HN17",
+        "B085VNHC13",
+        "B086G3LJ75",
+        "B08CQ26XVM",
+        "B092B5FDGL",
+        "B09YQD1TZ7",
+        "B0B7634SMB",
+        "B0B9W8LGST"
+      ],
+      "category_size": 385,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B085VNHC13",
+          "B092B5FDGL",
+          "B07GF6DXNZ",
+          "B07SYGDSYY",
+          "B06XKXC3QD",
+          "B0060U2M0K",
+          "B01H0XNCLS",
+          "B07P2D1Z61",
+          "B084J6HN17",
+          "B003M6AGH6"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Hats & Caps Baseball Caps white",
+        "distilled_active_text": "Hats & Caps Baseball Caps cotton white",
+        "structured_values": {
+          "category": [
+            "Hats & Caps Baseball Caps"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B085VNHC13",
+          "B092B5FDGL",
+          "B07GF6DXNZ",
+          "B07SYGDSYY",
+          "B0060U2M0K",
+          "B01H0XNCLS",
+          "B07P2D1Z61",
+          "B0B9W8LGST",
+          "B084J6HN17",
+          "B003M6AGH6"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Hats & Caps Baseball Caps white",
+        "distilled_active_text": "Hats & Caps Baseball Caps cotton white",
+        "structured_values": {
+          "category": [
+            "Hats & Caps Baseball Caps"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_84a9d4cb2938",
+      "category": "Backpacks Kids' Backpacks",
+      "material": "polyester",
+      "stale_color": "blue",
+      "new_color": "pink",
+      "relevant_asins": [
+        "B003M4MFG8",
+        "B07SHR8BMV"
+      ],
+      "category_size": 47,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07SHR8BMV",
+          "B0B8TKQ1PB",
+          "B07QCFJR2H",
+          "B07DJ3DM9T",
+          "B07GXDVV4Z",
+          "B00GZERUQC",
+          "B07B5P7T9B",
+          "B08PFD2VYN",
+          "B07BMKBR59",
+          "B074TF4ZBT"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Backpacks Kids' Backpacks pink",
+        "distilled_active_text": "Backpacks Kids' Backpacks polyester pink",
+        "structured_values": {
+          "category": [
+            "Backpacks Kids' Backpacks"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07SHR8BMV",
+          "B0B8TKQ1PB",
+          "B07QCFJR2H",
+          "B07DJ3DM9T",
+          "B07LD5NQPJ",
+          "B0BMFLBP63",
+          "B07B5P7T9B",
+          "B08PFD2VYN",
+          "B0BBLJ36KP",
+          "B074TF4ZBT"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Backpacks Kids' Backpacks pink",
+        "distilled_active_text": "Backpacks Kids' Backpacks polyester pink",
+        "structured_values": {
+          "category": [
+            "Backpacks Kids' Backpacks"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_40f36f4bb504",
+      "category": "Sandals Platforms & Wedges",
+      "material": "leather",
+      "stale_color": "black",
+      "new_color": "navy",
+      "relevant_asins": [
+        "B00MUASKT6",
+        "B076TQHBXC"
+      ],
+      "category_size": 545,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B00MUASKT6",
+          "B07JB6QH8K",
+          "B07ML2RBGL",
+          "B07FYR7W9N",
+          "B00DZPVRIQ",
+          "B07NLR9FP6",
+          "B076TQHBXC",
+          "B07JBD5VM6",
+          "B00OQUZJ4C",
+          "B00NV9DVKI"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sandals Platforms & Wedges navy",
+        "distilled_active_text": "Sandals Platforms & Wedges leather navy",
+        "structured_values": {
+          "category": [
+            "Sandals Platforms & Wedges"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "navy"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B00MUASKT6",
+          "B07JB6QH8K",
+          "B07ML2RBGL",
+          "B07FYR7W9N",
+          "B00DZPVRIQ",
+          "B07NLR9FP6",
+          "B076TQHBXC",
+          "B08PKRFP6K",
+          "B008LUJDMM",
+          "B008LUJD0O"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sandals Platforms & Wedges navy",
+        "distilled_active_text": "Sandals Platforms & Wedges leather navy",
+        "structured_values": {
+          "category": [
+            "Sandals Platforms & Wedges"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "navy"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_dc5fb653abf3",
+      "category": "Westlake",
+      "material": "leather",
+      "stale_color": "green",
+      "new_color": "red",
+      "relevant_asins": [
+        "B00QIYY832",
+        "B0722DV55T",
+        "B075JF6QTB",
+        "B07V5JDJZT",
+        "B09ZV4VYM3",
+        "B0BKRR5LLC"
+      ],
+      "category_size": 1136,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07V5JDJZT",
+          "B077GYRS36",
+          "B078J31Q8H",
+          "B079ZT77ZP",
+          "B071JP3K3W",
+          "B00QIYY832",
+          "B016K36RMK",
+          "B01NBWSUJP",
+          "B00LMUP9SU",
+          "B01HQKGZIC"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Westlake red",
+        "distilled_active_text": "Westlake leather red",
+        "structured_values": {
+          "category": [
+            "Westlake"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "red"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07V5JDJZT",
+          "B077GYRS36",
+          "B078J31Q8H",
+          "B079ZT77ZP",
+          "B071JP3K3W",
+          "B00QIYY832",
+          "B016K36RMK",
+          "B01NBWSUJP",
+          "B00LMUP9SU",
+          "B01HQKGZIC"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Westlake red",
+        "distilled_active_text": "Westlake leather red",
+        "structured_values": {
+          "category": [
+            "Westlake"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "red"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_acada464f104",
+      "category": "Sleep & Lounge Bottoms",
+      "material": "polyester",
+      "stale_color": "white",
+      "new_color": "blue",
+      "relevant_asins": [
+        "B08HCZ35TD",
+        "B092897TY7"
+      ],
+      "category_size": 82,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B08L7926KL",
+          "B08V1L294M",
+          "B076H3CMP5",
+          "B092897TY7",
+          "B08BRDGWL4",
+          "B07QFHTT1C",
+          "B01DCHERK6",
+          "B08FKXQ4KS",
+          "B01D90JMUQ",
+          "B07TFHLXCF"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Sleep & Lounge Bottoms blue",
+        "distilled_active_text": "Sleep & Lounge Bottoms polyester blue",
+        "structured_values": {
+          "category": [
+            "Sleep & Lounge Bottoms"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B08L7926KL",
+          "B08V1L294M",
+          "B076H3CMP5",
+          "B092897TY7",
+          "B08BRDGWL4",
+          "B07QFHTT1C",
+          "B01DCHERK6",
+          "B08FKXQ4KS",
+          "B01D90JMUQ",
+          "B07TFHLXCF"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Sleep & Lounge Bottoms blue",
+        "distilled_active_text": "Sleep & Lounge Bottoms polyester blue",
+        "structured_values": {
+          "category": [
+            "Sleep & Lounge Bottoms"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_253b9824454b",
+      "category": "Tops, Tees & Blouses Tunics",
+      "material": "denim",
+      "stale_color": "navy",
+      "new_color": "blue",
+      "relevant_asins": [
+        "B07XL8LC3G",
+        "B09LJ252D5",
+        "B0B64TYV9T"
+      ],
+      "category_size": 519,
+      "transition": "gained",
+      "legacy": {
+        "recommendations": [
+          "B07HMTH77S",
+          "B084RHPJY4",
+          "B00IV59FN4",
+          "B07B5YMKW3",
+          "B07RDJ9TL4",
+          "B08BY7YRBQ",
+          "B0991RZZKR",
+          "B07FZ41CFH",
+          "B07SN36K14",
+          "B07X9X8L8D"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Tops, Tees & Blouses Tunics blue",
+        "distilled_active_text": "Tops, Tees & Blouses Tunics denim blue",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Tunics"
+          ],
+          "material": [
+            "denim"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07HMTH77S",
+          "B084RHPJY4",
+          "B00IV59FN4",
+          "B07B5YMKW3",
+          "B07RDJ9TL4",
+          "B07XL8LC3G",
+          "B08BY7YRBQ",
+          "B0991RZZKR",
+          "B07FZ41CFH",
+          "B07SN36K14"
+        ],
+        "first_relevant_rank": 6,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.16666666666666666,
+        "legacy_active_text": "Tops, Tees & Blouses Tunics blue",
+        "distilled_active_text": "Tops, Tees & Blouses Tunics denim blue",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Tunics"
+          ],
+          "material": [
+            "denim"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_f6f997e23c10",
+      "category": "Active Pants Sweatpants",
+      "material": "cotton",
+      "stale_color": "red",
+      "new_color": "blue",
+      "relevant_asins": [
+        "B08HRF95DQ",
+        "B08K8N3TGP",
+        "B09X439MFW"
+      ],
+      "category_size": 127,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B08HRF95DQ",
+          "B08K8N3TGP",
+          "B09X439MFW",
+          "B07W8TRR4C",
+          "B08VYLHRYK",
+          "B07YFLTBV4",
+          "B0BYCW1T1C",
+          "B085L58P9F",
+          "B09BFDBRNW",
+          "B08LV52XVF"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Active Pants Sweatpants blue",
+        "distilled_active_text": "Active Pants Sweatpants cotton blue",
+        "structured_values": {
+          "category": [
+            "Active Pants Sweatpants"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B08HRF95DQ",
+          "B08K8N3TGP",
+          "B09X439MFW",
+          "B07W8TRR4C",
+          "B08VYLHRYK",
+          "B07YFLTBV4",
+          "B0BYCW1T1C",
+          "B085L58P9F",
+          "B09BFDBRNW",
+          "B0716XGGKN"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Active Pants Sweatpants blue",
+        "distilled_active_text": "Active Pants Sweatpants cotton blue",
+        "structured_values": {
+          "category": [
+            "Active Pants Sweatpants"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_e1498c4c2193",
+      "category": "Sets Active Tracksuits",
+      "material": "denim",
+      "stale_color": "orange",
+      "new_color": "purple",
+      "relevant_asins": [
+        "B0BHYQ6K48",
+        "B0BWRSD1W3"
+      ],
+      "category_size": 44,
+      "transition": "gained",
+      "legacy": {
+        "recommendations": [
+          "B08GKSVFF6",
+          "B092DP58GG",
+          "B08H54M9B8",
+          "B07D4XGZ95",
+          "B09BKYS7HX",
+          "B098GR2HCV",
+          "B087KQ3ZN1",
+          "B09YQZ83JS",
+          "B08CK4H95P",
+          "B085T9CNT4"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Sets Active Tracksuits purple",
+        "distilled_active_text": "Sets Active Tracksuits denim purple",
+        "structured_values": {
+          "category": [
+            "Sets Active Tracksuits"
+          ],
+          "material": [
+            "denim"
+          ],
+          "color": [
+            "purple"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0BWRSD1W3",
+          "B08GKSVFF6",
+          "B092DP58GG",
+          "B08H54M9B8",
+          "B07D4XGZ95",
+          "B09BKYS7HX",
+          "B087KQ3ZN1",
+          "B09YQZ83JS",
+          "B08CK4H95P",
+          "B085T9CNT4"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sets Active Tracksuits purple",
+        "distilled_active_text": "Sets Active Tracksuits denim purple",
+        "structured_values": {
+          "category": [
+            "Sets Active Tracksuits"
+          ],
+          "material": [
+            "denim"
+          ],
+          "color": [
+            "purple"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_4942cc2bc141",
+      "category": "Lingerie Camisoles & Tanks",
+      "material": "spandex",
+      "stale_color": "red",
+      "new_color": "white",
+      "relevant_asins": [
+        "B076JMS9G4",
+        "B07N187D49",
+        "B07PV6RXJ2",
+        "B07PZKKP8Q",
+        "B09CCMVMXF",
+        "B09P7W9WJR"
+      ],
+      "category_size": 37,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B06ZZNRWF1",
+          "B09P7W9WJR",
+          "B07N187D49",
+          "B0BGY411F2",
+          "B076JMS9G4",
+          "B09CCMVMXF",
+          "B07PV6RXJ2",
+          "B01708XL5K",
+          "B07PZKKP8Q",
+          "B08T1ZGJKB"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Lingerie Camisoles & Tanks white",
+        "distilled_active_text": "Lingerie Camisoles & Tanks spandex white",
+        "structured_values": {
+          "category": [
+            "Lingerie Camisoles & Tanks"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B06ZZNRWF1",
+          "B09P7W9WJR",
+          "B07N187D49",
+          "B0BGY411F2",
+          "B076JMS9G4",
+          "B09CCMVMXF",
+          "B07PV6RXJ2",
+          "B01708XL5K",
+          "B07PZKKP8Q",
+          "B08T1ZGJKB"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Lingerie Camisoles & Tanks white",
+        "distilled_active_text": "Lingerie Camisoles & Tanks spandex white",
+        "structured_values": {
+          "category": [
+            "Lingerie Camisoles & Tanks"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_eff39e39e48f",
+      "category": "Jackets & Coats Down & Down Alternative",
+      "material": "cotton",
+      "stale_color": "pink",
+      "new_color": "black",
+      "relevant_asins": [
+        "B07VK9DQ9K",
+        "B07X4W3383",
+        "B0BWMY1NMG"
+      ],
+      "category_size": 87,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07X4W3383",
+          "B09CB5C3R1",
+          "B0BWMY1NMG",
+          "B00D4KGMUA",
+          "B07KRK3KY3",
+          "B074NWHP55",
+          "B07G446DV6",
+          "B00DR0IZKW",
+          "B07VK9DQ9K",
+          "B00PJ6HBMA"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Jackets & Coats Down & Down Alternative black",
+        "distilled_active_text": "Jackets & Coats Down & Down Alternative cotton black",
+        "structured_values": {
+          "category": [
+            "Jackets & Coats Down & Down Alternative"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07X4W3383",
+          "B0BWMY1NMG",
+          "B00D4KGMUA",
+          "B07KRK3KY3",
+          "B074NWHP55",
+          "B07G446DV6",
+          "B00DR0IZKW",
+          "B07VK9DQ9K",
+          "B00PJ6HBMA",
+          "B008LMG4Q8"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Jackets & Coats Down & Down Alternative black",
+        "distilled_active_text": "Jackets & Coats Down & Down Alternative cotton black",
+        "structured_values": {
+          "category": [
+            "Jackets & Coats Down & Down Alternative"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_49711f4247b1",
+      "category": "Hats & Caps Newsboy Caps",
+      "material": "cotton",
+      "stale_color": "grey",
+      "new_color": "gray",
+      "relevant_asins": [
+        "B0761VL1ZW",
+        "B0B9W9YYHW"
+      ],
+      "category_size": 34,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B0761VL1ZW",
+          "B0B9W9YYHW",
+          "B0C77SLZYX",
+          "B09K44J4DK",
+          "B07ZHQTFKC",
+          "B075NWMV48",
+          "B07583JR1F",
+          "B08K7GXXNB",
+          "B07BMTW3DP",
+          "B01HOTTV7M"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Hats & Caps Newsboy Caps gray",
+        "distilled_active_text": "Hats & Caps Newsboy Caps cotton gray",
+        "structured_values": {
+          "category": [
+            "Hats & Caps Newsboy Caps"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "gray"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0761VL1ZW",
+          "B0B9W9YYHW",
+          "B09K44J4DK",
+          "B07ZHQTFKC",
+          "B075NWMV48",
+          "B07583JR1F",
+          "B08K7GXXNB",
+          "B07BMTW3DP",
+          "B01HOTTV7M",
+          "B007PK5QWK"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Hats & Caps Newsboy Caps gray",
+        "distilled_active_text": "Hats & Caps Newsboy Caps cotton gray",
+        "structured_values": {
+          "category": [
+            "Hats & Caps Newsboy Caps"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "gray"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_34882b8e94e7",
+      "category": "Westlake",
+      "material": "cotton",
+      "stale_color": "gray",
+      "new_color": "orange",
+      "relevant_asins": [
+        "B00TWLC17S",
+        "B01ICQ4A6S",
+        "B0937KMGDV",
+        "B09JYGGW4K",
+        "B0BKRR5LLC"
+      ],
+      "category_size": 1136,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B013GDNG94",
+          "B07XFMK5VH",
+          "B06WWNJ3XZ",
+          "B00NPN05H2",
+          "B00QE1NDDA",
+          "B07H6SVLGM",
+          "B07CKJD859",
+          "B091YGD21N",
+          "B01ICQ4A6S",
+          "B0107VJCPA"
+        ],
+        "first_relevant_rank": 9,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.1111111111111111,
+        "legacy_active_text": "Westlake orange",
+        "distilled_active_text": "Westlake cotton orange",
+        "structured_values": {
+          "category": [
+            "Westlake"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "orange"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B013GDNG94",
+          "B07XFMK5VH",
+          "B06WWNJ3XZ",
+          "B00NPN05H2",
+          "B00QE1NDDA",
+          "B07H6SVLGM",
+          "B07CKJD859",
+          "B0937KMGDV",
+          "B091YGD21N",
+          "B01ICQ4A6S"
+        ],
+        "first_relevant_rank": 8,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.125,
+        "legacy_active_text": "Westlake orange",
+        "distilled_active_text": "Westlake cotton orange",
+        "structured_values": {
+          "category": [
+            "Westlake"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "orange"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_de36c9fd4440",
+      "category": "Jackets & Coats Vests",
+      "material": "denim",
+      "stale_color": "green",
+      "new_color": "yellow",
+      "relevant_asins": [
+        "B0BFWTDK6Q",
+        "B0BPYGK6K6"
+      ],
+      "category_size": 37,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B0BPYGK6K6",
+          "B07BZ8MNC6",
+          "B071GB865Q",
+          "B00VM856A8",
+          "B09JG4V9ZR",
+          "B08MT9ZM8V",
+          "B09CJ3R26Q",
+          "B09FLFT14P",
+          "B07MZYP844",
+          "B078ZQMLJJ"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Jackets & Coats Vests yellow",
+        "distilled_active_text": "Jackets & Coats Vests denim yellow",
+        "structured_values": {
+          "category": [
+            "Jackets & Coats Vests"
+          ],
+          "material": [
+            "denim"
+          ],
+          "color": [
+            "yellow"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0BPYGK6K6",
+          "B09HXN7ZJ5",
+          "B07BZ8MNC6",
+          "B071GB865Q",
+          "B01DBI4P3A",
+          "B07L9TCBTV",
+          "B09JG4V9ZR",
+          "B07DNB55KR",
+          "B097NRWDQ6",
+          "B08MT9ZM8V"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Jackets & Coats Vests yellow",
+        "distilled_active_text": "Jackets & Coats Vests denim yellow",
+        "structured_values": {
+          "category": [
+            "Jackets & Coats Vests"
+          ],
+          "material": [
+            "denim"
+          ],
+          "color": [
+            "yellow"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_27cb6b855711",
+      "category": "Gloves & Mittens Cold Weather Gloves",
+      "material": "wool",
+      "stale_color": "brown",
+      "new_color": "beige",
+      "relevant_asins": [
+        "B016U67AXM",
+        "B08FD5X5X4"
+      ],
+      "category_size": 113,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B016U67AXM",
+          "B0774SNS4S",
+          "B08FD5X5X4",
+          "B0825RFGR9",
+          "B0C19S5XH1",
+          "B07HQJJLQP",
+          "B073PTNXC6",
+          "B0BY8NS7K2",
+          "B07HR5LDKB",
+          "B00O7RSNP6"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Gloves & Mittens Cold Weather Gloves beige",
+        "distilled_active_text": "Gloves & Mittens Cold Weather Gloves wool beige",
+        "structured_values": {
+          "category": [
+            "Gloves & Mittens Cold Weather Gloves"
+          ],
+          "material": [
+            "wool"
+          ],
+          "color": [
+            "beige"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B016U67AXM",
+          "B0774SNS4S",
+          "B08FD5X5X4",
+          "B07K7TH59T",
+          "B0825RFGR9",
+          "B0C19S5XH1",
+          "B07HQJJLQP",
+          "B073PTNXC6",
+          "B07HR5LDKB",
+          "B00O7RSNP6"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Gloves & Mittens Cold Weather Gloves beige",
+        "distilled_active_text": "Gloves & Mittens Cold Weather Gloves wool beige",
+        "structured_values": {
+          "category": [
+            "Gloves & Mittens Cold Weather Gloves"
+          ],
+          "material": [
+            "wool"
+          ],
+          "color": [
+            "beige"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_72ff38e865f2",
+      "category": "Suits & Sport Coats Suits",
+      "material": "cotton",
+      "stale_color": "gray",
+      "new_color": "navy",
+      "relevant_asins": [
+        "B011EM2PPK",
+        "B07KKRC1QV"
+      ],
+      "category_size": 41,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07KKRC1QV",
+          "B0889Q64RC",
+          "B087BVW4HR",
+          "B011EM2PPK",
+          "B00HFD0SMA",
+          "B07M5HQYV2",
+          "B0789J6XVF",
+          "B08JYYXPBF",
+          "B07C34BMH6",
+          "B07B44VQHL"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Suits & Sport Coats Suits navy",
+        "distilled_active_text": "Suits & Sport Coats Suits cotton navy",
+        "structured_values": {
+          "category": [
+            "Suits & Sport Coats Suits"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "navy"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07KKRC1QV",
+          "B0889Q64RC",
+          "B087BVW4HR",
+          "B011EM2PPK",
+          "B00HFD0SMA",
+          "B07M5HQYV2",
+          "B0789J6XVF",
+          "B08JYYXPBF",
+          "B07C34BMH6",
+          "B07B44VQHL"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Suits & Sport Coats Suits navy",
+        "distilled_active_text": "Suits & Sport Coats Suits cotton navy",
+        "structured_values": {
+          "category": [
+            "Suits & Sport Coats Suits"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "navy"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_ed0aab984e5e",
+      "category": "Athletic Bowling",
+      "material": "leather",
+      "stale_color": "pink",
+      "new_color": "black",
+      "relevant_asins": [
+        "B002JV0IWS",
+        "B008BSO5YK",
+        "B00M0469MW",
+        "B00M046ANA",
+        "B06XKWVS3W"
+      ],
+      "category_size": 20,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B06XKWVS3W",
+          "B002JV0IWS",
+          "B00M046ANA",
+          "B008BSO5YK",
+          "B005HJBF8A",
+          "B00M0469MW",
+          "B01HINW2NO",
+          "B00M4LYNFG",
+          "B071ZZT6JB",
+          "B081J57LP5"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Athletic Bowling black",
+        "distilled_active_text": "Athletic Bowling leather black",
+        "structured_values": {
+          "category": [
+            "Athletic Bowling"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B06XKWVS3W",
+          "B002JV0IWS",
+          "B00M046ANA",
+          "B008BSO5YK",
+          "B005HJBF8A",
+          "B00M0469MW",
+          "B01HINW2NO",
+          "B00M4LYNFG",
+          "B07GXDVV4Z",
+          "B07R498VHD"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Athletic Bowling black",
+        "distilled_active_text": "Athletic Bowling leather black",
+        "structured_values": {
+          "category": [
+            "Athletic Bowling"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_a608a92a75f6",
+      "category": "Underwear Briefs",
+      "material": "cotton",
+      "stale_color": "black",
+      "new_color": "blue",
+      "relevant_asins": [
+        "B075VJ416K",
+        "B07GPLQT7V"
+      ],
+      "category_size": 51,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B075VJ416K",
+          "B08LB37S7N",
+          "B07GPLQT7V",
+          "B07WKDW9P6",
+          "B00N0FY31O",
+          "B07ND2MRTD",
+          "B01BOKOC80",
+          "B072FTMJZ4",
+          "B089M57PSQ",
+          "B0846KWKVB"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Underwear Briefs blue",
+        "distilled_active_text": "Underwear Briefs cotton blue",
+        "structured_values": {
+          "category": [
+            "Underwear Briefs"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B075VJ416K",
+          "B08LB37S7N",
+          "B07GPLQT7V",
+          "B07WKDW9P6",
+          "B00N0FY31O",
+          "B07ND2MRTD",
+          "B01BOKOC80",
+          "B072FTMJZ4",
+          "B088QF5G58",
+          "B089M57PSQ"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Underwear Briefs blue",
+        "distilled_active_text": "Underwear Briefs cotton blue",
+        "structured_values": {
+          "category": [
+            "Underwear Briefs"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_bf2930191838",
+      "category": "Necklaces Pendant Necklaces",
+      "material": "leather",
+      "stale_color": "yellow",
+      "new_color": "white",
+      "relevant_asins": [
+        "B00ET7Q3PQ",
+        "B09GX8JM74"
+      ],
+      "category_size": 531,
+      "transition": "miss_both",
+      "legacy": {
+        "recommendations": [
+          "B08ZNPX986",
+          "B0BDFJSRFY",
+          "B087BBZKTT",
+          "B08V56GKFK",
+          "B07TGSMNBT",
+          "B06XNQSDCV",
+          "B08DXZ5KZR",
+          "B0B7N75SSL",
+          "B01N74OEBM",
+          "B08D3DM8NW"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Necklaces Pendant Necklaces white",
+        "distilled_active_text": "Necklaces Pendant Necklaces leather white",
+        "structured_values": {
+          "category": [
+            "Necklaces Pendant Necklaces"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B08ZNPX986",
+          "B087BBZKTT",
+          "B08V56GKFK",
+          "B07TGSMNBT",
+          "B06XNQSDCV",
+          "B08DXZ5KZR",
+          "B0B7N75SSL",
+          "B01N74OEBM",
+          "B08D3DM8NW",
+          "B019AC525Q"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Necklaces Pendant Necklaces white",
+        "distilled_active_text": "Necklaces Pendant Necklaces leather white",
+        "structured_values": {
+          "category": [
+            "Necklaces Pendant Necklaces"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_6dc64cb176a4",
+      "category": "Leggings",
+      "material": "polyester",
+      "stale_color": "grey",
+      "new_color": "red",
+      "relevant_asins": [
+        "B01F0IWVTE",
+        "B01KIJ8MAC",
+        "B01MDKX64P",
+        "B088B489MQ",
+        "B0972SXG3T",
+        "B09KLQ3J42",
+        "B09VB627B2"
+      ],
+      "category_size": 195,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B087X1JZHF",
+          "B085435DSF",
+          "B09VB627B2",
+          "B088B489MQ",
+          "B01KIJ8MAC",
+          "B09YTWCT9W",
+          "B0779WGK9C",
+          "B077SC7Y1B",
+          "B01HQKGZIC",
+          "B01LYH65L3"
+        ],
+        "first_relevant_rank": 3,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.3333333333333333,
+        "legacy_active_text": "Leggings red",
+        "distilled_active_text": "Leggings polyester red",
+        "structured_values": {
+          "category": [
+            "Leggings"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "red"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B087X1JZHF",
+          "B09VB627B2",
+          "B088B489MQ",
+          "B07CKYR5B3",
+          "B01KIJ8MAC",
+          "B09YTWCT9W",
+          "B0779WGK9C",
+          "B077SC7Y1B",
+          "B01HQKGZIC",
+          "B01LYH65L3"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Leggings red",
+        "distilled_active_text": "Leggings polyester red",
+        "structured_values": {
+          "category": [
+            "Leggings"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "red"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_90b7ca8ef1ea",
+      "category": "Watches Wrist Watches",
+      "material": "nylon",
+      "stale_color": "red",
+      "new_color": "navy",
+      "relevant_asins": [
+        "B003E63ZTA",
+        "B079JZ3GDX"
+      ],
+      "category_size": 1034,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B0BJBC8H4M",
+          "B013CFHJSK",
+          "B00BUVBCBO",
+          "B003E63ZTA",
+          "B00RCCOY8S",
+          "B079JZ3GDX",
+          "B0BF9BCZ2V",
+          "B01646HVD2",
+          "B09LZ4C7RM",
+          "B005QH84QO"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Watches Wrist Watches navy",
+        "distilled_active_text": "Watches Wrist Watches nylon navy",
+        "structured_values": {
+          "category": [
+            "Watches Wrist Watches"
+          ],
+          "material": [
+            "nylon"
+          ],
+          "color": [
+            "navy"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0BJBC8H4M",
+          "B013CFHJSK",
+          "B00BUVBCBO",
+          "B003E63ZTA",
+          "B00RCCOY8S",
+          "B079JZ3GDX",
+          "B0BF9BCZ2V",
+          "B01646HVD2",
+          "B09LZ4C7RM",
+          "B00VQ7PWGI"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Watches Wrist Watches navy",
+        "distilled_active_text": "Watches Wrist Watches nylon navy",
+        "structured_values": {
+          "category": [
+            "Watches Wrist Watches"
+          ],
+          "material": [
+            "nylon"
+          ],
+          "color": [
+            "navy"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_536a0bd5025b",
+      "category": "Panties Briefs",
+      "material": "cotton",
+      "stale_color": "white",
+      "new_color": "grey",
+      "relevant_asins": [
+        "B093SJ5NK2",
+        "B09P32NQ8V"
+      ],
+      "category_size": 44,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B093SJ5NK2",
+          "B09P32NQ8V",
+          "B00N0FY31O",
+          "B07CYL2VG3",
+          "B0BRYHTB5Q",
+          "B01M8LLSFX",
+          "B07NLMTFYM",
+          "B00E5ISM30",
+          "B07HJXLFWC",
+          "B01AKQCJKM"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Panties Briefs grey",
+        "distilled_active_text": "Panties Briefs cotton grey",
+        "structured_values": {
+          "category": [
+            "Panties Briefs"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "grey"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B093SJ5NK2",
+          "B09P32NQ8V",
+          "B00N0FY31O",
+          "B07CYL2VG3",
+          "B0BRYHTB5Q",
+          "B01M8LLSFX",
+          "B07NLMTFYM",
+          "B00E5ISM30",
+          "B01AKQCJKM",
+          "B07HJXLFWC"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Panties Briefs grey",
+        "distilled_active_text": "Panties Briefs cotton grey",
+        "structured_values": {
+          "category": [
+            "Panties Briefs"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "grey"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_9362b620be7f",
+      "category": "Shirts Polos",
+      "material": "polyester",
+      "stale_color": "grey",
+      "new_color": "blue",
+      "relevant_asins": [
+        "B009PPSRLU",
+        "B00S4QTEHC",
+        "B07T67WY5D",
+        "B0C3W27DDT"
+      ],
+      "category_size": 140,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B0792QYXCX",
+          "B07J5VRSFZ",
+          "B00UO2KDX8",
+          "B08GS74QC3",
+          "B008AYAONG",
+          "B00UNV3JNQ",
+          "B009PPSRLU",
+          "B00S4QTEHC",
+          "B07VVBRM7R",
+          "B07NKFQKCB"
+        ],
+        "first_relevant_rank": 7,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.14285714285714285,
+        "legacy_active_text": "Shirts Polos blue",
+        "distilled_active_text": "Shirts Polos polyester blue",
+        "structured_values": {
+          "category": [
+            "Shirts Polos"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0792QYXCX",
+          "B07J5VRSFZ",
+          "B00UO2KDX8",
+          "B08GS74QC3",
+          "B008AYAONG",
+          "B009PPSRLU",
+          "B00UNV3JNQ",
+          "B00S4QTEHC",
+          "B07VVBRM7R",
+          "B07NKFQKCB"
+        ],
+        "first_relevant_rank": 6,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.16666666666666666,
+        "legacy_active_text": "Shirts Polos blue",
+        "distilled_active_text": "Shirts Polos polyester blue",
+        "structured_values": {
+          "category": [
+            "Shirts Polos"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_1e9e89954164",
+      "category": "Sweaters Pullovers",
+      "material": "polyester",
+      "stale_color": "purple",
+      "new_color": "black",
+      "relevant_asins": [
+        "B077S83P8B",
+        "B07BP7RHVH",
+        "B07W4QYS1Q",
+        "B08GM5TMYB",
+        "B08LZQJCWZ",
+        "B08NG2BBLB",
+        "B09BD2Z2C2",
+        "B09BVKBVLF",
+        "B09DYQ77GF",
+        "B09JMP7713",
+        "B09JWG3MXR",
+        "B0B31JFX4H",
+        "B0BDL17BCN"
+      ],
+      "category_size": 379,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B077S83P8B",
+          "B078W3377B",
+          "B08NG2BBLB",
+          "B096VHJVNV",
+          "B088WBY8Y9",
+          "B07TY99GJY",
+          "B08D3FW2PR",
+          "B08B3Q1GGT",
+          "B08CN3SDL9",
+          "B08L4B2TZ2"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sweaters Pullovers black",
+        "distilled_active_text": "Sweaters Pullovers polyester black",
+        "structured_values": {
+          "category": [
+            "Sweaters Pullovers"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B077S83P8B",
+          "B078W3377B",
+          "B08NG2BBLB",
+          "B088WBY8Y9",
+          "B07TY99GJY",
+          "B08D3FW2PR",
+          "B07W4QYS1Q",
+          "B08B3Q1GGT",
+          "B08CN3SDL9",
+          "B08L4B2TZ2"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sweaters Pullovers black",
+        "distilled_active_text": "Sweaters Pullovers polyester black",
+        "structured_values": {
+          "category": [
+            "Sweaters Pullovers"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_38a3c686d3da",
+      "category": "Tops, Tees & Blouses Tanks & Camis",
+      "material": "leather",
+      "stale_color": "grey",
+      "new_color": "pink",
+      "relevant_asins": [
+        "B07P6H2X9F",
+        "B09Z7DBCKQ"
+      ],
+      "category_size": 388,
+      "transition": "miss_both",
+      "legacy": {
+        "recommendations": [
+          "B08NY63L9W",
+          "B08NY678PP",
+          "B013W254X0",
+          "B086BC6VLY",
+          "B09334FG16",
+          "B085FYDQB3",
+          "B09PR3YFF5",
+          "B07RY72Q9S",
+          "B01D6IBZ9M",
+          "B07MMK9DDV"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Tops, Tees & Blouses Tanks & Camis pink",
+        "distilled_active_text": "Tops, Tees & Blouses Tanks & Camis leather pink",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Tanks & Camis"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B08NY63L9W",
+          "B08NY678PP",
+          "B013W254X0",
+          "B086BC6VLY",
+          "B09334FG16",
+          "B085FYDQB3",
+          "B09PR3YFF5",
+          "B07RY72Q9S",
+          "B01D6IBZ9M",
+          "B07MMK9DDV"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Tops, Tees & Blouses Tanks & Camis pink",
+        "distilled_active_text": "Tops, Tees & Blouses Tanks & Camis leather pink",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Tanks & Camis"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_50a012d3ca10",
+      "category": "Boots",
+      "material": "leather",
+      "stale_color": "black",
+      "new_color": "green",
+      "relevant_asins": [
+        "B00AQOGRUM",
+        "B01AKX3UIK",
+        "B094S49FB2"
+      ],
+      "category_size": 254,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B094S49FB2",
+          "B07H24XVP7",
+          "B00AW8IJ4E",
+          "B00UCBB1JG",
+          "B00B9Q3CO0",
+          "B07X5Z6CVC",
+          "B0BWLXWHNL",
+          "B00AQOGRUM",
+          "B098JYFJ9Y",
+          "B01AKX3UIK"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Boots green",
+        "distilled_active_text": "Boots leather green",
+        "structured_values": {
+          "category": [
+            "Boots"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "green"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07H24XVP7",
+          "B00AW8IJ4E",
+          "B00UCBB1JG",
+          "B00B9Q3CO0",
+          "B07X5Z6CVC",
+          "B0BWLXWHNL",
+          "B00AQOGRUM",
+          "B098JYFJ9Y",
+          "B01AKX3UIK",
+          "B0C1582KYJ"
+        ],
+        "first_relevant_rank": 7,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.14285714285714285,
+        "legacy_active_text": "Boots green",
+        "distilled_active_text": "Boots leather green",
+        "structured_values": {
+          "category": [
+            "Boots"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "green"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_754ace2e80da",
+      "category": "Active Active Sweatshirts",
+      "material": "polyester",
+      "stale_color": "gray",
+      "new_color": "yellow",
+      "relevant_asins": [
+        "B08P9FKTCQ",
+        "B0BFRKL41C"
+      ],
+      "category_size": 57,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B08P9FKTCQ",
+          "B0BFRKL41C",
+          "B09NK93CT4",
+          "B08LR7F5LM",
+          "B08GKSVFF6",
+          "B094DZCZ9F",
+          "B08P6Z1BGS",
+          "B07XJ99N4S",
+          "B08CC3FYRW",
+          "B07J6PF8VW"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Active Active Sweatshirts yellow",
+        "distilled_active_text": "Active Active Sweatshirts polyester yellow",
+        "structured_values": {
+          "category": [
+            "Active Active Sweatshirts"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "yellow"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B08P9FKTCQ",
+          "B09NK93CT4",
+          "B08LR7F5LM",
+          "B08GKSVFF6",
+          "B094DZCZ9F",
+          "B08P6Z1BGS",
+          "B07XJ99N4S",
+          "B08CC3FYRW",
+          "B07BT2QJVP",
+          "B07XKZSNR3"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Active Active Sweatshirts yellow",
+        "distilled_active_text": "Active Active Sweatshirts polyester yellow",
+        "structured_values": {
+          "category": [
+            "Active Active Sweatshirts"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "yellow"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_ccad9fb43ff3",
+      "category": "Cycling Gloves",
+      "material": "polyester",
+      "stale_color": "red",
+      "new_color": "black",
+      "relevant_asins": [
+        "B003BLOZ9M",
+        "B00NNH73UM",
+        "B06XYN1TJ1",
+        "B0777KNK6S",
+        "B07Z4R7L9H",
+        "B08GFBL72V",
+        "B08XYYPBC9",
+        "B09DGN5HYN",
+        "B09DPGHCQG",
+        "B0BDY5SBXS"
+      ],
+      "category_size": 49,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B0777KNK6S",
+          "B08XYYPBC9",
+          "B01EHR4BTW",
+          "B07RDDTKTC",
+          "B09DGN5HYN",
+          "B07633GNN1",
+          "B0B151KHBW",
+          "B09BDX215Z",
+          "B09T34C4PC",
+          "B07WD47DW1"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Cycling Gloves black",
+        "distilled_active_text": "Cycling Gloves polyester black",
+        "structured_values": {
+          "category": [
+            "Cycling Gloves"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0777KNK6S",
+          "B08XYYPBC9",
+          "B01EHR4BTW",
+          "B07RDDTKTC",
+          "B09DGN5HYN",
+          "B07633GNN1",
+          "B0B151KHBW",
+          "B09BDX215Z",
+          "B09T34C4PC",
+          "B07WD47DW1"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Cycling Gloves black",
+        "distilled_active_text": "Cycling Gloves polyester black",
+        "structured_values": {
+          "category": [
+            "Cycling Gloves"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_776bd03a08d1",
+      "category": "Sleep & Lounge Sets",
+      "material": "polyester",
+      "stale_color": "pink",
+      "new_color": "yellow",
+      "relevant_asins": [
+        "B082D6C9R5",
+        "B08GKN3D9B",
+        "B0C5MH6KT2"
+      ],
+      "category_size": 284,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B01NCS317U",
+          "B082D6C9R5",
+          "B09JCNV9QR",
+          "B08GKN3D9B",
+          "B0BPWB19SV",
+          "B08KD7ZDX5",
+          "B08CMNDQ8D",
+          "B07RF642GP",
+          "B016J5VZ4Y",
+          "B086SX7482"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Sleep & Lounge Sets yellow",
+        "distilled_active_text": "Sleep & Lounge Sets polyester yellow",
+        "structured_values": {
+          "category": [
+            "Sleep & Lounge Sets"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "yellow"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0C5MH6KT2",
+          "B082D6C9R5",
+          "B01NCS317U",
+          "B09JCNV9QR",
+          "B08GKN3D9B",
+          "B0BPWB19SV",
+          "B08KD7ZDX5",
+          "B07RF642GP",
+          "B0963L93JY",
+          "B0953BX2J8"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sleep & Lounge Sets yellow",
+        "distilled_active_text": "Sleep & Lounge Sets polyester yellow",
+        "structured_values": {
+          "category": [
+            "Sleep & Lounge Sets"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "yellow"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_bf9d6c137c97",
+      "category": "Accessories Belts",
+      "material": "leather",
+      "stale_color": "brown",
+      "new_color": "beige",
+      "relevant_asins": [
+        "B00N27ZROW",
+        "B07PQS76MV"
+      ],
+      "category_size": 258,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B00N27ZROW",
+          "B07PQS76MV",
+          "B003BV88P4",
+          "B008QNQYV2",
+          "B07VNV9BGX",
+          "B016U2LW7Q",
+          "B08CVKDHGG",
+          "B08Y739MQL",
+          "B07RHY8XB5",
+          "B01919KGAE"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Accessories Belts beige",
+        "distilled_active_text": "Accessories Belts leather beige",
+        "structured_values": {
+          "category": [
+            "Accessories Belts"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "beige"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B00N27ZROW",
+          "B07PQS76MV",
+          "B07VNV9BGX",
+          "B08FD5X5X4",
+          "B0C4HGYDMF",
+          "B071X54486",
+          "B078HG9KCY",
+          "B07WTZ3SKR",
+          "B07H9XQZ6X",
+          "B077XJHGR9"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Accessories Belts beige",
+        "distilled_active_text": "Accessories Belts leather beige",
+        "structured_values": {
+          "category": [
+            "Accessories Belts"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "beige"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_8580ee6eee5b",
+      "category": "Slippers",
+      "material": "wool",
+      "stale_color": "gray",
+      "new_color": "blue",
+      "relevant_asins": [
+        "B07L632VQJ",
+        "B08ZS5J2SV"
+      ],
+      "category_size": 522,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B08MV1VVKR",
+          "B083GJLR7H",
+          "B07GD828W6",
+          "B088TJKZVT",
+          "B08BS13RKM",
+          "B08ZS5J2SV",
+          "B084Q4DP7L",
+          "B07YHCNWCN",
+          "B08CHHRTMS",
+          "B06X3RM2K2"
+        ],
+        "first_relevant_rank": 6,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.16666666666666666,
+        "legacy_active_text": "Slippers blue",
+        "distilled_active_text": "Slippers wool blue",
+        "structured_values": {
+          "category": [
+            "Slippers"
+          ],
+          "material": [
+            "wool"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B08MV1VVKR",
+          "B088TJKZVT",
+          "B08ZS5J2SV",
+          "B084Q4DP7L",
+          "B07YHCNWCN",
+          "B08CHHRTMS",
+          "B06X3RM2K2",
+          "B07PG1HK73",
+          "B076F4CBM6",
+          "B083DDLD48"
+        ],
+        "first_relevant_rank": 3,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.3333333333333333,
+        "legacy_active_text": "Slippers blue",
+        "distilled_active_text": "Slippers wool blue",
+        "structured_values": {
+          "category": [
+            "Slippers"
+          ],
+          "material": [
+            "wool"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_62fba2956b99",
+      "category": "Clothing Sets Short Sets",
+      "material": "cotton",
+      "stale_color": "gray",
+      "new_color": "white",
+      "relevant_asins": [
+        "B07S984836",
+        "B07T6S6CY1",
+        "B08Y7NHC2R"
+      ],
+      "category_size": 84,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07S984836",
+          "B08Y7NHC2R",
+          "B07T6S6CY1",
+          "B08RMG48ZQ",
+          "B07SRT5LYH",
+          "B08QRQGWWV",
+          "B07PRW4YG5",
+          "B088H68L15",
+          "B08R6TM5WS",
+          "B09WYN6C9S"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Clothing Sets Short Sets white",
+        "distilled_active_text": "Clothing Sets Short Sets cotton white",
+        "structured_values": {
+          "category": [
+            "Clothing Sets Short Sets"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07S984836",
+          "B08Y7NHC2R",
+          "B07T6S6CY1",
+          "B08RMG48ZQ",
+          "B07SRT5LYH",
+          "B07PRW4YG5",
+          "B088H68L15",
+          "B08R6TM5WS",
+          "B09WYN6C9S",
+          "B06XGQVG9Y"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Clothing Sets Short Sets white",
+        "distilled_active_text": "Clothing Sets Short Sets cotton white",
+        "structured_values": {
+          "category": [
+            "Clothing Sets Short Sets"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_9efc751e418a",
+      "category": "Socks & Hosiery Socks",
+      "material": "nylon",
+      "stale_color": "grey",
+      "new_color": "black",
+      "relevant_asins": [
+        "B00E0PN5IU",
+        "B00OU1IT12",
+        "B00Q5NIBMA",
+        "B06W2JX1L5",
+        "B0762JQ7LX",
+        "B076ZYFQN1",
+        "B07BYZT88J"
+      ],
+      "category_size": 225,
+      "transition": "gained",
+      "legacy": {
+        "recommendations": [
+          "B00MMI0OM2",
+          "B015H78BTW",
+          "B079ZZ1XTR",
+          "B07C24QYMM",
+          "B08DQ4J5SK",
+          "B0007D4UD8",
+          "B019E9YJEA",
+          "B016YUN4Y8",
+          "B07S2PYN82",
+          "B073TZD2VK"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Socks & Hosiery Socks black",
+        "distilled_active_text": "Socks & Hosiery Socks nylon black",
+        "structured_values": {
+          "category": [
+            "Socks & Hosiery Socks"
+          ],
+          "material": [
+            "nylon"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B00MMI0OM2",
+          "B015H78BTW",
+          "B07C24QYMM",
+          "B00Q5NIBMA",
+          "B096DRH5K4",
+          "B076ZYFQN1",
+          "B00W5S9ZGU",
+          "B07BYZT88J",
+          "B004ARLP9E",
+          "B07SGG2NR2"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Socks & Hosiery Socks black",
+        "distilled_active_text": "Socks & Hosiery Socks nylon black",
+        "structured_values": {
+          "category": [
+            "Socks & Hosiery Socks"
+          ],
+          "material": [
+            "nylon"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_02229491bfd7",
+      "category": "Uniforms, Work & Safety Work & Utility",
+      "material": "leather",
+      "stale_color": "grey",
+      "new_color": "red",
+      "relevant_asins": [
+        "B003R4Z34E",
+        "B005GO2PQC",
+        "B005GO4FOW"
+      ],
+      "category_size": 121,
+      "transition": "miss_both",
+      "legacy": {
+        "recommendations": [
+          "B073S9DXLP",
+          "B0BW16W3K8",
+          "B01MYZSQ3X",
+          "B08PP1MSCS",
+          "B09MK3DSVZ",
+          "B01N5GBF0I",
+          "B099RFR32R",
+          "B00BBKINM0",
+          "B005BQN2SU",
+          "B00YSGYNPK"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Uniforms, Work & Safety Work & Utility red",
+        "distilled_active_text": "Uniforms, Work & Safety Work & Utility leather red",
+        "structured_values": {
+          "category": [
+            "Uniforms, Work & Safety Work & Utility"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "red"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B073S9DXLP",
+          "B0BW16W3K8",
+          "B01MYZSQ3X",
+          "B08PP1MSCS",
+          "B09MK3DSVZ",
+          "B01N5GBF0I",
+          "B099RFR32R",
+          "B00BBKINM0",
+          "B005BQN2SU",
+          "B09699PSB5"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Uniforms, Work & Safety Work & Utility red",
+        "distilled_active_text": "Uniforms, Work & Safety Work & Utility leather red",
+        "structured_values": {
+          "category": [
+            "Uniforms, Work & Safety Work & Utility"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "red"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_f76c77e3abcf",
+      "category": "Active Athletic Socks",
+      "material": "rayon",
+      "stale_color": "white",
+      "new_color": "black",
+      "relevant_asins": [
+        "B00LBL4LNE",
+        "B015QWI1KM"
+      ],
+      "category_size": 276,
+      "transition": "miss_both",
+      "legacy": {
+        "recommendations": [
+          "B07BMKJMXV",
+          "B07L7M66MQ",
+          "B081P9C25R",
+          "B082G2QLRN",
+          "B081J57LP5",
+          "B09JCP2RDQ",
+          "B00H4BT0OU",
+          "B07QC55D7P",
+          "B099VRZSGH",
+          "B08HD178S2"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Active Athletic Socks black",
+        "distilled_active_text": "Active Athletic Socks rayon black",
+        "structured_values": {
+          "category": [
+            "Active Athletic Socks"
+          ],
+          "material": [
+            "rayon"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07BMKJMXV",
+          "B07L7M66MQ",
+          "B081P9C25R",
+          "B082G2QLRN",
+          "B081J57LP5",
+          "B09JCP2RDQ",
+          "B00H4BT0OU",
+          "B07QC55D7P",
+          "B099VRZSGH",
+          "B08HD178S2"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Active Athletic Socks black",
+        "distilled_active_text": "Active Athletic Socks rayon black",
+        "structured_values": {
+          "category": [
+            "Active Athletic Socks"
+          ],
+          "material": [
+            "rayon"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_36daaf01638c",
+      "category": "Active Active Sweatshirts",
+      "material": "polyester",
+      "stale_color": "gray",
+      "new_color": "red",
+      "relevant_asins": [
+        "B07HRKLMMW",
+        "B0BFRKL41C"
+      ],
+      "category_size": 57,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07HRKLMMW",
+          "B0781S42NP",
+          "B09NK93CT4",
+          "B08LR7F5LM",
+          "B09HT6W76Q",
+          "B08C4RG1CG",
+          "B07VSNK5J1",
+          "B07VX63TJV",
+          "B07ZY1G245",
+          "B07NR6YQMQ"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Active Active Sweatshirts red",
+        "distilled_active_text": "Active Active Sweatshirts polyester red",
+        "structured_values": {
+          "category": [
+            "Active Active Sweatshirts"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "red"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07HRKLMMW",
+          "B0781S42NP",
+          "B09NK93CT4",
+          "B08LR7F5LM",
+          "B09HT6W76Q",
+          "B0BHYQ6K48",
+          "B08C4RG1CG",
+          "B08P6Z1BGS",
+          "B07VSNK5J1",
+          "B07VX63TJV"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Active Active Sweatshirts red",
+        "distilled_active_text": "Active Active Sweatshirts polyester red",
+        "structured_values": {
+          "category": [
+            "Active Active Sweatshirts"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "red"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_55ec89d23a43",
+      "category": "Wallets, Card Cases & Money Organizers Wallets",
+      "material": "cotton",
+      "stale_color": "brown",
+      "new_color": "pink",
+      "relevant_asins": [
+        "B00FBCGH4U",
+        "B00KI0KOPS"
+      ],
+      "category_size": 349,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B09P4JP44D",
+          "B01MUCA1L5",
+          "B07SQY814V",
+          "B00CORDTWI",
+          "B017R01QDA",
+          "B002LC0YN8",
+          "B00R95DK0Q",
+          "B09LYQ1YJ9",
+          "B00FBCGH4U",
+          "B00OYX3T2K"
+        ],
+        "first_relevant_rank": 9,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.1111111111111111,
+        "legacy_active_text": "Wallets, Card Cases & Money Organizers Wallets pink",
+        "distilled_active_text": "Wallets, Card Cases & Money Organizers Wallets cotton pink",
+        "structured_values": {
+          "category": [
+            "Wallets, Card Cases & Money Organizers Wallets"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B09P4JP44D",
+          "B01MUCA1L5",
+          "B07SQY814V",
+          "B00KI0KOPS",
+          "B00CORDTWI",
+          "B017R01QDA",
+          "B002LC0YN8",
+          "B00R95DK0Q",
+          "B09LYQ1YJ9",
+          "B00FBCGH4U"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Wallets, Card Cases & Money Organizers Wallets pink",
+        "distilled_active_text": "Wallets, Card Cases & Money Organizers Wallets cotton pink",
+        "structured_values": {
+          "category": [
+            "Wallets, Card Cases & Money Organizers Wallets"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_1cf4522d5a6d",
+      "category": "Westlake",
+      "material": "silk",
+      "stale_color": "brown",
+      "new_color": "black",
+      "relevant_asins": [
+        "B0050B14CW",
+        "B08R76V1Z5",
+        "B09ZV4VYM3",
+        "B0B18JW3WH"
+      ],
+      "category_size": 1136,
+      "transition": "gained",
+      "legacy": {
+        "recommendations": [
+          "B00MUDXETO",
+          "B008ZGEWNC",
+          "B00QM0G02Y",
+          "B019X81NC8",
+          "B07CN4BFJ1",
+          "B08GG6P5T3",
+          "B00BLXMUVC",
+          "B01C68EIHY",
+          "B08JCG241R",
+          "B013Y6OOLW"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Westlake black",
+        "distilled_active_text": "Westlake silk black",
+        "structured_values": {
+          "category": [
+            "Westlake"
+          ],
+          "material": [
+            "silk"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B00MUDXETO",
+          "B00QM0G02Y",
+          "B0050B14CW",
+          "B08GG6P5T3",
+          "B00BLXMUVC",
+          "B013Y6OOLW",
+          "B01N3MG10D",
+          "B012SBPGZ2",
+          "B01B6O3KQE",
+          "B00T4GBO2E"
+        ],
+        "first_relevant_rank": 3,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.3333333333333333,
+        "legacy_active_text": "Westlake black",
+        "distilled_active_text": "Westlake silk black",
+        "structured_values": {
+          "category": [
+            "Westlake"
+          ],
+          "material": [
+            "silk"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_0849eaf4e288",
+      "category": "Tops, Tees & Blouses Tees",
+      "material": "polyester",
+      "stale_color": "blue",
+      "new_color": "white",
+      "relevant_asins": [
+        "B07Q2T56YG",
+        "B086VRYXMT"
+      ],
+      "category_size": 42,
+      "transition": "gained",
+      "legacy": {
+        "recommendations": [
+          "B07452TYVY",
+          "B09Q7G1MMW",
+          "B01JZ4JVBK",
+          "B08BXPLMXR",
+          "B07P142SPC",
+          "B0B3V4M3JS",
+          "B07F7JBYGB",
+          "B00IMV2YR6",
+          "B09DS1ZG7P",
+          "B00PU05122"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Tops, Tees & Blouses Tees white",
+        "distilled_active_text": "Tops, Tees & Blouses Tees polyester white",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Tees"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07Q2T56YG",
+          "B07452TYVY",
+          "B09Q7G1MMW",
+          "B01JZ4JVBK",
+          "B0B3RC268V",
+          "B08T8WGSZC",
+          "B08T8YBQ88",
+          "B0B3V4M3JS",
+          "B086X3YXKN",
+          "B07F7JBYGB"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Tops, Tees & Blouses Tees white",
+        "distilled_active_text": "Tops, Tees & Blouses Tees polyester white",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Tees"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_49f9f08dc238",
+      "category": "Card & ID Cases Card Cases",
+      "material": "leather",
+      "stale_color": "black",
+      "new_color": "blue",
+      "relevant_asins": [
+        "B009S01Y5I",
+        "B08FFWL6N1"
+      ],
+      "category_size": 32,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B08FFWL6N1",
+          "B0834YNH2J",
+          "B07C378Z47",
+          "B009S01Y5I",
+          "B01N1SJO9G",
+          "B07BBK74RN",
+          "B07DTG1XLQ",
+          "B07CK8SCYN",
+          "B08DXGG757",
+          "B07TX5CJ7Y"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Card & ID Cases Card Cases blue",
+        "distilled_active_text": "Card & ID Cases Card Cases leather blue",
+        "structured_values": {
+          "category": [
+            "Card & ID Cases Card Cases"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B08FFWL6N1",
+          "B0834YNH2J",
+          "B07C378Z47",
+          "B009S01Y5I",
+          "B01N1SJO9G",
+          "B07BBK74RN",
+          "B07DTG1XLQ",
+          "B07CK8SCYN",
+          "B08DXGG757",
+          "B00CORDTWI"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Card & ID Cases Card Cases blue",
+        "distilled_active_text": "Card & ID Cases Card Cases leather blue",
+        "structured_values": {
+          "category": [
+            "Card & ID Cases Card Cases"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_75afb3659763",
+      "category": "Handbags & Wallets Totes",
+      "material": "leather",
+      "stale_color": "blue",
+      "new_color": "pink",
+      "relevant_asins": [
+        "B00OV7FP44",
+        "B07CWHWPXZ",
+        "B09P7TNPLG"
+      ],
+      "category_size": 184,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B09P7TNPLG",
+          "B07CK6926V",
+          "B07CWHWPXZ",
+          "B00OV7FP44",
+          "B07CS9CG1Q",
+          "B01IQPGUB8",
+          "B08ZN8Y2W1",
+          "B081JX95TW",
+          "B07QSJRS59",
+          "B07Q5LXGQQ"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Handbags & Wallets Totes pink",
+        "distilled_active_text": "Handbags & Wallets Totes leather pink",
+        "structured_values": {
+          "category": [
+            "Handbags & Wallets Totes"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B09P7TNPLG",
+          "B07CK6926V",
+          "B07CWHWPXZ",
+          "B00OV7FP44",
+          "B07CS9CG1Q",
+          "B086YMXTQL",
+          "B01IQPGUB8",
+          "B075LPBBP6",
+          "B08ZN8Y2W1",
+          "B08CVGMSFW"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Handbags & Wallets Totes pink",
+        "distilled_active_text": "Handbags & Wallets Totes leather pink",
+        "structured_values": {
+          "category": [
+            "Handbags & Wallets Totes"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_1a1786fffcc5",
+      "category": "Bras Sports Bras",
+      "material": "cotton",
+      "stale_color": "red",
+      "new_color": "black",
+      "relevant_asins": [
+        "B08ML4JHMV",
+        "B098NRHGMZ"
+      ],
+      "category_size": 166,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B081V3HSDG",
+          "B01F98JLKM",
+          "B08YR2CRZ2",
+          "B08XX2Q72X",
+          "B01LXTZMTP",
+          "B08D696ZDV",
+          "B08M5L6FH3",
+          "B09W23T3J7",
+          "B08ML4JHMV",
+          "B07VC3VR86"
+        ],
+        "first_relevant_rank": 9,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.1111111111111111,
+        "legacy_active_text": "Bras Sports Bras black",
+        "distilled_active_text": "Bras Sports Bras cotton black",
+        "structured_values": {
+          "category": [
+            "Bras Sports Bras"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B081V3HSDG",
+          "B01F98JLKM",
+          "B08YR2CRZ2",
+          "B08XX2Q72X",
+          "B01LXTZMTP",
+          "B08D696ZDV",
+          "B08M5L6FH3",
+          "B09W23T3J7",
+          "B08ML4JHMV",
+          "B07VC3VR86"
+        ],
+        "first_relevant_rank": 9,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.1111111111111111,
+        "legacy_active_text": "Bras Sports Bras black",
+        "distilled_active_text": "Bras Sports Bras cotton black",
+        "structured_values": {
+          "category": [
+            "Bras Sports Bras"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_da5992bec165",
+      "category": "Dresses Club & Night Out",
+      "material": "spandex",
+      "stale_color": "red",
+      "new_color": "pink",
+      "relevant_asins": [
+        "B087M4BNKS",
+        "B0B3RFJ2D5"
+      ],
+      "category_size": 141,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B087M4BNKS",
+          "B0B3RFJ2D5",
+          "B08J3CN9XJ",
+          "B09Q659744",
+          "B0746GX94R",
+          "B019DU6AL0",
+          "B019DU687Q",
+          "B09MW845GT",
+          "B0995LKCSV",
+          "B07F33VP6X"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Dresses Club & Night Out pink",
+        "distilled_active_text": "Dresses Club & Night Out spandex pink",
+        "structured_values": {
+          "category": [
+            "Dresses Club & Night Out"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B087M4BNKS",
+          "B0B3RFJ2D5",
+          "B08J3CN9XJ",
+          "B09Q659744",
+          "B0746GX94R",
+          "B019DU6AL0",
+          "B019DU687Q",
+          "B09MW845GT",
+          "B07PPN1X4X",
+          "B07R43T314"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Dresses Club & Night Out pink",
+        "distilled_active_text": "Dresses Club & Night Out spandex pink",
+        "structured_values": {
+          "category": [
+            "Dresses Club & Night Out"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_0a771e9d92c8",
+      "category": "Socks Calf Socks",
+      "material": "spandex",
+      "stale_color": "black",
+      "new_color": "green",
+      "relevant_asins": [
+        "B07QXJ6J3F",
+        "B09DJ9H1WB"
+      ],
+      "category_size": 52,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07QXJ6J3F",
+          "B09DJ9H1WB",
+          "B00EKRB0C6",
+          "B096FVQFQ9",
+          "B095RXJ7DF",
+          "B08J4BKB6K",
+          "B07FWGGCR3",
+          "B016YUN4Y8",
+          "B07TJ8W4MN",
+          "B07D9T97W8"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Socks Calf Socks green",
+        "distilled_active_text": "Socks Calf Socks spandex green",
+        "structured_values": {
+          "category": [
+            "Socks Calf Socks"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "green"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07QXJ6J3F",
+          "B09DJ9H1WB",
+          "B00EKRB0C6",
+          "B096FVQFQ9",
+          "B095RXJ7DF",
+          "B08J4BKB6K",
+          "B07FWGGCR3",
+          "B07RQWMRFL",
+          "B016YUN4Y8",
+          "B07D9T97W8"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Socks Calf Socks green",
+        "distilled_active_text": "Socks Calf Socks spandex green",
+        "structured_values": {
+          "category": [
+            "Socks Calf Socks"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "green"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_c7bdd5e72cb9",
+      "category": "Cycling Gloves",
+      "material": "spandex",
+      "stale_color": "yellow",
+      "new_color": "black",
+      "relevant_asins": [
+        "B003BLOZ9M",
+        "B07L6982N1",
+        "B07RDDTKTC",
+        "B0B151KHBW",
+        "B0BDY5SBXS"
+      ],
+      "category_size": 49,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B0777KNK6S",
+          "B08XYYPBC9",
+          "B01EHR4BTW",
+          "B07RDDTKTC",
+          "B09DGN5HYN",
+          "B07633GNN1",
+          "B0B151KHBW",
+          "B09BDX215Z",
+          "B09T34C4PC",
+          "B07WD47DW1"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Cycling Gloves black",
+        "distilled_active_text": "Cycling Gloves spandex black",
+        "structured_values": {
+          "category": [
+            "Cycling Gloves"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0777KNK6S",
+          "B08XYYPBC9",
+          "B01EHR4BTW",
+          "B07RDDTKTC",
+          "B09DGN5HYN",
+          "B07633GNN1",
+          "B0B151KHBW",
+          "B09BDX215Z",
+          "B09T34C4PC",
+          "B07WD47DW1"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Cycling Gloves black",
+        "distilled_active_text": "Cycling Gloves spandex black",
+        "structured_values": {
+          "category": [
+            "Cycling Gloves"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_01652ab7ded4",
+      "category": "Sleep & Lounge Sleep Bottoms",
+      "material": "polyester",
+      "stale_color": "red",
+      "new_color": "black",
+      "relevant_asins": [
+        "B01D90JMUQ",
+        "B01NA85GL1",
+        "B09T4SM1VH"
+      ],
+      "category_size": 68,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B01LX0PMYA",
+          "B07SLFJR3T",
+          "B08F7SLZ25",
+          "B01NA85GL1",
+          "B077R9HZS1",
+          "B07H5QB85G",
+          "B01D90JMUQ",
+          "B09HHDY3X5",
+          "B092RTGB6K",
+          "B06XDBQF11"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Sleep & Lounge Sleep Bottoms black",
+        "distilled_active_text": "Sleep & Lounge Sleep Bottoms polyester black",
+        "structured_values": {
+          "category": [
+            "Sleep & Lounge Sleep Bottoms"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B01LX0PMYA",
+          "B07SLFJR3T",
+          "B08F7SLZ25",
+          "B01NA85GL1",
+          "B077R9HZS1",
+          "B07H5QB85G",
+          "B01D90JMUQ",
+          "B092RTGB6K",
+          "B06XDBQF11",
+          "B00RYGUY3Q"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Sleep & Lounge Sleep Bottoms black",
+        "distilled_active_text": "Sleep & Lounge Sleep Bottoms polyester black",
+        "structured_values": {
+          "category": [
+            "Sleep & Lounge Sleep Bottoms"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_e21949ad2f90",
+      "category": "Shirts Polos",
+      "material": "spandex",
+      "stale_color": "orange",
+      "new_color": "green",
+      "relevant_asins": [
+        "B07T67WY5D",
+        "B08JG9KPQZ",
+        "B08YY4DMS4",
+        "B095BM7Z5L"
+      ],
+      "category_size": 140,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B08YY4DMS4",
+          "B095BM7Z5L",
+          "B07X1KDWR8",
+          "B08JG9KPQZ",
+          "B07T67WY5D",
+          "B07RCYFJ1M",
+          "B0BPRQY4CF",
+          "B07MZ942LH",
+          "B08DPB6M87",
+          "B077QKS7KN"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Shirts Polos green",
+        "distilled_active_text": "Shirts Polos spandex green",
+        "structured_values": {
+          "category": [
+            "Shirts Polos"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "green"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B08YY4DMS4",
+          "B095BM7Z5L",
+          "B07X1KDWR8",
+          "B08JG9KPQZ",
+          "B07T67WY5D",
+          "B093ZLXB3Y",
+          "B07BXPTJ19",
+          "B07RCYFJ1M",
+          "B07MZ942LH",
+          "B08DPB6M87"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Shirts Polos green",
+        "distilled_active_text": "Shirts Polos spandex green",
+        "structured_values": {
+          "category": [
+            "Shirts Polos"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "green"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_3df27b710b1c",
+      "category": "Hiking & Trekking Hiking Shoes",
+      "material": "leather",
+      "stale_color": "blue",
+      "new_color": "black",
+      "relevant_asins": [
+        "B004LROV3A",
+        "B07TGT33HJ",
+        "B0BXHWDHN3"
+      ],
+      "category_size": 116,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B004LROV3A",
+          "B07ZZJZ1LJ",
+          "B0BXHWDHN3",
+          "B071G2BN3X",
+          "B07TGT33HJ",
+          "B07JQ97T24",
+          "B01MXJH64T",
+          "B089S38ZSS",
+          "B07X8MJRSB",
+          "B002WVSGF6"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Hiking & Trekking Hiking Shoes black",
+        "distilled_active_text": "Hiking & Trekking Hiking Shoes leather black",
+        "structured_values": {
+          "category": [
+            "Hiking & Trekking Hiking Shoes"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B004LROV3A",
+          "B07ZZJZ1LJ",
+          "B0BXHWDHN3",
+          "B071G2BN3X",
+          "B07TGT33HJ",
+          "B07JQ97T24",
+          "B01MXJH64T",
+          "B07X8MJRSB",
+          "B002WVSGF6",
+          "B07XY22VBK"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Hiking & Trekking Hiking Shoes black",
+        "distilled_active_text": "Hiking & Trekking Hiking Shoes leather black",
+        "structured_values": {
+          "category": [
+            "Hiking & Trekking Hiking Shoes"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_6884e21e38e9",
+      "category": "Sets Tracksuits",
+      "material": "polyester",
+      "stale_color": "green",
+      "new_color": "orange",
+      "relevant_asins": [
+        "B08H54M9B8",
+        "B092DPPQS8",
+        "B0B49MQBSK"
+      ],
+      "category_size": 84,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B0B49MQBSK",
+          "B092DPPQS8",
+          "B08H54M9B8",
+          "B088NGXXFX",
+          "B07VCVP17K",
+          "B0725PJ57W",
+          "B074GW9BYQ",
+          "B07QDXBSBP",
+          "B07MQ1R3MM",
+          "B071FWH8GK"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sets Tracksuits orange",
+        "distilled_active_text": "Sets Tracksuits polyester orange",
+        "structured_values": {
+          "category": [
+            "Sets Tracksuits"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "orange"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0B49MQBSK",
+          "B092DPPQS8",
+          "B08H54M9B8",
+          "B088NGXXFX",
+          "B08GKSVFF6",
+          "B08M3WKDFJ",
+          "B092QXY52G",
+          "B01G1LH676",
+          "B08JM5V3YR",
+          "B092DD2LQP"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sets Tracksuits orange",
+        "distilled_active_text": "Sets Tracksuits polyester orange",
+        "structured_values": {
+          "category": [
+            "Sets Tracksuits"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "orange"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_ead0671c8a84",
+      "category": "Dresses Casual",
+      "material": "cotton",
+      "stale_color": "orange",
+      "new_color": "blue",
+      "relevant_asins": [
+        "B00CC2IU9M",
+        "B00EBNSBAI",
+        "B010NBMOGI",
+        "B016R0G6J0",
+        "B017H04PAG",
+        "B01K9X5JLC",
+        "B01LZRRV4X",
+        "B01NBF7O73",
+        "B0719FJJCG",
+        "B07K2JJ21X",
+        "B07MP31ZCB",
+        "B07NV7NBPH",
+        "B07PWC33RH",
+        "B07QZ3JTK3",
+        "B07TZFYVST",
+        "B07VXQF26D",
+        "B085NP4N23",
+        "B08ZJ2G39G",
+        "B093337HYV",
+        "B09RVG4Q36",
+        "B09TR933RK",
+        "B0B64SWL1N",
+        "B0C34144HF"
+      ],
+      "category_size": 769,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07MP31ZCB",
+          "B01NBF7O73",
+          "B07GWP244H",
+          "B01FK59ORY",
+          "B00MNGMG2E",
+          "B07483YC42",
+          "B07VM7ZHDD",
+          "B08ZJ2G39G",
+          "B016R0G6J0",
+          "B09XF84RFM"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Dresses Casual blue",
+        "distilled_active_text": "Dresses Casual cotton blue",
+        "structured_values": {
+          "category": [
+            "Dresses Casual"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07MP31ZCB",
+          "B01NBF7O73",
+          "B07GWP244H",
+          "B085NP4N23",
+          "B08ZJ2G39G",
+          "B07VM7ZHDD",
+          "B016R0G6J0",
+          "B09XF84RFM",
+          "B07K2JJ21X",
+          "B09TR933RK"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Dresses Casual blue",
+        "distilled_active_text": "Dresses Casual cotton blue",
+        "structured_values": {
+          "category": [
+            "Dresses Casual"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_07275b353101",
+      "category": "Tops, Tees & Blouses Blouses & Button-Down Shirts",
+      "material": "spandex",
+      "stale_color": "pink",
+      "new_color": "green",
+      "relevant_asins": [
+        "B078K2LZM6",
+        "B07FT54Z4G",
+        "B07QK7DT5T",
+        "B082SXK2WL",
+        "B099F52NT8"
+      ],
+      "category_size": 681,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B08FYL15GY",
+          "B00GLQFW5K",
+          "B07JZ6HTP1",
+          "B0B5DPQNYH",
+          "B07QG2D1F8",
+          "B073J2N47D",
+          "B099F52NT8",
+          "B07Q7MRPP4",
+          "B088TP3QWY",
+          "B07QK7DT5T"
+        ],
+        "first_relevant_rank": 7,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.14285714285714285,
+        "legacy_active_text": "Tops, Tees & Blouses Blouses & Button-Down Shirts green",
+        "distilled_active_text": "Tops, Tees & Blouses Blouses & Button-Down Shirts spandex green",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Blouses & Button-Down Shirts"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "green"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B082SXK2WL",
+          "B00GLQFW5K",
+          "B07JZ6HTP1",
+          "B0B5DPQNYH",
+          "B07QG2D1F8",
+          "B073J2N47D",
+          "B099F52NT8",
+          "B07Q7MRPP4",
+          "B088TP3QWY",
+          "B07QK7DT5T"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Tops, Tees & Blouses Blouses & Button-Down Shirts green",
+        "distilled_active_text": "Tops, Tees & Blouses Blouses & Button-Down Shirts spandex green",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Blouses & Button-Down Shirts"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "green"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_952d3de72e3d",
+      "category": "Pants",
+      "material": "spandex",
+      "stale_color": "blue",
+      "new_color": "black",
+      "relevant_asins": [
+        "B06X1GP1RQ",
+        "B084P55J89",
+        "B096Z1YD6G"
+      ],
+      "category_size": 107,
+      "transition": "miss_both",
+      "legacy": {
+        "recommendations": [
+          "B00GICI2CW",
+          "B07GSQMCVT",
+          "B07XVK6DHR",
+          "B07RLVZNDF",
+          "B08N61J6K8",
+          "B07N83DQGP",
+          "B08R8MSMBW",
+          "B07G5VQY2X",
+          "B06XH7K1JS",
+          "B08LQLV1PL"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Pants black",
+        "distilled_active_text": "Pants spandex black",
+        "structured_values": {
+          "category": [
+            "Pants"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0953BX2J8",
+          "B074CSP7LV",
+          "B09VB627B2",
+          "B0BWJKZ9GX",
+          "B097SM8WDS",
+          "B07JJNDZ11",
+          "B09K41YGNC",
+          "B09K43LY6R",
+          "B004TITMKI",
+          "B0B1DRYPR7"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Pants black",
+        "distilled_active_text": "Pants spandex black",
+        "structured_values": {
+          "category": [
+            "Pants"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_1dbe7e9fae8a",
+      "category": "Sets Tracksuits",
+      "material": "cotton",
+      "stale_color": "blue",
+      "new_color": "orange",
+      "relevant_asins": [
+        "B088NGXXFX",
+        "B092DPPQS8"
+      ],
+      "category_size": 84,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B0B49MQBSK",
+          "B092DPPQS8",
+          "B08H54M9B8",
+          "B088NGXXFX",
+          "B07VCVP17K",
+          "B0725PJ57W",
+          "B074GW9BYQ",
+          "B07QDXBSBP",
+          "B07MQ1R3MM",
+          "B071FWH8GK"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Sets Tracksuits orange",
+        "distilled_active_text": "Sets Tracksuits cotton orange",
+        "structured_values": {
+          "category": [
+            "Sets Tracksuits"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "orange"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0B49MQBSK",
+          "B092DPPQS8",
+          "B08H54M9B8",
+          "B088NGXXFX",
+          "B07S984836",
+          "B073X29JXD",
+          "B07VCVP17K",
+          "B0725PJ57W",
+          "B074GW9BYQ",
+          "B07T1BY2ZY"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Sets Tracksuits orange",
+        "distilled_active_text": "Sets Tracksuits cotton orange",
+        "structured_values": {
+          "category": [
+            "Sets Tracksuits"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "orange"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_99adfa099c8d",
+      "category": "Shirts Henleys",
+      "material": "cotton",
+      "stale_color": "beige",
+      "new_color": "grey",
+      "relevant_asins": [
+        "B07HYHHJR6",
+        "B07JLZH9V9",
+        "B07SVZTWP8"
+      ],
+      "category_size": 55,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07Q5R7MZS",
+          "B07JLZH9V9",
+          "B07HYHHJR6",
+          "B07SVZTWP8",
+          "B07NP4GQVX",
+          "B07L4R66WD",
+          "B08Z6WNGR8",
+          "B07SFZQ7RX",
+          "B07D7GQCNP",
+          "B088FLQVHK"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Shirts Henleys grey",
+        "distilled_active_text": "Shirts Henleys cotton grey",
+        "structured_values": {
+          "category": [
+            "Shirts Henleys"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "grey"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07Q5R7MZS",
+          "B07JLZH9V9",
+          "B07HYHHJR6",
+          "B07SVZTWP8",
+          "B0772Y9KVC",
+          "B077TW1Y5N",
+          "B077K896TB",
+          "B07NP4GQVX",
+          "B06XXQHT66",
+          "B07L4R66WD"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Shirts Henleys grey",
+        "distilled_active_text": "Shirts Henleys cotton grey",
+        "structured_values": {
+          "category": [
+            "Shirts Henleys"
+          ],
+          "material": [
+            "cotton"
+          ],
+          "color": [
+            "grey"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_db915398fbb9",
+      "category": "Tops, Tees & Blouses Tanks & Camis",
+      "material": "silk",
+      "stale_color": "gray",
+      "new_color": "navy",
+      "relevant_asins": [
+        "B096YB5VVY",
+        "B09Z7DBCKQ"
+      ],
+      "category_size": 388,
+      "transition": "miss_both",
+      "legacy": {
+        "recommendations": [
+          "B01GIID7F2",
+          "B08DCPHJRG",
+          "B08Y5QF1WC",
+          "B07RY7Q646",
+          "B07F7JBYGB",
+          "B07BLPY6FX",
+          "B086BC6VLY",
+          "B07R7L1GBJ",
+          "B07R6DRDQG",
+          "B07SC22GSD"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Tops, Tees & Blouses Tanks & Camis navy",
+        "distilled_active_text": "Tops, Tees & Blouses Tanks & Camis silk navy",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Tanks & Camis"
+          ],
+          "material": [
+            "silk"
+          ],
+          "color": [
+            "navy"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B01GIID7F2",
+          "B08JHWFGN6",
+          "B08Y5QF1WC",
+          "B07RY7Q646",
+          "B07F7JBYGB",
+          "B08TBFQR2J",
+          "B07BLPY6FX",
+          "B07H43QN4D",
+          "B086BC6VLY",
+          "B07R7L1GBJ"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Tops, Tees & Blouses Tanks & Camis navy",
+        "distilled_active_text": "Tops, Tees & Blouses Tanks & Camis silk navy",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Tanks & Camis"
+          ],
+          "material": [
+            "silk"
+          ],
+          "color": [
+            "navy"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_6cbcf865760b",
+      "category": "Westlake",
+      "material": "silk",
+      "stale_color": "brown",
+      "new_color": "blue",
+      "relevant_asins": [
+        "B08R76V1Z5",
+        "B09ZV4VYM3",
+        "B0B18JW3WH"
+      ],
+      "category_size": 1136,
+      "transition": "miss_both",
+      "legacy": {
+        "recommendations": [
+          "B06WD47J7S",
+          "B00K7V6254",
+          "B01M6TV1AI",
+          "B07PJX962D",
+          "B00K4T1SEE",
+          "B06Y2B33HY",
+          "B088RL8X3S",
+          "B0779KBBDN",
+          "B01D452V40",
+          "B0749M1HVB"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Westlake blue",
+        "distilled_active_text": "Westlake silk blue",
+        "structured_values": {
+          "category": [
+            "Westlake"
+          ],
+          "material": [
+            "silk"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B06WD47J7S",
+          "B00K7V6254",
+          "B01M6TV1AI",
+          "B07PJX962D",
+          "B00K4T1SEE",
+          "B06Y2B33HY",
+          "B088RL8X3S",
+          "B0779KBBDN",
+          "B01D452V40",
+          "B0749M1HVB"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Westlake blue",
+        "distilled_active_text": "Westlake silk blue",
+        "structured_values": {
+          "category": [
+            "Westlake"
+          ],
+          "material": [
+            "silk"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_d26fa138f182",
+      "category": "Tops, Tees & Blouses T-Shirts",
+      "material": "silk",
+      "stale_color": "grey",
+      "new_color": "red",
+      "relevant_asins": [
+        "B091FNL5Q1",
+        "B0B2Q82Y6M"
+      ],
+      "category_size": 680,
+      "transition": "miss_both",
+      "legacy": {
+        "recommendations": [
+          "B0882N8H6Y",
+          "B07S8SHGZ6",
+          "B08ZRVWNC2",
+          "B08C4PN3LQ",
+          "B00L8ADL2A",
+          "B078HSD16J",
+          "B07MWZMNP4",
+          "B07CHGDLXN",
+          "B09D16VZX3",
+          "B00I0EPSDM"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Tops, Tees & Blouses T-Shirts red",
+        "distilled_active_text": "Tops, Tees & Blouses T-Shirts silk red",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses T-Shirts"
+          ],
+          "material": [
+            "silk"
+          ],
+          "color": [
+            "red"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0882N8H6Y",
+          "B07S8SHGZ6",
+          "B08C4PN3LQ",
+          "B00L8ADL2A",
+          "B078HSD16J",
+          "B07MWZMNP4",
+          "B07CHGDLXN",
+          "B09D16VZX3",
+          "B00I0EPSDM",
+          "B01DCAACHK"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Tops, Tees & Blouses T-Shirts red",
+        "distilled_active_text": "Tops, Tees & Blouses T-Shirts silk red",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses T-Shirts"
+          ],
+          "material": [
+            "silk"
+          ],
+          "color": [
+            "red"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_50d7d99f3980",
+      "category": "Sweaters Pullovers",
+      "material": "polyester",
+      "stale_color": "green",
+      "new_color": "orange",
+      "relevant_asins": [
+        "B07VPB42GS",
+        "B0BDL17BCN"
+      ],
+      "category_size": 379,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B0BDL17BCN",
+          "B08J4DS9MD",
+          "B08DDH81PQ",
+          "B07VPB42GS",
+          "B07J4R3BKC",
+          "B07HMV57HS",
+          "B07NZ8VCHT",
+          "B0913NLM1H",
+          "B07W8G4HZM",
+          "B0B2QYRN15"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sweaters Pullovers orange",
+        "distilled_active_text": "Sweaters Pullovers polyester orange",
+        "structured_values": {
+          "category": [
+            "Sweaters Pullovers"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "orange"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0BDL17BCN",
+          "B08J4DS9MD",
+          "B08DDH81PQ",
+          "B07VPB42GS",
+          "B07J4R3BKC",
+          "B07NZ8VCHT",
+          "B08DNQ8TZB",
+          "B07PXNWBHR",
+          "B07FM8P65N",
+          "B077S83P8B"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Sweaters Pullovers orange",
+        "distilled_active_text": "Sweaters Pullovers polyester orange",
+        "structured_values": {
+          "category": [
+            "Sweaters Pullovers"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "orange"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_60cc4996663d",
+      "category": "Dresses Work",
+      "material": "polyester",
+      "stale_color": "red",
+      "new_color": "white",
+      "relevant_asins": [
+        "B06ZZNN4RF",
+        "B07RRP9C3B"
+      ],
+      "category_size": 114,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B00UBOPUZK",
+          "B07RRP9C3B",
+          "B06ZZNN4RF",
+          "B07R43T314",
+          "B01FK59ORY",
+          "B07KQ77C9G",
+          "B07SST9C8Y",
+          "B076P1VSQ4",
+          "B07PL9BPLL",
+          "B081S99R7Z"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Dresses Work white",
+        "distilled_active_text": "Dresses Work polyester white",
+        "structured_values": {
+          "category": [
+            "Dresses Work"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B00UBOPUZK",
+          "B07RRP9C3B",
+          "B06ZZNN4RF",
+          "B07R43T314",
+          "B01FK59ORY",
+          "B07KQ77C9G",
+          "B07SST9C8Y",
+          "B076P1VSQ4",
+          "B07PL9BPLL",
+          "B072BLX1GT"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Dresses Work white",
+        "distilled_active_text": "Dresses Work polyester white",
+        "structured_values": {
+          "category": [
+            "Dresses Work"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "white"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_c0085a477133",
+      "category": "Socks & Hosiery Sheers",
+      "material": "nylon",
+      "stale_color": "beige",
+      "new_color": "black",
+      "relevant_asins": [
+        "B000JG61NK",
+        "B000KGKDGU",
+        "B000V5IP0G",
+        "B01BLU621I",
+        "B01BPLFY1C",
+        "B01CA4DLFY",
+        "B071D3TZ2D",
+        "B07P6P7HJS",
+        "B07YNNFM8R",
+        "B095233S9C"
+      ],
+      "category_size": 30,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07YNNFM8R",
+          "B071D3TZ2D",
+          "B01BLU621I",
+          "B07P6P7HJS",
+          "B08BY93GQV",
+          "B095233S9C",
+          "B010688746",
+          "B000KGKDGU",
+          "B01BPLFY1C",
+          "B000V5IP0G"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Socks & Hosiery Sheers black",
+        "distilled_active_text": "Socks & Hosiery Sheers nylon black",
+        "structured_values": {
+          "category": [
+            "Socks & Hosiery Sheers"
+          ],
+          "material": [
+            "nylon"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07YNNFM8R",
+          "B071D3TZ2D",
+          "B01BLU621I",
+          "B07P6P7HJS",
+          "B08BY93GQV",
+          "B095233S9C",
+          "B010688746",
+          "B000KGKDGU",
+          "B01BPLFY1C",
+          "B000V5IP0G"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Socks & Hosiery Sheers black",
+        "distilled_active_text": "Socks & Hosiery Sheers nylon black",
+        "structured_values": {
+          "category": [
+            "Socks & Hosiery Sheers"
+          ],
+          "material": [
+            "nylon"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_e7277b45aecb",
+      "category": "Sneakers",
+      "material": "leather",
+      "stale_color": "blue",
+      "new_color": "black",
+      "relevant_asins": [
+        "B00JLZ5K8W",
+        "B00T92POSI",
+        "B06Y1WN8X4",
+        "B07G5YTKSM"
+      ],
+      "category_size": 285,
+      "transition": "gained",
+      "legacy": {
+        "recommendations": [
+          "B01LXXGHX0",
+          "B07TFD9W95",
+          "B07K1X4KJM",
+          "B0811DSPRM",
+          "B07RW7WZT2",
+          "B07PWF161P",
+          "B08RXVXYZR",
+          "B083S5THB3",
+          "B01MZ1V690",
+          "B07TSMB66F"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Sneakers black",
+        "distilled_active_text": "Sneakers leather black",
+        "structured_values": {
+          "category": [
+            "Sneakers"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07BN1YXGV",
+          "B07VKS3JLS",
+          "B01LXXGHX0",
+          "B08C4RJHSH",
+          "B07TFD9W95",
+          "B00T92POSI",
+          "B07X8MJRSB",
+          "B07JX7J8KS",
+          "B005AGHDMW",
+          "B07K1X4KJM"
+        ],
+        "first_relevant_rank": 6,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.16666666666666666,
+        "legacy_active_text": "Sneakers black",
+        "distilled_active_text": "Sneakers leather black",
+        "structured_values": {
+          "category": [
+            "Sneakers"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_53601538f175",
+      "category": "Fashion Sneakers",
+      "material": "leather",
+      "stale_color": "navy",
+      "new_color": "blue",
+      "relevant_asins": [
+        "B008PVV1WC",
+        "B00L10V7FK",
+        "B014AA341C",
+        "B017WHGVKG",
+        "B01D9ZKRC8",
+        "B07D8Y7KX9",
+        "B07QMYMCC3"
+      ],
+      "category_size": 1017,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07D8Y7KX9",
+          "B07FNYX15W",
+          "B07TMKWCM1",
+          "B07TYB7X4R",
+          "B084JKY4S5",
+          "B083NKWX42",
+          "B017WHGVKG",
+          "B002LTLN9A",
+          "B0873133WH",
+          "B07JH2GRYF"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Fashion Sneakers blue",
+        "distilled_active_text": "Fashion Sneakers leather blue",
+        "structured_values": {
+          "category": [
+            "Fashion Sneakers"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07D8Y7KX9",
+          "B017WHGVKG",
+          "B0873133WH",
+          "B008PVV1WC",
+          "B0993NJRLT",
+          "B094LW4TVM",
+          "B07X5JB36C",
+          "B09JFM6FP5",
+          "B00L10V7FK",
+          "B094FBVT5Y"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Fashion Sneakers blue",
+        "distilled_active_text": "Fashion Sneakers leather blue",
+        "structured_values": {
+          "category": [
+            "Fashion Sneakers"
+          ],
+          "material": [
+            "leather"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_213125eb31d9",
+      "category": "Suiting & Blazers Blazers",
+      "material": "spandex",
+      "stale_color": "white",
+      "new_color": "red",
+      "relevant_asins": [
+        "B07V5QKQJG",
+        "B07V6RQC7Y",
+        "B09DY9Q2HN"
+      ],
+      "category_size": 78,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07TC8X31Z",
+          "B00UYOMAVY",
+          "B09DY9Q2HN",
+          "B07V5QKQJG",
+          "B08KSPDS9S",
+          "B06XFVFC7W",
+          "B07V6RQC7Y",
+          "B01A9ZNWNC",
+          "B09BT6LSJV",
+          "B09KNFKZ53"
+        ],
+        "first_relevant_rank": 3,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.3333333333333333,
+        "legacy_active_text": "Suiting & Blazers Blazers red",
+        "distilled_active_text": "Suiting & Blazers Blazers spandex red",
+        "structured_values": {
+          "category": [
+            "Suiting & Blazers Blazers"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "red"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07TC8X31Z",
+          "B00UYOMAVY",
+          "B09DY9Q2HN",
+          "B07V5QKQJG",
+          "B08KSPDS9S",
+          "B07V6RQC7Y",
+          "B06XFVFC7W",
+          "B08NLRHYHR",
+          "B01A9ZNWNC",
+          "B09BT6LSJV"
+        ],
+        "first_relevant_rank": 3,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.3333333333333333,
+        "legacy_active_text": "Suiting & Blazers Blazers red",
+        "distilled_active_text": "Suiting & Blazers Blazers spandex red",
+        "structured_values": {
+          "category": [
+            "Suiting & Blazers Blazers"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "red"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_00dc44dcf618",
+      "category": "Tops, Tees & Blouses Tunics",
+      "material": "wool",
+      "stale_color": "purple",
+      "new_color": "blue",
+      "relevant_asins": [
+        "B09LJ252D5",
+        "B09WNBHSFN"
+      ],
+      "category_size": 519,
+      "transition": "miss_both",
+      "legacy": {
+        "recommendations": [
+          "B07HMTH77S",
+          "B084RHPJY4",
+          "B00IV59FN4",
+          "B07B5YMKW3",
+          "B07RDJ9TL4",
+          "B08BY7YRBQ",
+          "B0991RZZKR",
+          "B07FZ41CFH",
+          "B07SN36K14",
+          "B07X9X8L8D"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Tops, Tees & Blouses Tunics blue",
+        "distilled_active_text": "Tops, Tees & Blouses Tunics wool blue",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Tunics"
+          ],
+          "material": [
+            "wool"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07HMTH77S",
+          "B084RHPJY4",
+          "B00IV59FN4",
+          "B07B5YMKW3",
+          "B07RDJ9TL4",
+          "B08BY7YRBQ",
+          "B0991RZZKR",
+          "B07FZ41CFH",
+          "B07SN36K14",
+          "B07X9X8L8D"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Tops, Tees & Blouses Tunics blue",
+        "distilled_active_text": "Tops, Tees & Blouses Tunics wool blue",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Tunics"
+          ],
+          "material": [
+            "wool"
+          ],
+          "color": [
+            "blue"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_15453668d0c6",
+      "category": "Slippers",
+      "material": "wool",
+      "stale_color": "gray",
+      "new_color": "pink",
+      "relevant_asins": [
+        "B07L632VQJ",
+        "B0817R613H",
+        "B08ZS5J2SV"
+      ],
+      "category_size": 522,
+      "transition": "gained",
+      "legacy": {
+        "recommendations": [
+          "B08MV1VVKR",
+          "B07H33Y11B",
+          "B088TJKZVT",
+          "B08GS2F8CY",
+          "B07R5YRWVC",
+          "B07WG9WZJP",
+          "B08LP2PGMS",
+          "B08LP3MRND",
+          "B08BS13RKM",
+          "B079XNVLDZ"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Slippers pink",
+        "distilled_active_text": "Slippers wool pink",
+        "structured_values": {
+          "category": [
+            "Slippers"
+          ],
+          "material": [
+            "wool"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B08MV1VVKR",
+          "B07H33Y11B",
+          "B088TJKZVT",
+          "B08GS2F8CY",
+          "B07R5YRWVC",
+          "B08BS13RKM",
+          "B079QHY15V",
+          "B08ZS5J2SV",
+          "B07YHCNWCN",
+          "B088WHDXW9"
+        ],
+        "first_relevant_rank": 8,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.125,
+        "legacy_active_text": "Slippers pink",
+        "distilled_active_text": "Slippers wool pink",
+        "structured_values": {
+          "category": [
+            "Slippers"
+          ],
+          "material": [
+            "wool"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_1cd15c761b63",
+      "category": "Tops, Tees & Blouses Blouses & Button-Down Shirts",
+      "material": "silk",
+      "stale_color": "orange",
+      "new_color": "pink",
+      "relevant_asins": [
+        "B07G347BQJ",
+        "B0B4D545SB"
+      ],
+      "category_size": 681,
+      "transition": "miss_both",
+      "legacy": {
+        "recommendations": [
+          "B08FYL15GY",
+          "B01LSILYRA",
+          "B08K36VN2C",
+          "B0C9Q8V5P6",
+          "B07B9VXK8V",
+          "B07M677S66",
+          "B07ZVDJQR2",
+          "B07SNBJW8R",
+          "B08VJDPWPN",
+          "B07RNGGJPM"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Tops, Tees & Blouses Blouses & Button-Down Shirts pink",
+        "distilled_active_text": "Tops, Tees & Blouses Blouses & Button-Down Shirts silk pink",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Blouses & Button-Down Shirts"
+          ],
+          "material": [
+            "silk"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B08FYL15GY",
+          "B01LSILYRA",
+          "B08K36VN2C",
+          "B0C9Q8V5P6",
+          "B07B9VXK8V",
+          "B07M677S66",
+          "B07ZVDJQR2",
+          "B07SNBJW8R",
+          "B08VJDPWPN",
+          "B07RNGGJPM"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Tops, Tees & Blouses Blouses & Button-Down Shirts pink",
+        "distilled_active_text": "Tops, Tees & Blouses Blouses & Button-Down Shirts silk pink",
+        "structured_values": {
+          "category": [
+            "Tops, Tees & Blouses Blouses & Button-Down Shirts"
+          ],
+          "material": [
+            "silk"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_f610ca47332e",
+      "category": "Active Active Shirts & Tees",
+      "material": "spandex",
+      "stale_color": "blue",
+      "new_color": "grey",
+      "relevant_asins": [
+        "B00QVB3J6E",
+        "B01MS1LE77",
+        "B07FSCJ7FP",
+        "B08N4XJ2VH"
+      ],
+      "category_size": 263,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B094DZCZ9F",
+          "B0BYJMLV5X",
+          "B08TT289SK",
+          "B07FSCJ7FP",
+          "B08N4XJ2VH",
+          "B07BV6G5DZ",
+          "B07TWTPZLD",
+          "B00MNNLBKA",
+          "B00M0QN9MI",
+          "B07LFPLW9L"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Active Active Shirts & Tees grey",
+        "distilled_active_text": "Active Active Shirts & Tees spandex grey",
+        "structured_values": {
+          "category": [
+            "Active Active Shirts & Tees"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "grey"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B094DZCZ9F",
+          "B0BYJMLV5X",
+          "B08TT289SK",
+          "B07FSCJ7FP",
+          "B08N4XJ2VH",
+          "B07BV6G5DZ",
+          "B07TWTPZLD",
+          "B00MNNLBKA",
+          "B00M0QN9MI",
+          "B07LFPLW9L"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Active Active Shirts & Tees grey",
+        "distilled_active_text": "Active Active Shirts & Tees spandex grey",
+        "structured_values": {
+          "category": [
+            "Active Active Shirts & Tees"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "grey"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_5a74105d232e",
+      "category": "Sweaters Pullovers",
+      "material": "denim",
+      "stale_color": "yellow",
+      "new_color": "brown",
+      "relevant_asins": [
+        "B09JMP7713",
+        "B0B31JFX4H"
+      ],
+      "category_size": 379,
+      "transition": "gained",
+      "legacy": {
+        "recommendations": [
+          "B0B5Z6N81F",
+          "B08FSY1D86",
+          "B08M3XZ72D",
+          "B081D7Z68Q",
+          "B01DFJA8CM",
+          "B07X64PVHF",
+          "B0BN8K1VKX",
+          "B07NZ8VCHT",
+          "B0913NLM1H",
+          "B07W8G4HZM"
+        ],
+        "first_relevant_rank": null,
+        "hit_at_10": false,
+        "reciprocal_rank": 0.0,
+        "legacy_active_text": "Sweaters Pullovers brown",
+        "distilled_active_text": "Sweaters Pullovers denim brown",
+        "structured_values": {
+          "category": [
+            "Sweaters Pullovers"
+          ],
+          "material": [
+            "denim"
+          ],
+          "color": [
+            "brown"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B0B5Z6N81F",
+          "B08FSY1D86",
+          "B08M3XZ72D",
+          "B081D7Z68Q",
+          "B01DFJA8CM",
+          "B07X64PVHF",
+          "B09JMP7713",
+          "B0B31JFX4H",
+          "B0BN8K1VKX",
+          "B07NZ8VCHT"
+        ],
+        "first_relevant_rank": 7,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.14285714285714285,
+        "legacy_active_text": "Sweaters Pullovers brown",
+        "distilled_active_text": "Sweaters Pullovers denim brown",
+        "structured_values": {
+          "category": [
+            "Sweaters Pullovers"
+          ],
+          "material": [
+            "denim"
+          ],
+          "color": [
+            "brown"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_ac932d06c187",
+      "category": "Suits & Sport Coats Sport Coats & Blazers",
+      "material": "polyester",
+      "stale_color": "red",
+      "new_color": "navy",
+      "relevant_asins": [
+        "B07M5HQYV2",
+        "B08JYYXPBF"
+      ],
+      "category_size": 43,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07M5HQYV2",
+          "B08JYYXPBF",
+          "B07KKRC1QV",
+          "B0889Q64RC",
+          "B00HFD0SMA",
+          "B087BVW4HR",
+          "B011EM2PPK",
+          "B0789J6XVF",
+          "B07C34BMH6",
+          "B00VRSHLSS"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Suits & Sport Coats Sport Coats & Blazers navy",
+        "distilled_active_text": "Suits & Sport Coats Sport Coats & Blazers polyester navy",
+        "structured_values": {
+          "category": [
+            "Suits & Sport Coats Sport Coats & Blazers"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "navy"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07M5HQYV2",
+          "B08JYYXPBF",
+          "B07KKRC1QV",
+          "B0889Q64RC",
+          "B00HFD0SMA",
+          "B087BVW4HR",
+          "B011EM2PPK",
+          "B0789J6XVF",
+          "B07C34BMH6",
+          "B07B44VQHL"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Suits & Sport Coats Sport Coats & Blazers navy",
+        "distilled_active_text": "Suits & Sport Coats Sport Coats & Blazers polyester navy",
+        "structured_values": {
+          "category": [
+            "Suits & Sport Coats Sport Coats & Blazers"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "navy"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_5f98d75c3b03",
+      "category": "Jumpsuits, Rompers & Overalls Jumpsuits",
+      "material": "polyester",
+      "stale_color": "green",
+      "new_color": "yellow",
+      "relevant_asins": [
+        "B07PPG8MTY",
+        "B0BY2GRDFX"
+      ],
+      "category_size": 192,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07X1PZLKB",
+          "B0BY2GRDFX",
+          "B07DNTC9ZP",
+          "B07MXHK2D3",
+          "B07BSF368B",
+          "B06X9B45YB",
+          "B01N9T3OIG",
+          "B08NDWWRJP",
+          "B00N1U58ZI",
+          "B07DGVJFPS"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Jumpsuits, Rompers & Overalls Jumpsuits yellow",
+        "distilled_active_text": "Jumpsuits, Rompers & Overalls Jumpsuits polyester yellow",
+        "structured_values": {
+          "category": [
+            "Jumpsuits, Rompers & Overalls Jumpsuits"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "yellow"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07PPG8MTY",
+          "B07X1PZLKB",
+          "B0BY2GRDFX",
+          "B07DNTC9ZP",
+          "B07MXHK2D3",
+          "B07BSF368B",
+          "B0BR4PLQGN",
+          "B01N9T3OIG",
+          "B099WR4VNY",
+          "B07N85WNQ5"
+        ],
+        "first_relevant_rank": 1,
+        "hit_at_10": true,
+        "reciprocal_rank": 1.0,
+        "legacy_active_text": "Jumpsuits, Rompers & Overalls Jumpsuits yellow",
+        "distilled_active_text": "Jumpsuits, Rompers & Overalls Jumpsuits polyester yellow",
+        "structured_values": {
+          "category": [
+            "Jumpsuits, Rompers & Overalls Jumpsuits"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "yellow"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_9f1d8b1fd099",
+      "category": "Bras Sports Bras",
+      "material": "spandex",
+      "stale_color": "pink",
+      "new_color": "gray",
+      "relevant_asins": [
+        "B07RYG7KS1",
+        "B081YT6R4K",
+        "B08HS9TF9W"
+      ],
+      "category_size": 166,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B08CMVHNDW",
+          "B081YT6R4K",
+          "B08BLSKD2R",
+          "B08X44FP5L",
+          "B07RYG7KS1",
+          "B08HS9TF9W",
+          "B07QDWN6WK",
+          "B07J6Q3XTQ",
+          "B09FYWDYMR",
+          "B07CNMTNR2"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Bras Sports Bras gray",
+        "distilled_active_text": "Bras Sports Bras spandex gray",
+        "structured_values": {
+          "category": [
+            "Bras Sports Bras"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "gray"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B08CMVHNDW",
+          "B081YT6R4K",
+          "B08BLSKD2R",
+          "B08X44FP5L",
+          "B07RYG7KS1",
+          "B08HS9TF9W",
+          "B07QDWN6WK",
+          "B07DRJ4GZF",
+          "B09FYWDYMR",
+          "B09FT7XZSV"
+        ],
+        "first_relevant_rank": 2,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.5,
+        "legacy_active_text": "Bras Sports Bras gray",
+        "distilled_active_text": "Bras Sports Bras spandex gray",
+        "structured_values": {
+          "category": [
+            "Bras Sports Bras"
+          ],
+          "material": [
+            "spandex"
+          ],
+          "color": [
+            "gray"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_b3642fa2b647",
+      "category": "Competitive Swimwear One-Piece Suits",
+      "material": "polyester",
+      "stale_color": "blue",
+      "new_color": "black",
+      "relevant_asins": [
+        "B0038QRVKK",
+        "B00I97KPWY"
+      ],
+      "category_size": 47,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B07RH6DGZ1",
+          "B01ITGFCKY",
+          "B085FY8QM2",
+          "B00I97KPWY",
+          "B0038QRVKK",
+          "B092CTDR9Q",
+          "B08TBY37MK",
+          "B09MF2BJGZ",
+          "B00LQG9BPM",
+          "B094NG96T9"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Competitive Swimwear One-Piece Suits black",
+        "distilled_active_text": "Competitive Swimwear One-Piece Suits polyester black",
+        "structured_values": {
+          "category": [
+            "Competitive Swimwear One-Piece Suits"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B07RH6DGZ1",
+          "B01ITGFCKY",
+          "B085FY8QM2",
+          "B00I97KPWY",
+          "B0038QRVKK",
+          "B092CTDR9Q",
+          "B08TBY37MK",
+          "B09MF2BJGZ",
+          "B00LQG9BPM",
+          "B094NG96T9"
+        ],
+        "first_relevant_rank": 4,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.25,
+        "legacy_active_text": "Competitive Swimwear One-Piece Suits black",
+        "distilled_active_text": "Competitive Swimwear One-Piece Suits polyester black",
+        "structured_values": {
+          "category": [
+            "Competitive Swimwear One-Piece Suits"
+          ],
+          "material": [
+            "polyester"
+          ],
+          "color": [
+            "black"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "v14_0f1bd4785bd7",
+      "category": "Skirts",
+      "material": "rayon",
+      "stale_color": "blue",
+      "new_color": "pink",
+      "relevant_asins": [
+        "B01B5DLP9U",
+        "B08V8FTHQL"
+      ],
+      "category_size": 183,
+      "transition": "hit_both",
+      "legacy": {
+        "recommendations": [
+          "B015H5OCGK",
+          "B089NJB8V1",
+          "B0978J4WJS",
+          "B07PVFXG4S",
+          "B01B5DLP9U",
+          "B08V8FTHQL",
+          "B00XBB9IBW",
+          "B018AJMGY0",
+          "B08T19H4TF",
+          "B08PZ44532"
+        ],
+        "first_relevant_rank": 5,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.2,
+        "legacy_active_text": "Skirts pink",
+        "distilled_active_text": "Skirts rayon pink",
+        "structured_values": {
+          "category": [
+            "Skirts"
+          ],
+          "material": [
+            "rayon"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      },
+      "structured": {
+        "recommendations": [
+          "B015H5OCGK",
+          "B089NJB8V1",
+          "B0978J4WJS",
+          "B07PVFXG4S",
+          "B01B5DLP9U",
+          "B08V8FTHQL",
+          "B00XBB9IBW",
+          "B018AJMGY0",
+          "B08T19H4TF",
+          "B08PZ44532"
+        ],
+        "first_relevant_rank": 5,
+        "hit_at_10": true,
+        "reciprocal_rank": 0.2,
+        "legacy_active_text": "Skirts pink",
+        "distilled_active_text": "Skirts rayon pink",
+        "structured_values": {
+          "category": [
+            "Skirts"
+          ],
+          "material": [
+            "rayon"
+          ],
+          "color": [
+            "pink"
+          ]
+        }
+      }
+    }
+  ]
+}

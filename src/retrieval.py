@@ -3,6 +3,11 @@ from __future__ import annotations
 import re
 import sqlite3
 
+from src.context import (
+    retrieval_active_text,
+    retrieval_evidence_text,
+)
+
 from src.intent import (
     ShoppingIntent,
 )
@@ -95,9 +100,6 @@ def _ors(
     tokens: list[str],
     max_terms: int = 40,
 ) -> str:
-    """
-    Build an FTS5 OR expression.
-    """
 
     return " OR ".join(
         f'"{token}"'
@@ -115,19 +117,15 @@ def build_expression(
     """
     Build a field-aware BM25 query.
 
-    Category evidence is searched primarily
-    against:
+    V14B changes only the evidence source:
 
-        title
-        categories
+        V13:
+            raw legacy evidence
 
-    Product constraints are searched against:
+        V14B shadow:
+            structured distilled evidence
 
-        title
-        features
-        details
-        description
-        store
+    Category routing remains unchanged.
     """
 
     category_terms = terms(
@@ -135,11 +133,8 @@ def build_expression(
     )
 
     evidence_terms = terms(
-        " ".join(
-            item.text
-
-            for item
-            in state.evidence
+        retrieval_evidence_text(
+            state
         )
     )
 
@@ -179,20 +174,6 @@ def should_use_semantic(
     lexical_count: int,
     exploration: bool,
 ) -> bool:
-    """
-    Decide whether dense retrieval should
-    be activated.
-
-    Buying:
-        Prefer high-precision lexical retrieval.
-
-    Browsing:
-        Use semantic recall only when the
-        lexical pool is sparse.
-
-    Exploration:
-        Always use semantic recall.
-    """
 
     if exploration:
         return True
@@ -214,10 +195,6 @@ def _candidate_from_row(
         int,
     ],
 ) -> dict:
-    """
-    Convert one FTS row to the candidate
-    structure expected by reranking.
-    """
 
     parent_asin = str(
         row[1]
@@ -280,18 +257,6 @@ def retrieve_candidates(
     exploration: bool = False,
     plan_override: RetrievalPlan | None = None,
 ) -> list[dict]:
-    """
-    Execute route-aware candidate retrieval.
-
-    Normal operation obtains its plan from
-    orchestration.retrieval_plan().
-
-    V13 protected recovery may explicitly pass
-    a frozen V12 plan or a deeper recovery plan.
-    This lets the Agent compare both candidate
-    universes independently instead of allowing
-    expansion to reorder the V12 path.
-    """
 
     expression = (
         build_expression(
@@ -316,8 +281,7 @@ def retrieve_candidates(
     )
 
     # ----------------------------------
-    # ROUTE 1:
-    # FIELD-AWARE BM25
+    # ROUTE 1: FIELD-AWARE BM25
     # ----------------------------------
 
     lexical: list[
@@ -371,7 +335,7 @@ def retrieve_candidates(
         ]
 
     # ----------------------------------
-    # INTENT-ROUTED SEMANTIC DECISION
+    # ROUTE 2 DECISION
     # ----------------------------------
 
     use_semantic = (
@@ -391,16 +355,18 @@ def retrieve_candidates(
 
         not use_semantic
     ):
+
         return lexical
 
     # ----------------------------------
-    # ROUTE 2:
-    # DENSE SEMANTIC RETRIEVAL
+    # ROUTE 2: SEMANTIC RETRIEVAL
     # ----------------------------------
 
     semantic_hits = (
         semantic.search(
-            state.active_text(),
+            retrieval_active_text(
+                state
+            ),
             top_n=(
                 plan.semantic_limit
             ),
@@ -456,10 +422,6 @@ def retrieve_candidates(
         in missing_asins
     ]
 
-    # ----------------------------------
-    # LOAD SEMANTIC-ONLY METADATA
-    # ----------------------------------
-
     if missing_rowids:
 
         placeholders = ",".join(
@@ -508,10 +470,6 @@ def retrieve_candidates(
                     "parent_asin"
                 ]
             ] = candidate
-
-    # ----------------------------------
-    # MARK HYBRID CANDIDATES
-    # ----------------------------------
 
     for (
         asin,
@@ -573,7 +531,6 @@ def retrieve_candidates(
         )
     ]
 
-    # Preserve lexical ordering first.
     return (
         lexical
         +
