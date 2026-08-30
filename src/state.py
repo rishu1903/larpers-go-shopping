@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 import re
 
 from src.hard_constraints import (
+    REMOVE_BUDGET,
     BudgetConstraint,
     parse_budget_constraint,
 )
@@ -325,7 +326,17 @@ class SessionState:
             )
         )
 
-        if parsed_budget is not None:
+        if parsed_budget is REMOVE_BUDGET:
+
+            self.budget_constraint = (
+                None
+            )
+
+            self.budget_source_turn = (
+                None
+            )
+
+        elif parsed_budget is not None:
 
             self.budget_constraint = (
                 parsed_budget

@@ -311,6 +311,59 @@ class BudgetConstraint:
         return True
 
 
+# --------------------------------------------------
+# EXPLICIT REMOVAL
+# --------------------------------------------------
+#
+# A shopper can explicitly cancel a previously
+# stated budget without providing a replacement
+# value:
+#
+#     no budget limit
+#     doesn't matter on price
+#     any price is fine
+#
+# parse_budget_constraint() returns the REMOVE_BUDGET
+# sentinel for these phrases so the caller can
+# distinguish "explicit removal requested" from
+# "nothing budget-related said" (both of which would
+# otherwise be indistinguishable None results).
+
+class _RemoveBudget:
+
+    __slots__ = ()
+
+    def __repr__(self) -> str:
+        return "REMOVE_BUDGET"
+
+
+REMOVE_BUDGET = _RemoveBudget()
+
+
+_NO_CONSTRAINT_RE = re.compile(
+    r"\bno\s+budget(?:\s+limit)?\b"
+    r"|\bno\s+price\s+limit\b"
+    r"|\bno\s+limit\s+on\s+(?:budget|price|spending)\b"
+    r"|\b(?:any|no)\s+price\s+is\s+fine\b"
+    r"|\bprice\s+(?:doesn't|does\s+not)\s+matter\b"
+    r"|\b(?:doesn't|does\s+not)\s+matter\s+on\s+price\b"
+    r"|\bnot\s+picky\s+about\s+price\b",
+    re.IGNORECASE,
+)
+
+
+def _is_explicit_no_constraint(
+    text: str,
+) -> bool:
+
+    return (
+        _NO_CONSTRAINT_RE.search(
+            text
+        )
+        is not None
+    )
+
+
 def _number(
     value: str,
 ) -> float:
@@ -427,9 +480,18 @@ def coerce_price(
 
 def parse_budget_constraint(
     text: str,
-) -> BudgetConstraint | None:
+) -> BudgetConstraint | _RemoveBudget | None:
     """
     Extract an explicit hard budget constraint.
+
+    Returns REMOVE_BUDGET when the shopper explicitly
+    cancels a budget without providing a replacement
+    value (e.g. "no budget limit"), and None when
+    nothing budget-related was said at all -- callers
+    that only replace an existing constraint on a new
+    value should treat any non-None result as
+    actionable and branch on `result is REMOVE_BUDGET`
+    to distinguish the two.
 
     A hard price constraint requires monetary
     context.
@@ -562,6 +624,12 @@ def parse_budget_constraint(
         and
         max_price is None
     ):
+
+        if _is_explicit_no_constraint(
+            normalized
+        ):
+            return REMOVE_BUDGET
+
         return None
 
     # Reject contradictory constraints instead
