@@ -1,0 +1,3146 @@
+{
+  "benchmark": "V12 semantic exploration fusion weight ablation",
+  "uses_public_labels": false,
+  "source_benchmark": "experiments\\v10_2_concept_robustness.json",
+  "weights": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0,
+    1.25,
+    1.5
+  ],
+  "case_count": 130,
+  "runs": [
+    {
+      "weight": 0.0,
+      "summary": {
+        "sample_count": 130,
+        "initial": {
+          "sample_count": 130,
+          "hit_rate_at_10": 0.776923,
+          "mrr_at_10": 0.498803,
+          "macro_precision_at_10": 0.273077,
+          "macro_recall_at_10": 0.333189,
+          "mean_recommendation_count": 10.0
+        },
+        "exploration_turn_only": {
+          "sample_count": 130,
+          "hit_rate_at_10": 0.7,
+          "mrr_at_10": 0.359362,
+          "macro_precision_at_10": 0.199231,
+          "macro_recall_at_10": 0.205304,
+          "mean_recommendation_count": 10.0
+        },
+        "session_by_turn_2": {
+          "sample_count": 130,
+          "cumulative_hit_rate_by_turn_2": 0.884615,
+          "first_turn_hits": 101,
+          "second_turn_rescues": 14,
+          "misses_after_turn_2": 15,
+          "rescue_rate_among_initial_misses": 0.482759,
+          "first_hit_mrr": 0.557158,
+          "macro_recall_across_20": 0.538493,
+          "mean_recommendation_overlap": 0.0
+        },
+        "transition": {
+          "rescued_after_exploration": 14,
+          "initial_only": 24,
+          "hit_both": 77,
+          "miss_both": 15
+        },
+        "v10_2_semantic_rescue_subset": {
+          "sample_count": 6,
+          "session": {
+            "sample_count": 6,
+            "cumulative_hit_rate_by_turn_2": 0.166667,
+            "first_turn_hits": 0,
+            "second_turn_rescues": 1,
+            "misses_after_turn_2": 5,
+            "rescue_rate_among_initial_misses": 0.166667,
+            "first_hit_mrr": 0.166667,
+            "macro_recall_across_20": 0.083333,
+            "mean_recommendation_overlap": 0.0
+          },
+          "rescued_into_top_10_on_turn_2": 1
+        },
+        "by_concept": {
+          "adjustable": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.436667,
+              "macro_precision_at_10": 0.2,
+              "macro_recall_at_10": 0.117334,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.304286,
+              "macro_precision_at_10": 0.27,
+              "macro_recall_at_10": 0.172175,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.476667,
+              "macro_recall_across_20": 0.289509,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "breathable": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.572619,
+              "macro_precision_at_10": 0.28,
+              "macro_recall_at_10": 0.462121,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.331111,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.254221,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.672619,
+              "macro_recall_across_20": 0.716342,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "hiking": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.37,
+              "macro_precision_at_10": 0.16,
+              "macro_recall_at_10": 0.271961,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.249167,
+              "macro_precision_at_10": 0.12,
+              "macro_recall_at_10": 0.173317,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 6,
+              "second_turn_rescues": 3,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.75,
+              "first_hit_mrr": 0.5025,
+              "macro_recall_across_20": 0.445278,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "hooded": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.533333,
+              "macro_precision_at_10": 0.44,
+              "macro_recall_at_10": 0.275725,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.469444,
+              "macro_precision_at_10": 0.29,
+              "macro_recall_at_10": 0.204529,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.8,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 2,
+              "rescue_rate_among_initial_misses": 0.333333,
+              "first_hit_mrr": 0.544444,
+              "macro_recall_across_20": 0.480254,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "insulated": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.658333,
+              "macro_precision_at_10": 0.25,
+              "macro_recall_at_10": 0.378258,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.485833,
+              "macro_precision_at_10": 0.27,
+              "macro_recall_at_10": 0.281146,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 1.0,
+              "first_hit_mrr": 0.691667,
+              "macro_recall_across_20": 0.659403,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "lightweight": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.553333,
+              "macro_precision_at_10": 0.32,
+              "macro_recall_at_10": 0.378697,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.290833,
+              "macro_precision_at_10": 0.17,
+              "macro_recall_at_10": 0.218391,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 1.0,
+              "first_hit_mrr": 0.578333,
+              "macro_recall_across_20": 0.597088,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "non_slip": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.442063,
+              "macro_precision_at_10": 0.28,
+              "macro_recall_at_10": 0.27846,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.27,
+              "macro_precision_at_10": 0.19,
+              "macro_recall_at_10": 0.103011,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.45873,
+              "macro_recall_across_20": 0.38147,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "pockets": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.6,
+              "macro_precision_at_10": 0.44,
+              "macro_recall_at_10": 0.353333,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.5,
+              "macro_precision_at_10": 0.34,
+              "macro_recall_at_10": 0.340151,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.8,
+              "macro_recall_across_20": 0.693485,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "running": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.508333,
+              "macro_precision_at_10": 0.22,
+              "macro_recall_at_10": 0.414592,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.307143,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.233379,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.608333,
+              "macro_recall_across_20": 0.647971,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "stretch": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.675,
+              "macro_precision_at_10": 0.35,
+              "macro_recall_at_10": 0.439456,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.213889,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.198073,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.675,
+              "macro_recall_across_20": 0.637529,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "water_resistant": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.209524,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.259286,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.4,
+              "mrr_at_10": 0.3,
+              "macro_precision_at_10": 0.11,
+              "macro_recall_at_10": 0.125,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.7,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 3,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.209524,
+              "macro_recall_across_20": 0.384286,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "waterproof": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.253571,
+              "macro_precision_at_10": 0.15,
+              "macro_recall_at_10": 0.273374,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.5,
+              "mrr_at_10": 0.333333,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.143566,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.7,
+              "first_turn_hits": 6,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 3,
+              "rescue_rate_among_initial_misses": 0.25,
+              "first_hit_mrr": 0.353571,
+              "macro_recall_across_20": 0.416941,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "winter": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 1.0,
+              "mrr_at_10": 0.671667,
+              "macro_precision_at_10": 0.32,
+              "macro_recall_at_10": 0.428864,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.616667,
+              "macro_precision_at_10": 0.19,
+              "macro_recall_at_10": 0.221995,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 10,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.671667,
+              "macro_recall_across_20": 0.650859,
+              "mean_recommendation_overlap": 0.0
+            }
+          }
+        }
+      },
+      "compact": {
+        "weight": 0.0,
+        "initial_hit_rate_at_10": 0.776923,
+        "initial_mrr_at_10": 0.498803,
+        "turn2_hit_rate_at_10": 0.7,
+        "cumulative_hit_rate_by_turn_2": 0.884615,
+        "second_turn_rescues": 14,
+        "misses_after_turn_2": 15,
+        "rescue_rate_among_initial_misses": 0.482759,
+        "first_hit_mrr": 0.557158,
+        "macro_recall_across_20": 0.538493,
+        "semantic_only_subset_count": 6,
+        "semantic_only_rescued_into_top_10": 1
+      }
+    },
+    {
+      "weight": 0.25,
+      "summary": {
+        "sample_count": 130,
+        "initial": {
+          "sample_count": 130,
+          "hit_rate_at_10": 0.776923,
+          "mrr_at_10": 0.498803,
+          "macro_precision_at_10": 0.273077,
+          "macro_recall_at_10": 0.333189,
+          "mean_recommendation_count": 10.0
+        },
+        "exploration_turn_only": {
+          "sample_count": 130,
+          "hit_rate_at_10": 0.707692,
+          "mrr_at_10": 0.3709,
+          "macro_precision_at_10": 0.200769,
+          "macro_recall_at_10": 0.206761,
+          "mean_recommendation_count": 10.0
+        },
+        "session_by_turn_2": {
+          "sample_count": 130,
+          "cumulative_hit_rate_by_turn_2": 0.884615,
+          "first_turn_hits": 101,
+          "second_turn_rescues": 14,
+          "misses_after_turn_2": 15,
+          "rescue_rate_among_initial_misses": 0.482759,
+          "first_hit_mrr": 0.557158,
+          "macro_recall_across_20": 0.53995,
+          "mean_recommendation_overlap": 0.0
+        },
+        "transition": {
+          "rescued_after_exploration": 14,
+          "initial_only": 23,
+          "hit_both": 78,
+          "miss_both": 15
+        },
+        "v10_2_semantic_rescue_subset": {
+          "sample_count": 6,
+          "session": {
+            "sample_count": 6,
+            "cumulative_hit_rate_by_turn_2": 0.166667,
+            "first_turn_hits": 0,
+            "second_turn_rescues": 1,
+            "misses_after_turn_2": 5,
+            "rescue_rate_among_initial_misses": 0.166667,
+            "first_hit_mrr": 0.166667,
+            "macro_recall_across_20": 0.083333,
+            "mean_recommendation_overlap": 0.0
+          },
+          "rescued_into_top_10_on_turn_2": 1
+        },
+        "by_concept": {
+          "adjustable": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.436667,
+              "macro_precision_at_10": 0.2,
+              "macro_recall_at_10": 0.117334,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.304286,
+              "macro_precision_at_10": 0.27,
+              "macro_recall_at_10": 0.172175,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.476667,
+              "macro_recall_across_20": 0.289509,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "breathable": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.572619,
+              "macro_precision_at_10": 0.28,
+              "macro_recall_at_10": 0.462121,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.331111,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.254221,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.672619,
+              "macro_recall_across_20": 0.716342,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "hiking": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.37,
+              "macro_precision_at_10": 0.16,
+              "macro_recall_at_10": 0.271961,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.349167,
+              "macro_precision_at_10": 0.15,
+              "macro_recall_at_10": 0.20059,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 6,
+              "second_turn_rescues": 3,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.75,
+              "first_hit_mrr": 0.5025,
+              "macro_recall_across_20": 0.472551,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "hooded": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.533333,
+              "macro_precision_at_10": 0.44,
+              "macro_recall_at_10": 0.275725,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.469444,
+              "macro_precision_at_10": 0.29,
+              "macro_recall_at_10": 0.204529,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.8,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 2,
+              "rescue_rate_among_initial_misses": 0.333333,
+              "first_hit_mrr": 0.544444,
+              "macro_recall_across_20": 0.480254,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "insulated": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.658333,
+              "macro_precision_at_10": 0.25,
+              "macro_recall_at_10": 0.378258,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.485833,
+              "macro_precision_at_10": 0.27,
+              "macro_recall_at_10": 0.281146,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 1.0,
+              "first_hit_mrr": 0.691667,
+              "macro_recall_across_20": 0.659403,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "lightweight": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.553333,
+              "macro_precision_at_10": 0.32,
+              "macro_recall_at_10": 0.378697,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.290833,
+              "macro_precision_at_10": 0.17,
+              "macro_recall_at_10": 0.218391,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 1.0,
+              "first_hit_mrr": 0.578333,
+              "macro_recall_across_20": 0.597088,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "non_slip": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.442063,
+              "macro_precision_at_10": 0.28,
+              "macro_recall_at_10": 0.27846,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.27,
+              "macro_precision_at_10": 0.19,
+              "macro_recall_at_10": 0.103011,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.45873,
+              "macro_recall_across_20": 0.38147,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "pockets": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.6,
+              "macro_precision_at_10": 0.44,
+              "macro_recall_at_10": 0.353333,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.5,
+              "macro_precision_at_10": 0.33,
+              "macro_recall_at_10": 0.331818,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.8,
+              "macro_recall_across_20": 0.685152,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "running": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.508333,
+              "macro_precision_at_10": 0.22,
+              "macro_recall_at_10": 0.414592,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.307143,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.233379,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.608333,
+              "macro_recall_across_20": 0.647971,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "stretch": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.675,
+              "macro_precision_at_10": 0.35,
+              "macro_recall_at_10": 0.439456,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.263889,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.198073,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.675,
+              "macro_recall_across_20": 0.637529,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "water_resistant": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.209524,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.259286,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.4,
+              "mrr_at_10": 0.3,
+              "macro_precision_at_10": 0.11,
+              "macro_recall_at_10": 0.125,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.7,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 3,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.209524,
+              "macro_recall_across_20": 0.384286,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "waterproof": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.253571,
+              "macro_precision_at_10": 0.15,
+              "macro_recall_at_10": 0.273374,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.5,
+              "mrr_at_10": 0.333333,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.143566,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.7,
+              "first_turn_hits": 6,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 3,
+              "rescue_rate_among_initial_misses": 0.25,
+              "first_hit_mrr": 0.353571,
+              "macro_recall_across_20": 0.416941,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "winter": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 1.0,
+              "mrr_at_10": 0.671667,
+              "macro_precision_at_10": 0.32,
+              "macro_recall_at_10": 0.428864,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.616667,
+              "macro_precision_at_10": 0.19,
+              "macro_recall_at_10": 0.221995,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 10,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.671667,
+              "macro_recall_across_20": 0.650859,
+              "mean_recommendation_overlap": 0.0
+            }
+          }
+        }
+      },
+      "compact": {
+        "weight": 0.25,
+        "initial_hit_rate_at_10": 0.776923,
+        "initial_mrr_at_10": 0.498803,
+        "turn2_hit_rate_at_10": 0.707692,
+        "cumulative_hit_rate_by_turn_2": 0.884615,
+        "second_turn_rescues": 14,
+        "misses_after_turn_2": 15,
+        "rescue_rate_among_initial_misses": 0.482759,
+        "first_hit_mrr": 0.557158,
+        "macro_recall_across_20": 0.53995,
+        "semantic_only_subset_count": 6,
+        "semantic_only_rescued_into_top_10": 1
+      }
+    },
+    {
+      "weight": 0.5,
+      "summary": {
+        "sample_count": 130,
+        "initial": {
+          "sample_count": 130,
+          "hit_rate_at_10": 0.776923,
+          "mrr_at_10": 0.498803,
+          "macro_precision_at_10": 0.273077,
+          "macro_recall_at_10": 0.333189,
+          "mean_recommendation_count": 10.0
+        },
+        "exploration_turn_only": {
+          "sample_count": 130,
+          "hit_rate_at_10": 0.707692,
+          "mrr_at_10": 0.369234,
+          "macro_precision_at_10": 0.201538,
+          "macro_recall_at_10": 0.206797,
+          "mean_recommendation_count": 10.0
+        },
+        "session_by_turn_2": {
+          "sample_count": 130,
+          "cumulative_hit_rate_by_turn_2": 0.884615,
+          "first_turn_hits": 101,
+          "second_turn_rescues": 14,
+          "misses_after_turn_2": 15,
+          "rescue_rate_among_initial_misses": 0.482759,
+          "first_hit_mrr": 0.557158,
+          "macro_recall_across_20": 0.539986,
+          "mean_recommendation_overlap": 0.0
+        },
+        "transition": {
+          "rescued_after_exploration": 14,
+          "initial_only": 23,
+          "hit_both": 78,
+          "miss_both": 15
+        },
+        "v10_2_semantic_rescue_subset": {
+          "sample_count": 6,
+          "session": {
+            "sample_count": 6,
+            "cumulative_hit_rate_by_turn_2": 0.166667,
+            "first_turn_hits": 0,
+            "second_turn_rescues": 1,
+            "misses_after_turn_2": 5,
+            "rescue_rate_among_initial_misses": 0.166667,
+            "first_hit_mrr": 0.166667,
+            "macro_recall_across_20": 0.083333,
+            "mean_recommendation_overlap": 0.0
+          },
+          "rescued_into_top_10_on_turn_2": 1
+        },
+        "by_concept": {
+          "adjustable": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.436667,
+              "macro_precision_at_10": 0.2,
+              "macro_recall_at_10": 0.117334,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.304286,
+              "macro_precision_at_10": 0.27,
+              "macro_recall_at_10": 0.172175,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.476667,
+              "macro_recall_across_20": 0.289509,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "breathable": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.572619,
+              "macro_precision_at_10": 0.28,
+              "macro_recall_at_10": 0.462121,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.331111,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.254221,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.672619,
+              "macro_recall_across_20": 0.716342,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "hiking": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.37,
+              "macro_precision_at_10": 0.16,
+              "macro_recall_at_10": 0.271961,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.349167,
+              "macro_precision_at_10": 0.15,
+              "macro_recall_at_10": 0.20059,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 6,
+              "second_turn_rescues": 3,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.75,
+              "first_hit_mrr": 0.5025,
+              "macro_recall_across_20": 0.472551,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "hooded": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.533333,
+              "macro_precision_at_10": 0.44,
+              "macro_recall_at_10": 0.275725,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.469444,
+              "macro_precision_at_10": 0.29,
+              "macro_recall_at_10": 0.204529,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.8,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 2,
+              "rescue_rate_among_initial_misses": 0.333333,
+              "first_hit_mrr": 0.544444,
+              "macro_recall_across_20": 0.480254,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "insulated": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.658333,
+              "macro_precision_at_10": 0.25,
+              "macro_recall_at_10": 0.378258,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.485833,
+              "macro_precision_at_10": 0.27,
+              "macro_recall_at_10": 0.281146,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 1.0,
+              "first_hit_mrr": 0.691667,
+              "macro_recall_across_20": 0.659403,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "lightweight": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.553333,
+              "macro_precision_at_10": 0.32,
+              "macro_recall_at_10": 0.378697,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.290833,
+              "macro_precision_at_10": 0.17,
+              "macro_recall_at_10": 0.218391,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 1.0,
+              "first_hit_mrr": 0.578333,
+              "macro_recall_across_20": 0.597088,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "non_slip": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.442063,
+              "macro_precision_at_10": 0.28,
+              "macro_recall_at_10": 0.27846,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.27,
+              "macro_precision_at_10": 0.19,
+              "macro_recall_at_10": 0.103011,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.45873,
+              "macro_recall_across_20": 0.38147,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "pockets": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.6,
+              "macro_precision_at_10": 0.44,
+              "macro_recall_at_10": 0.353333,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.491667,
+              "macro_precision_at_10": 0.33,
+              "macro_recall_at_10": 0.331818,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.8,
+              "macro_recall_across_20": 0.685152,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "running": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.508333,
+              "macro_precision_at_10": 0.22,
+              "macro_recall_at_10": 0.414592,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.307143,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.233379,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.608333,
+              "macro_recall_across_20": 0.647971,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "stretch": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.675,
+              "macro_precision_at_10": 0.35,
+              "macro_recall_at_10": 0.439456,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.263889,
+              "macro_precision_at_10": 0.19,
+              "macro_recall_at_10": 0.198534,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.675,
+              "macro_recall_across_20": 0.63799,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "water_resistant": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.209524,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.259286,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.4,
+              "mrr_at_10": 0.3,
+              "macro_precision_at_10": 0.11,
+              "macro_recall_at_10": 0.125,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.7,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 3,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.209524,
+              "macro_recall_across_20": 0.384286,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "waterproof": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.253571,
+              "macro_precision_at_10": 0.15,
+              "macro_recall_at_10": 0.273374,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.5,
+              "mrr_at_10": 0.32,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.143566,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.7,
+              "first_turn_hits": 6,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 3,
+              "rescue_rate_among_initial_misses": 0.25,
+              "first_hit_mrr": 0.353571,
+              "macro_recall_across_20": 0.416941,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "winter": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 1.0,
+              "mrr_at_10": 0.671667,
+              "macro_precision_at_10": 0.32,
+              "macro_recall_at_10": 0.428864,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.616667,
+              "macro_precision_at_10": 0.19,
+              "macro_recall_at_10": 0.221995,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 10,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.671667,
+              "macro_recall_across_20": 0.650859,
+              "mean_recommendation_overlap": 0.0
+            }
+          }
+        }
+      },
+      "compact": {
+        "weight": 0.5,
+        "initial_hit_rate_at_10": 0.776923,
+        "initial_mrr_at_10": 0.498803,
+        "turn2_hit_rate_at_10": 0.707692,
+        "cumulative_hit_rate_by_turn_2": 0.884615,
+        "second_turn_rescues": 14,
+        "misses_after_turn_2": 15,
+        "rescue_rate_among_initial_misses": 0.482759,
+        "first_hit_mrr": 0.557158,
+        "macro_recall_across_20": 0.539986,
+        "semantic_only_subset_count": 6,
+        "semantic_only_rescued_into_top_10": 1
+      }
+    },
+    {
+      "weight": 0.75,
+      "summary": {
+        "sample_count": 130,
+        "initial": {
+          "sample_count": 130,
+          "hit_rate_at_10": 0.776923,
+          "mrr_at_10": 0.498803,
+          "macro_precision_at_10": 0.273077,
+          "macro_recall_at_10": 0.333189,
+          "mean_recommendation_count": 10.0
+        },
+        "exploration_turn_only": {
+          "sample_count": 130,
+          "hit_rate_at_10": 0.715385,
+          "mrr_at_10": 0.369063,
+          "macro_precision_at_10": 0.203846,
+          "macro_recall_at_10": 0.208428,
+          "mean_recommendation_count": 10.0
+        },
+        "session_by_turn_2": {
+          "sample_count": 130,
+          "cumulative_hit_rate_by_turn_2": 0.884615,
+          "first_turn_hits": 101,
+          "second_turn_rescues": 14,
+          "misses_after_turn_2": 15,
+          "rescue_rate_among_initial_misses": 0.482759,
+          "first_hit_mrr": 0.557158,
+          "macro_recall_across_20": 0.541617,
+          "mean_recommendation_overlap": 0.0
+        },
+        "transition": {
+          "rescued_after_exploration": 14,
+          "initial_only": 22,
+          "hit_both": 79,
+          "miss_both": 15
+        },
+        "v10_2_semantic_rescue_subset": {
+          "sample_count": 6,
+          "session": {
+            "sample_count": 6,
+            "cumulative_hit_rate_by_turn_2": 0.166667,
+            "first_turn_hits": 0,
+            "second_turn_rescues": 1,
+            "misses_after_turn_2": 5,
+            "rescue_rate_among_initial_misses": 0.166667,
+            "first_hit_mrr": 0.166667,
+            "macro_recall_across_20": 0.083333,
+            "mean_recommendation_overlap": 0.0
+          },
+          "rescued_into_top_10_on_turn_2": 1
+        },
+        "by_concept": {
+          "adjustable": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.436667,
+              "macro_precision_at_10": 0.2,
+              "macro_recall_at_10": 0.117334,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.304286,
+              "macro_precision_at_10": 0.27,
+              "macro_recall_at_10": 0.172175,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.476667,
+              "macro_recall_across_20": 0.289509,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "breathable": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.572619,
+              "macro_precision_at_10": 0.28,
+              "macro_recall_at_10": 0.462121,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.331111,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.254221,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.672619,
+              "macro_recall_across_20": 0.716342,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "hiking": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.37,
+              "macro_precision_at_10": 0.16,
+              "macro_recall_at_10": 0.271961,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.349167,
+              "macro_precision_at_10": 0.17,
+              "macro_recall_at_10": 0.218772,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 6,
+              "second_turn_rescues": 3,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.75,
+              "first_hit_mrr": 0.5025,
+              "macro_recall_across_20": 0.490733,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "hooded": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.533333,
+              "macro_precision_at_10": 0.44,
+              "macro_recall_at_10": 0.275725,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.469444,
+              "macro_precision_at_10": 0.29,
+              "macro_recall_at_10": 0.204529,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.8,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 2,
+              "rescue_rate_among_initial_misses": 0.333333,
+              "first_hit_mrr": 0.544444,
+              "macro_recall_across_20": 0.480254,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "insulated": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.658333,
+              "macro_precision_at_10": 0.25,
+              "macro_recall_at_10": 0.378258,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.485833,
+              "macro_precision_at_10": 0.27,
+              "macro_recall_at_10": 0.281146,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 1.0,
+              "first_hit_mrr": 0.691667,
+              "macro_recall_across_20": 0.659403,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "lightweight": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.553333,
+              "macro_precision_at_10": 0.32,
+              "macro_recall_at_10": 0.378697,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.293611,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.221421,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 1.0,
+              "first_hit_mrr": 0.578333,
+              "macro_recall_across_20": 0.600119,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "non_slip": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.442063,
+              "macro_precision_at_10": 0.28,
+              "macro_recall_at_10": 0.27846,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.27,
+              "macro_precision_at_10": 0.19,
+              "macro_recall_at_10": 0.103011,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.45873,
+              "macro_recall_across_20": 0.38147,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "pockets": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.6,
+              "macro_precision_at_10": 0.44,
+              "macro_recall_at_10": 0.353333,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.486667,
+              "macro_precision_at_10": 0.33,
+              "macro_recall_at_10": 0.331818,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.8,
+              "macro_recall_across_20": 0.685152,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "running": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.508333,
+              "macro_precision_at_10": 0.22,
+              "macro_recall_at_10": 0.414592,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.307143,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.233379,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.608333,
+              "macro_recall_across_20": 0.647971,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "stretch": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.675,
+              "macro_precision_at_10": 0.35,
+              "macro_recall_at_10": 0.439456,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.263889,
+              "macro_precision_at_10": 0.19,
+              "macro_recall_at_10": 0.198534,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.675,
+              "macro_recall_across_20": 0.63799,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "water_resistant": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.209524,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.259286,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.4,
+              "mrr_at_10": 0.3,
+              "macro_precision_at_10": 0.11,
+              "macro_recall_at_10": 0.125,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.7,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 3,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.209524,
+              "macro_recall_across_20": 0.384286,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "waterproof": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.253571,
+              "macro_precision_at_10": 0.15,
+              "macro_recall_at_10": 0.273374,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.5,
+              "mrr_at_10": 0.32,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.143566,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.7,
+              "first_turn_hits": 6,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 3,
+              "rescue_rate_among_initial_misses": 0.25,
+              "first_hit_mrr": 0.353571,
+              "macro_recall_across_20": 0.416941,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "winter": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 1.0,
+              "mrr_at_10": 0.671667,
+              "macro_precision_at_10": 0.32,
+              "macro_recall_at_10": 0.428864,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.616667,
+              "macro_precision_at_10": 0.19,
+              "macro_recall_at_10": 0.221995,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 10,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.671667,
+              "macro_recall_across_20": 0.650859,
+              "mean_recommendation_overlap": 0.0
+            }
+          }
+        }
+      },
+      "compact": {
+        "weight": 0.75,
+        "initial_hit_rate_at_10": 0.776923,
+        "initial_mrr_at_10": 0.498803,
+        "turn2_hit_rate_at_10": 0.715385,
+        "cumulative_hit_rate_by_turn_2": 0.884615,
+        "second_turn_rescues": 14,
+        "misses_after_turn_2": 15,
+        "rescue_rate_among_initial_misses": 0.482759,
+        "first_hit_mrr": 0.557158,
+        "macro_recall_across_20": 0.541617,
+        "semantic_only_subset_count": 6,
+        "semantic_only_rescued_into_top_10": 1
+      }
+    },
+    {
+      "weight": 1.0,
+      "summary": {
+        "sample_count": 130,
+        "initial": {
+          "sample_count": 130,
+          "hit_rate_at_10": 0.776923,
+          "mrr_at_10": 0.498803,
+          "macro_precision_at_10": 0.273077,
+          "macro_recall_at_10": 0.333189,
+          "mean_recommendation_count": 10.0
+        },
+        "exploration_turn_only": {
+          "sample_count": 130,
+          "hit_rate_at_10": 0.723077,
+          "mrr_at_10": 0.365986,
+          "macro_precision_at_10": 0.203846,
+          "macro_recall_at_10": 0.208937,
+          "mean_recommendation_count": 10.0
+        },
+        "session_by_turn_2": {
+          "sample_count": 130,
+          "cumulative_hit_rate_by_turn_2": 0.892308,
+          "first_turn_hits": 101,
+          "second_turn_rescues": 15,
+          "misses_after_turn_2": 14,
+          "rescue_rate_among_initial_misses": 0.517241,
+          "first_hit_mrr": 0.559466,
+          "macro_recall_across_20": 0.542127,
+          "mean_recommendation_overlap": 0.0
+        },
+        "transition": {
+          "rescued_after_exploration": 15,
+          "initial_only": 22,
+          "hit_both": 79,
+          "miss_both": 14
+        },
+        "v10_2_semantic_rescue_subset": {
+          "sample_count": 6,
+          "session": {
+            "sample_count": 6,
+            "cumulative_hit_rate_by_turn_2": 0.333333,
+            "first_turn_hits": 0,
+            "second_turn_rescues": 2,
+            "misses_after_turn_2": 4,
+            "rescue_rate_among_initial_misses": 0.333333,
+            "first_hit_mrr": 0.222222,
+            "macro_recall_across_20": 0.104167,
+            "mean_recommendation_overlap": 0.0
+          },
+          "rescued_into_top_10_on_turn_2": 2
+        },
+        "by_concept": {
+          "adjustable": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.436667,
+              "macro_precision_at_10": 0.2,
+              "macro_recall_at_10": 0.117334,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.300952,
+              "macro_precision_at_10": 0.27,
+              "macro_recall_at_10": 0.172175,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.473333,
+              "macro_recall_across_20": 0.289509,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "breathable": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.572619,
+              "macro_precision_at_10": 0.28,
+              "macro_recall_at_10": 0.462121,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.331111,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.254221,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.672619,
+              "macro_recall_across_20": 0.716342,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "hiking": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.37,
+              "macro_precision_at_10": 0.16,
+              "macro_recall_at_10": 0.271961,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.349167,
+              "macro_precision_at_10": 0.17,
+              "macro_recall_at_10": 0.218772,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 6,
+              "second_turn_rescues": 3,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.75,
+              "first_hit_mrr": 0.5025,
+              "macro_recall_across_20": 0.490733,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "hooded": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.533333,
+              "macro_precision_at_10": 0.44,
+              "macro_recall_at_10": 0.275725,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.502778,
+              "macro_precision_at_10": 0.3,
+              "macro_recall_at_10": 0.217029,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.577778,
+              "macro_recall_across_20": 0.492754,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "insulated": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.658333,
+              "macro_precision_at_10": 0.25,
+              "macro_recall_at_10": 0.378258,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.419167,
+              "macro_precision_at_10": 0.26,
+              "macro_recall_at_10": 0.275263,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 1.0,
+              "first_hit_mrr": 0.691667,
+              "macro_recall_across_20": 0.653521,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "lightweight": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.553333,
+              "macro_precision_at_10": 0.32,
+              "macro_recall_at_10": 0.378697,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.293611,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.221421,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 1.0,
+              "first_hit_mrr": 0.578333,
+              "macro_recall_across_20": 0.600119,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "non_slip": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.442063,
+              "macro_precision_at_10": 0.28,
+              "macro_recall_at_10": 0.27846,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.27,
+              "macro_precision_at_10": 0.19,
+              "macro_recall_at_10": 0.103011,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.45873,
+              "macro_recall_across_20": 0.38147,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "pockets": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.6,
+              "macro_precision_at_10": 0.44,
+              "macro_recall_at_10": 0.353333,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.486667,
+              "macro_precision_at_10": 0.33,
+              "macro_recall_at_10": 0.331818,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.8,
+              "macro_recall_across_20": 0.685152,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "running": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.508333,
+              "macro_precision_at_10": 0.22,
+              "macro_recall_at_10": 0.414592,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.307143,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.233379,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.608333,
+              "macro_recall_across_20": 0.647971,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "stretch": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.675,
+              "macro_precision_at_10": 0.35,
+              "macro_recall_at_10": 0.439456,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.263889,
+              "macro_precision_at_10": 0.19,
+              "macro_recall_at_10": 0.198534,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.675,
+              "macro_recall_across_20": 0.63799,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "water_resistant": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.209524,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.259286,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.4,
+              "mrr_at_10": 0.3,
+              "macro_precision_at_10": 0.11,
+              "macro_recall_at_10": 0.125,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.7,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 3,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.209524,
+              "macro_recall_across_20": 0.384286,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "waterproof": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.253571,
+              "macro_precision_at_10": 0.15,
+              "macro_recall_at_10": 0.273374,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.5,
+              "mrr_at_10": 0.316667,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.143566,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.7,
+              "first_turn_hits": 6,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 3,
+              "rescue_rate_among_initial_misses": 0.25,
+              "first_hit_mrr": 0.353571,
+              "macro_recall_across_20": 0.416941,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "winter": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 1.0,
+              "mrr_at_10": 0.671667,
+              "macro_precision_at_10": 0.32,
+              "macro_recall_at_10": 0.428864,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.616667,
+              "macro_precision_at_10": 0.19,
+              "macro_recall_at_10": 0.221995,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 10,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.671667,
+              "macro_recall_across_20": 0.650859,
+              "mean_recommendation_overlap": 0.0
+            }
+          }
+        }
+      },
+      "compact": {
+        "weight": 1.0,
+        "initial_hit_rate_at_10": 0.776923,
+        "initial_mrr_at_10": 0.498803,
+        "turn2_hit_rate_at_10": 0.723077,
+        "cumulative_hit_rate_by_turn_2": 0.892308,
+        "second_turn_rescues": 15,
+        "misses_after_turn_2": 14,
+        "rescue_rate_among_initial_misses": 0.517241,
+        "first_hit_mrr": 0.559466,
+        "macro_recall_across_20": 0.542127,
+        "semantic_only_subset_count": 6,
+        "semantic_only_rescued_into_top_10": 2
+      }
+    },
+    {
+      "weight": 1.25,
+      "summary": {
+        "sample_count": 130,
+        "initial": {
+          "sample_count": 130,
+          "hit_rate_at_10": 0.776923,
+          "mrr_at_10": 0.498803,
+          "macro_precision_at_10": 0.273077,
+          "macro_recall_at_10": 0.333189,
+          "mean_recommendation_count": 10.0
+        },
+        "exploration_turn_only": {
+          "sample_count": 130,
+          "hit_rate_at_10": 0.715385,
+          "mrr_at_10": 0.354551,
+          "macro_precision_at_10": 0.202308,
+          "macro_recall_at_10": 0.207254,
+          "mean_recommendation_count": 10.0
+        },
+        "session_by_turn_2": {
+          "sample_count": 130,
+          "cumulative_hit_rate_by_turn_2": 0.892308,
+          "first_turn_hits": 101,
+          "second_turn_rescues": 15,
+          "misses_after_turn_2": 14,
+          "rescue_rate_among_initial_misses": 0.517241,
+          "first_hit_mrr": 0.555436,
+          "macro_recall_across_20": 0.540443,
+          "mean_recommendation_overlap": 0.0
+        },
+        "transition": {
+          "rescued_after_exploration": 15,
+          "initial_only": 23,
+          "hit_both": 78,
+          "miss_both": 14
+        },
+        "v10_2_semantic_rescue_subset": {
+          "sample_count": 6,
+          "session": {
+            "sample_count": 6,
+            "cumulative_hit_rate_by_turn_2": 0.333333,
+            "first_turn_hits": 0,
+            "second_turn_rescues": 2,
+            "misses_after_turn_2": 4,
+            "rescue_rate_among_initial_misses": 0.333333,
+            "first_hit_mrr": 0.138889,
+            "macro_recall_across_20": 0.104167,
+            "mean_recommendation_overlap": 0.0
+          },
+          "rescued_into_top_10_on_turn_2": 2
+        },
+        "by_concept": {
+          "adjustable": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.436667,
+              "macro_precision_at_10": 0.2,
+              "macro_recall_at_10": 0.117334,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.298571,
+              "macro_precision_at_10": 0.27,
+              "macro_recall_at_10": 0.172175,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.470952,
+              "macro_recall_across_20": 0.289509,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "breathable": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.572619,
+              "macro_precision_at_10": 0.28,
+              "macro_recall_at_10": 0.462121,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.331111,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.254221,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.672619,
+              "macro_recall_across_20": 0.716342,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "hiking": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.37,
+              "macro_precision_at_10": 0.16,
+              "macro_recall_at_10": 0.271961,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.349167,
+              "macro_precision_at_10": 0.17,
+              "macro_recall_at_10": 0.218772,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 6,
+              "second_turn_rescues": 3,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.75,
+              "first_hit_mrr": 0.5025,
+              "macro_recall_across_20": 0.490733,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "hooded": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.533333,
+              "macro_precision_at_10": 0.44,
+              "macro_recall_at_10": 0.275725,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.502778,
+              "macro_precision_at_10": 0.3,
+              "macro_recall_at_10": 0.217029,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.577778,
+              "macro_recall_across_20": 0.492754,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "insulated": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.658333,
+              "macro_precision_at_10": 0.25,
+              "macro_recall_at_10": 0.378258,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.405833,
+              "macro_precision_at_10": 0.26,
+              "macro_recall_at_10": 0.275263,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 1.0,
+              "first_hit_mrr": 0.691667,
+              "macro_recall_across_20": 0.653521,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "lightweight": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.553333,
+              "macro_precision_at_10": 0.32,
+              "macro_recall_at_10": 0.378697,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.283889,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.221421,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 1.0,
+              "first_hit_mrr": 0.578333,
+              "macro_recall_across_20": 0.600119,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "non_slip": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.442063,
+              "macro_precision_at_10": 0.28,
+              "macro_recall_at_10": 0.27846,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.22,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.101124,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.45873,
+              "macro_recall_across_20": 0.379584,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "pockets": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.6,
+              "macro_precision_at_10": 0.44,
+              "macro_recall_at_10": 0.353333,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.436667,
+              "macro_precision_at_10": 0.33,
+              "macro_recall_at_10": 0.331818,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.75,
+              "macro_recall_across_20": 0.685152,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "running": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.508333,
+              "macro_precision_at_10": 0.22,
+              "macro_recall_at_10": 0.414592,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.307143,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.233379,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.608333,
+              "macro_recall_across_20": 0.647971,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "stretch": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.675,
+              "macro_precision_at_10": 0.35,
+              "macro_recall_at_10": 0.439456,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.244841,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.178534,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.675,
+              "macro_recall_across_20": 0.61799,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "water_resistant": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.209524,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.259286,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.4,
+              "mrr_at_10": 0.3,
+              "macro_precision_at_10": 0.11,
+              "macro_recall_at_10": 0.125,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.7,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 3,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.209524,
+              "macro_recall_across_20": 0.384286,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "waterproof": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.253571,
+              "macro_precision_at_10": 0.15,
+              "macro_recall_at_10": 0.273374,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.5,
+              "mrr_at_10": 0.3125,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.143566,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.7,
+              "first_turn_hits": 6,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 3,
+              "rescue_rate_among_initial_misses": 0.25,
+              "first_hit_mrr": 0.353571,
+              "macro_recall_across_20": 0.416941,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "winter": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 1.0,
+              "mrr_at_10": 0.671667,
+              "macro_precision_at_10": 0.32,
+              "macro_recall_at_10": 0.428864,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.616667,
+              "macro_precision_at_10": 0.19,
+              "macro_recall_at_10": 0.221995,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 10,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.671667,
+              "macro_recall_across_20": 0.650859,
+              "mean_recommendation_overlap": 0.0
+            }
+          }
+        }
+      },
+      "compact": {
+        "weight": 1.25,
+        "initial_hit_rate_at_10": 0.776923,
+        "initial_mrr_at_10": 0.498803,
+        "turn2_hit_rate_at_10": 0.715385,
+        "cumulative_hit_rate_by_turn_2": 0.892308,
+        "second_turn_rescues": 15,
+        "misses_after_turn_2": 14,
+        "rescue_rate_among_initial_misses": 0.517241,
+        "first_hit_mrr": 0.555436,
+        "macro_recall_across_20": 0.540443,
+        "semantic_only_subset_count": 6,
+        "semantic_only_rescued_into_top_10": 2
+      }
+    },
+    {
+      "weight": 1.5,
+      "summary": {
+        "sample_count": 130,
+        "initial": {
+          "sample_count": 130,
+          "hit_rate_at_10": 0.776923,
+          "mrr_at_10": 0.498803,
+          "macro_precision_at_10": 0.273077,
+          "macro_recall_at_10": 0.333189,
+          "mean_recommendation_count": 10.0
+        },
+        "exploration_turn_only": {
+          "sample_count": 130,
+          "hit_rate_at_10": 0.715385,
+          "mrr_at_10": 0.354167,
+          "macro_precision_at_10": 0.196923,
+          "macro_recall_at_10": 0.202435,
+          "mean_recommendation_count": 10.0
+        },
+        "session_by_turn_2": {
+          "sample_count": 130,
+          "cumulative_hit_rate_by_turn_2": 0.892308,
+          "first_turn_hits": 101,
+          "second_turn_rescues": 15,
+          "misses_after_turn_2": 14,
+          "rescue_rate_among_initial_misses": 0.517241,
+          "first_hit_mrr": 0.555436,
+          "macro_recall_across_20": 0.535624,
+          "mean_recommendation_overlap": 0.0
+        },
+        "transition": {
+          "rescued_after_exploration": 15,
+          "initial_only": 23,
+          "hit_both": 78,
+          "miss_both": 14
+        },
+        "v10_2_semantic_rescue_subset": {
+          "sample_count": 6,
+          "session": {
+            "sample_count": 6,
+            "cumulative_hit_rate_by_turn_2": 0.333333,
+            "first_turn_hits": 0,
+            "second_turn_rescues": 2,
+            "misses_after_turn_2": 4,
+            "rescue_rate_among_initial_misses": 0.333333,
+            "first_hit_mrr": 0.138889,
+            "macro_recall_across_20": 0.104167,
+            "mean_recommendation_overlap": 0.0
+          },
+          "rescued_into_top_10_on_turn_2": 2
+        },
+        "by_concept": {
+          "adjustable": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.436667,
+              "macro_precision_at_10": 0.2,
+              "macro_recall_at_10": 0.117334,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.298571,
+              "macro_precision_at_10": 0.27,
+              "macro_recall_at_10": 0.172175,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.470952,
+              "macro_recall_across_20": 0.289509,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "breathable": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.572619,
+              "macro_precision_at_10": 0.28,
+              "macro_recall_at_10": 0.462121,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.331111,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.254221,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.672619,
+              "macro_recall_across_20": 0.716342,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "hiking": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.37,
+              "macro_precision_at_10": 0.16,
+              "macro_recall_at_10": 0.271961,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.349167,
+              "macro_precision_at_10": 0.17,
+              "macro_recall_at_10": 0.218772,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 6,
+              "second_turn_rescues": 3,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.75,
+              "first_hit_mrr": 0.5025,
+              "macro_recall_across_20": 0.490733,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "hooded": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.533333,
+              "macro_precision_at_10": 0.44,
+              "macro_recall_at_10": 0.275725,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.502778,
+              "macro_precision_at_10": 0.3,
+              "macro_recall_at_10": 0.217029,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.577778,
+              "macro_recall_across_20": 0.492754,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "insulated": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.658333,
+              "macro_precision_at_10": 0.25,
+              "macro_recall_at_10": 0.378258,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.394444,
+              "macro_precision_at_10": 0.21,
+              "macro_recall_at_10": 0.226734,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 1.0,
+              "first_hit_mrr": 0.691667,
+              "macro_recall_across_20": 0.604992,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "lightweight": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.553333,
+              "macro_precision_at_10": 0.32,
+              "macro_recall_at_10": 0.378697,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.291667,
+              "macro_precision_at_10": 0.17,
+              "macro_recall_at_10": 0.219809,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 1.0,
+              "first_hit_mrr": 0.578333,
+              "macro_recall_across_20": 0.598506,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "non_slip": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.442063,
+              "macro_precision_at_10": 0.28,
+              "macro_recall_at_10": 0.27846,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.22,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.101124,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.45873,
+              "macro_recall_across_20": 0.379584,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "pockets": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.6,
+              "macro_precision_at_10": 0.44,
+              "macro_recall_at_10": 0.353333,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.436667,
+              "macro_precision_at_10": 0.33,
+              "macro_recall_at_10": 0.331818,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 2,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.666667,
+              "first_hit_mrr": 0.75,
+              "macro_recall_across_20": 0.685152,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "running": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.508333,
+              "macro_precision_at_10": 0.22,
+              "macro_recall_at_10": 0.414592,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.307143,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.233379,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 8,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.5,
+              "first_hit_mrr": 0.608333,
+              "macro_recall_across_20": 0.647971,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "stretch": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.9,
+              "mrr_at_10": 0.675,
+              "macro_precision_at_10": 0.35,
+              "macro_recall_at_10": 0.439456,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.244841,
+              "macro_precision_at_10": 0.18,
+              "macro_recall_at_10": 0.178534,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.9,
+              "first_turn_hits": 9,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 1,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.675,
+              "macro_recall_across_20": 0.61799,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "water_resistant": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.7,
+              "mrr_at_10": 0.209524,
+              "macro_precision_at_10": 0.14,
+              "macro_recall_at_10": 0.259286,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.4,
+              "mrr_at_10": 0.3,
+              "macro_precision_at_10": 0.11,
+              "macro_recall_at_10": 0.125,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.7,
+              "first_turn_hits": 7,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 3,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.209524,
+              "macro_recall_across_20": 0.384286,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "waterproof": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.6,
+              "mrr_at_10": 0.253571,
+              "macro_precision_at_10": 0.15,
+              "macro_recall_at_10": 0.273374,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.5,
+              "mrr_at_10": 0.311111,
+              "macro_precision_at_10": 0.13,
+              "macro_recall_at_10": 0.131066,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 0.7,
+              "first_turn_hits": 6,
+              "second_turn_rescues": 1,
+              "misses_after_turn_2": 3,
+              "rescue_rate_among_initial_misses": 0.25,
+              "first_hit_mrr": 0.353571,
+              "macro_recall_across_20": 0.404441,
+              "mean_recommendation_overlap": 0.0
+            }
+          },
+          "winter": {
+            "initial": {
+              "sample_count": 10,
+              "hit_rate_at_10": 1.0,
+              "mrr_at_10": 0.671667,
+              "macro_precision_at_10": 0.32,
+              "macro_recall_at_10": 0.428864,
+              "mean_recommendation_count": 10.0
+            },
+            "after_exploration": {
+              "sample_count": 10,
+              "hit_rate_at_10": 0.8,
+              "mrr_at_10": 0.616667,
+              "macro_precision_at_10": 0.19,
+              "macro_recall_at_10": 0.221995,
+              "mean_recommendation_count": 10.0
+            },
+            "session": {
+              "sample_count": 10,
+              "cumulative_hit_rate_by_turn_2": 1.0,
+              "first_turn_hits": 10,
+              "second_turn_rescues": 0,
+              "misses_after_turn_2": 0,
+              "rescue_rate_among_initial_misses": 0.0,
+              "first_hit_mrr": 0.671667,
+              "macro_recall_across_20": 0.650859,
+              "mean_recommendation_overlap": 0.0
+            }
+          }
+        }
+      },
+      "compact": {
+        "weight": 1.5,
+        "initial_hit_rate_at_10": 0.776923,
+        "initial_mrr_at_10": 0.498803,
+        "turn2_hit_rate_at_10": 0.715385,
+        "cumulative_hit_rate_by_turn_2": 0.892308,
+        "second_turn_rescues": 15,
+        "misses_after_turn_2": 14,
+        "rescue_rate_among_initial_misses": 0.517241,
+        "first_hit_mrr": 0.555436,
+        "macro_recall_across_20": 0.535624,
+        "semantic_only_subset_count": 6,
+        "semantic_only_rescued_into_top_10": 2
+      }
+    }
+  ]
+}
