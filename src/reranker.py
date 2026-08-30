@@ -412,6 +412,7 @@ def rerank_for_exploration(
             float,
             int,
             int,
+            float,
             dict,
         ]
     ] = []
@@ -463,12 +464,20 @@ def rerank_for_exploration(
             or 0
         )
 
+        average_rating = float(
+            candidate.get(
+                "average_rating"
+            )
+            or 0.0
+        )
+
         scored.append(
             (
                 exploration_score,
                 relevance,
                 rating_number,
                 retrieval_index,
+                average_rating,
                 candidate,
             )
         )
@@ -485,9 +494,14 @@ def rerank_for_exploration(
             # Preserve V4 long-tail exploration.
             item[2],
 
-            # Final tie-break:
-            # prefer deeper retrieval products.
+            # Prefer deeper retrieval products.
             -item[3],
+
+            # V14 final tie-break: among candidates
+            # tied on everything above, prefer the
+            # better-rated product. Missing ratings
+            # sort last, never above a rated product.
+            -item[4],
         )
     )
 
@@ -495,6 +509,7 @@ def rerank_for_exploration(
         candidate
 
         for (
+            _,
             _,
             _,
             _,
