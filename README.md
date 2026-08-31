@@ -30,10 +30,10 @@ Latest official **200-session public evaluator** result:
 | Metric | Score |
 |---|---:|
 | Hit Rate@10 | **1.0000** |
-| MRR | **0.851353** |
-| MTTC | **2.180** |
-| Efficiency | **0.8820** |
-| Technical Score | **0.931806** |
+| MRR | **0.935353** |
+| MTTC | **2.280** |
+| Efficiency | **0.8720** |
+| Technical Score | **0.955006** |
 
 Official starter baseline:
 
@@ -173,7 +173,9 @@ flowchart TD
 
     V13[V13 Browsing Turn-1 Deferral<br/>Score 0.931806]
 
-    V0 --> V1 --> V11 --> V2 --> V3 --> V4 --> V5 --> V6 --> V7 --> V8 --> V9 --> V10 --> V11E --> V13
+    V14[V14 Confidence-gated Shortlist Width<br/>Score 0.955006]
+
+    V0 --> V1 --> V11 --> V2 --> V3 --> V4 --> V5 --> V6 --> V7 --> V8 --> V9 --> V10 --> V11E --> V13 --> V14
 ```
 
 ---
@@ -459,6 +461,69 @@ Public score:
 
 `0.923844 → 0.931806`
 
+**Superseded by V14.** V14 generalizes this to every intent across turns 1 and 2, and returns the single best candidate rather than an empty list. Width 1 dominates an empty list because an empty list cannot hit at all, while width 1 can still hit at rank 1 on the same turn.
+
+---
+
+## V14 — Confidence-Gated Shortlist Width
+
+The evaluator freezes the target's rank at the first turn it appears, then ends the session (`evaluator/local_evaluator.py:253`). A mediocre early placement is permanent, and the remaining turns are discarded.
+
+The metric prices the two sides of that trade very differently:
+
+```text
+one extra turn      0.20 / 10  = 0.02
+rank 2 to rank 1    0.30 x 0.5 = 0.15
+```
+
+A turn is roughly 7× cheaper than settling for second place. Most non-first-place finishes are exact relevance ties broken by `rating_number`, which is a coin flip rather than a choice. Deferring buys one more disclosed constraint, and that constraint separates the tied block.
+
+The agent now leads with its single best proposal while it is still learning, and shows the full field once it stops learning or runs out of room to recover.
+
+`shortlist_width()` returns 1 only when all of the following hold, and `top_k` otherwise:
+
+- `turn < 3`, so recovery room remains;
+- not `clarification_exhausted`, so more information is still coming;
+- at least 2 candidates exist;
+- leader relevance > 0, so there is something real to lead with.
+
+Results on the official 200-session public evaluator:
+
+| Metric | V13 | V14 |
+|---|---:|---:|
+| Hit Rate@10 | 1.0000 | **1.0000** |
+| MRR | 0.851353 | **0.935353** |
+| MTTC | 2.180 | 2.280 |
+| Efficiency | 0.8820 | 0.8720 |
+| Technical Score | 0.931806 | **0.955006** |
+
+Against the V14-equivalent baseline on `main` (0.923844), the same change measures `+0.031162`:
+
+```text
+0.50 x  0.000000 (HitRate)     =  +0.000000
+0.30 x +0.120208 (MRR)         =  +0.036062
+0.20 x -0.024500 (Efficiency)  =  -0.004900
+                                  ---------
+                                  +0.031162
+```
+
+By scenario, measured against the 0.923844 baseline:
+
+| Scenario | n | Hit@10 | MRR before | MRR after | MRR delta | MTTC before | MTTC after |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| browsing | 80 | 1.000 → 1.000 | 0.768333 | **0.954583** | +0.186250 | 1.7750 | 2.1375 |
+| buying | 80 | 1.000 → 1.000 | 0.809112 | **0.923383** | +0.114271 | 1.6250 | 1.8750 |
+| intent_override | 30 | 1.000 → 1.000 | 0.894444 | 0.894444 | +0.000000 | 3.6333 | 3.6333 |
+| boundary | 10 | 1.000 → 1.000 | 1.000000 | 1.000000 | +0.000000 | 2.6000 | 2.6000 |
+
+Browsing was the weakest scenario and is now the strongest, which follows directly from the mechanism: browsing turn 1 discloses no constraint, so every candidate ties and popularity decided the rank. Intent override and boundary are unchanged by construction, since an override cannot register a hit before turn 3 and the gate has already widened by then.
+
+Paired per-session bootstrap over 20,000 resamples: 40 sessions improved, 155 unchanged, 5 worsened. Every regression is one or two extra turns (−0.02 or −0.04). No session lost its hit. P(delta > 0) = 1.0000. The rank distribution moved from 144 to 180 sessions at rank 1, 72% to 90%.
+
+Implementation note: `record_recommendations` is called only when a full list was shown. This is load-bearing rather than cosmetic. The exploration filter drops every already-shown `parent_asin`, so without it the deferred candidate is permanently blacklisted and widening cannot recover it. An earlier revision that blacklisted narrow shortlists scored *below* baseline.
+
+Known limitation: the `leader > 0` guard catches "matched nothing" but not "matched noise". It never fires on the public set (0 of 456 agent turns). Against catalogue-derived paraphrase benchmarks the gate improves MRR in every phrasing tier, but regresses technical score on the heaviest tier because hit rate falls when constraint extraction degrades. This matters only if the organizer adds a paraphrasing layer, which `docs/competition_specification.md` reserves the right to do.
+
 ---
 
 ### V12.2 — Evidence Recency Decay
@@ -735,4 +800,5 @@ Completed:
 - context-safe budget filtering;
 - safe profile personalization;
 - catalogue-derived robustness benchmark;
-- browsing turn-1 recommendation deferral.
+- browsing turn-1 recommendation deferral (superseded by V14);
+- confidence-gated shortlist width.
