@@ -337,6 +337,21 @@ class SessionState:
                 if item.turn != 1
             ]
 
+            # V15: pre-override "already asked"
+            # bookkeeping is tied to the discarded
+            # context -- an attribute the agent
+            # happened to ask about before the
+            # override should remain askable
+            # afterward, since the override has
+            # changed what's actually informative
+            # to ask. state.no_preference is
+            # deliberately NOT cleared here: a
+            # shopper's stated attribute-indifference
+            # (e.g. "no preference for size") is
+            # plausibly still true after an override,
+            # unlike pure turn-tracking bookkeeping.
+            self.asked_attributes = set()
+
             # Budget is also mutable evidence.
             #
             # If the stale preference being
