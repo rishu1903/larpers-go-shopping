@@ -45,6 +45,113 @@ class QuestionPolicyTest(
         )
 
 
+    def test_dominant_early_attribute_is_asked_directly_on_large_confident_pool(
+        self,
+    ) -> None:
+
+        state = SessionState(
+            user_profile={}
+        )
+
+        # 15 candidates (>= EARLY_TURN_MIN_POOL),
+        # material split cleanly 8/7 with full
+        # coverage -- an overwhelmingly dominant,
+        # confident signal even at turn 1.
+        candidates = (
+            [
+                {
+                    "searchable_text":
+                        "cotton shirt"
+                }
+
+                for _
+                in range(8)
+            ]
+            + [
+                {
+                    "searchable_text":
+                        "polyester shirt"
+                }
+
+                for _
+                in range(7)
+            ]
+        )
+
+        self.assertEqual(
+            choose_candidate_attribute(
+                state,
+                candidates,
+                turn=1,
+            ),
+            "material",
+        )
+
+
+    def test_moderate_signal_on_large_pool_waits_for_later_turn(
+        self,
+    ) -> None:
+
+        state = SessionState(
+            user_profile={}
+        )
+
+        # 15 candidates -- only 4 mention a colour
+        # at all (moderate coverage, ~0.29
+        # information), well above the turn 4+ bar
+        # (0.10) but below the much stricter
+        # early-turn bar (0.50). Early turns should
+        # still default to broad discovery; turn 4+
+        # should pick up on the same signal.
+        candidates = (
+            [
+                {
+                    "searchable_text":
+                        "black shirt"
+                }
+
+                for _
+                in range(2)
+            ]
+            + [
+                {
+                    "searchable_text":
+                        "white shirt"
+                }
+
+                for _
+                in range(2)
+            ]
+            + [
+                {
+                    "searchable_text":
+                        "premium quality item"
+                }
+
+                for _
+                in range(11)
+            ]
+        )
+
+        self.assertEqual(
+            choose_candidate_attribute(
+                state,
+                candidates,
+                turn=2,
+            ),
+            "other",
+        )
+
+        self.assertEqual(
+            choose_candidate_attribute(
+                state,
+                candidates,
+                turn=4,
+            ),
+            "color",
+        )
+
+
     def test_late_turn_chooses_high_information_material(
         self,
     ) -> None:
