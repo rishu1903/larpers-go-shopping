@@ -205,7 +205,7 @@ def rerank_candidates(
     """
     EXPLOITATION MODE.
 
-    Ranking priority:
+    Ranking priority (once evidence exists):
 
     1. Intent relevance
     2. Popularity
@@ -216,7 +216,27 @@ def rerank_candidates(
     This remains our high-precision ranking
     strategy while clarification is still
     providing useful information.
+
+    V15 exception, scoped narrowly: when NO
+    evidence has been accumulated yet
+    (`state.evidence` is empty -- turn 1 of a
+    browsing session, before any constraint has
+    been disclosed), every same-category candidate
+    ties on relevance. In that specific case,
+    original BM25 order is preferred ahead of raw
+    popularity, since BM25's full-text rank
+    already reflects real textual relevance across
+    every indexed field, while popularity alone
+    can bury a genuinely relevant long-tail
+    product. This is a no-op the moment any
+    evidence exists, which is true for every
+    buying-session turn and every browsing-session
+    turn from turn 2 onward.
     """
+
+    has_evidence = bool(
+        state.evidence
+    )
 
     scored: list[
         tuple[
@@ -255,13 +275,25 @@ def rerank_candidates(
             )
         )
 
-    scored.sort(
-        key=lambda item: (
-            -item[0],
-            -item[1],
-            item[2],
+    if has_evidence:
+
+        scored.sort(
+            key=lambda item: (
+                -item[0],
+                -item[1],
+                item[2],
+            )
         )
-    )
+
+    else:
+
+        scored.sort(
+            key=lambda item: (
+                -item[0],
+                item[2],
+                -item[1],
+            )
+        )
 
     return [
         candidate

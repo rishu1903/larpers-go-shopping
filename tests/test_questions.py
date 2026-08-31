@@ -136,6 +136,85 @@ class QuestionPolicyTest(
         )
 
 
+    def test_already_asked_attribute_is_not_repeated(
+        self,
+    ) -> None:
+
+        state = SessionState(
+            user_profile={}
+        )
+
+        # No evidence reveals material, but the
+        # agent already spent a turn asking about
+        # it -- it should not be asked again.
+        state.record_question(
+            "material"
+        )
+
+        candidates = [
+            {
+                "searchable_text":
+                    "cotton black shirt"
+            },
+            {
+                "searchable_text":
+                    "polyester white shirt"
+            },
+            {
+                "searchable_text":
+                    "leather red shirt"
+            },
+            {
+                "searchable_text":
+                    "nylon blue shirt"
+            },
+        ]
+
+        self.assertEqual(
+            choose_candidate_attribute(
+                state,
+                candidates,
+                turn=4,
+            ),
+            "color",
+        )
+
+
+    def test_overloaded_ambiguous_pool_stays_on_broad_discovery(
+        self,
+    ) -> None:
+
+        state = SessionState(
+            user_profile={}
+        )
+
+        # A large, genuinely ambiguous pool --
+        # none of the candidates mention any
+        # recognised attribute value at all, so
+        # there is no real signal to differentiate
+        # on, regardless of pool size. Clarification
+        # should stay broad ("other") rather than
+        # guess at a dimension with zero evidence.
+        candidates = [
+            {
+                "searchable_text":
+                    "premium quality item"
+            }
+
+            for _
+            in range(20)
+        ]
+
+        self.assertEqual(
+            choose_candidate_attribute(
+                state,
+                candidates,
+                turn=2,
+            ),
+            "other",
+        )
+
+
     def test_specific_no_preference_does_not_exhaust_all_clarification(
         self,
     ) -> None:
