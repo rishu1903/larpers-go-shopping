@@ -4,6 +4,7 @@ import re
 from collections.abc import Iterable
 
 from src.fusion import (
+    normalized_rrf,
     semantic_exploration_bonus,
 )
 
@@ -127,6 +128,95 @@ def _should_strip_attribute_labels(
 
     # "override_only"
     return state.override_seen
+
+
+# --------------------------------------------------
+# BLENDED ZERO-EVIDENCE FALLBACK
+# --------------------------------------------------
+#
+# V15.1 replaced popularity-first with a hard switch
+# to BM25-first when state.evidence is empty. This
+# generalizes that binary switch into a tunable
+# rank-based blend of the two signals, reusing the
+# bounded reciprocal-rank fusion already defined in
+# src/fusion.py for the semantic exploration bonus.
+#
+# Defaults reproduce the exact V15.1 ordering bit-for
+# -bit (BM25 rank fully weighted, popularity weight
+# zero), so this is a safe, no-op starting point until
+# an ablation demonstrates a better setting.
+
+FALLBACK_BM25_WEIGHT = 1.0
+
+FALLBACK_POPULARITY_WEIGHT = 0.0
+
+
+def configure_fallback_blend_weights(
+    bm25_weight: float,
+    popularity_weight: float,
+) -> None:
+    """
+    Configure the zero-evidence fallback blend.
+
+    Exists primarily for controlled offline
+    ablations -- see the module docstring above.
+    """
+
+    for weight in (
+        bm25_weight,
+        popularity_weight,
+    ):
+
+        if (
+            not isinstance(
+                weight,
+                (int, float),
+            )
+            or weight != weight  # NaN check
+            or weight < 0.0
+        ):
+
+            raise ValueError(
+                "fallback blend weights must be "
+                "finite non-negative numbers"
+            )
+
+    global FALLBACK_BM25_WEIGHT
+    global FALLBACK_POPULARITY_WEIGHT
+
+    FALLBACK_BM25_WEIGHT = float(
+        bm25_weight
+    )
+
+    FALLBACK_POPULARITY_WEIGHT = float(
+        popularity_weight
+    )
+
+
+def _fallback_score(
+    bm25_rank: int,
+    popularity_rank: int,
+) -> float:
+    """
+    Blend BM25 retrieval order and popularity rank
+    into one tie-break score for the zero-evidence
+    fallback, using bounded reciprocal-rank fusion
+    for both signals so neither raw BM25 scores nor
+    raw rating counts need to be independently
+    normalized.
+    """
+
+    return (
+        FALLBACK_BM25_WEIGHT
+        * normalized_rrf(
+            bm25_rank
+        )
+    ) + (
+        FALLBACK_POPULARITY_WEIGHT
+        * normalized_rrf(
+            popularity_rank
+        )
+    )
 
 
 def _normalize(
@@ -417,11 +507,45 @@ def rerank_candidates(
 
     else:
 
+        popularity_rank_by_bm25_index = {
+            bm25_index: rank
+
+            for (
+                rank,
+                (
+                    _,
+                    _,
+                    bm25_index,
+                    _,
+                ),
+            )
+            in enumerate(
+                sorted(
+                    scored,
+                    key=lambda item: (
+                        -item[1],
+                        item[2],
+                    ),
+                ),
+                start=1,
+            )
+        }
+
         scored.sort(
             key=lambda item: (
                 -item[0],
+                -_fallback_score(
+                    bm25_rank=(
+                        item[2]
+                        + 1
+                    ),
+                    popularity_rank=(
+                        popularity_rank_by_bm25_index[
+                            item[2]
+                        ]
+                    ),
+                ),
                 item[2],
-                -item[1],
             )
         )
 

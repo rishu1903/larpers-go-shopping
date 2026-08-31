@@ -8,6 +8,7 @@ from src.intent import (
 
 from src.reranker import (
     configure_buying_relevance_labels,
+    configure_fallback_blend_weights,
     rerank_candidates,
     rerank_for_exploration,
 )
@@ -694,6 +695,159 @@ class RerankerTest(
 
             configure_buying_relevance_labels(
                 "both"
+            )
+
+
+    def test_default_fallback_weights_reproduce_bm25_first_ordering(
+        self,
+    ) -> None:
+
+        configure_fallback_blend_weights(
+            bm25_weight=1.0,
+            popularity_weight=0.0,
+        )
+
+        state = SessionState(
+            user_profile={}
+        )
+
+        state.category_text = (
+            "Robes"
+        )
+
+        # No state.evidence set -- mirrors turn 1
+        # of a browsing session before any
+        # constraint has been disclosed.
+
+        candidates = [
+            {
+                "parent_asin":
+                    "retrieved_first",
+
+                "title":
+                    "Fleece Robe",
+
+                "categories":
+                    "Robes",
+
+                "searchable_text":
+                    "Robes",
+
+                "rating_number":
+                    50,
+            },
+            {
+                "parent_asin":
+                    "more_popular_but_retrieved_second",
+
+                "title":
+                    "Fleece Robe",
+
+                "categories":
+                    "Robes",
+
+                "searchable_text":
+                    "Robes",
+
+                "rating_number":
+                    5000,
+            },
+        ]
+
+        ranked = rerank_candidates(
+            candidates,
+            state,
+        )
+
+        self.assertEqual(
+            ranked[0][
+                "parent_asin"
+            ],
+            "retrieved_first",
+        )
+
+
+    def test_fallback_blend_weight_genuinely_changes_the_outcome(
+        self,
+    ) -> None:
+
+        state = SessionState(
+            user_profile={}
+        )
+
+        # Empty category so relevance ties at 0.0
+        # for every candidate below, forcing the
+        # fallback blend to fully decide the order.
+
+        # Two candidates that mirror each other:
+        # "bm25_leader" sits at bm25 rank 1 but
+        # popularity rank 2 (worse); "pop_leader" is
+        # the reverse. The two signals genuinely
+        # disagree on who should win.
+
+        candidates = [
+            {
+                "parent_asin":
+                    "bm25_leader",
+
+                "searchable_text":
+                    "item",
+
+                "rating_number":
+                    10,
+            },
+            {
+                "parent_asin":
+                    "pop_leader",
+
+                "searchable_text":
+                    "item",
+
+                "rating_number":
+                    100,
+            },
+        ]
+
+        try:
+
+            # Pure BM25 order: the retrieval-order
+            # leader wins outright.
+            configure_fallback_blend_weights(
+                bm25_weight=1.0,
+                popularity_weight=0.0,
+            )
+
+            self.assertEqual(
+                rerank_candidates(
+                    candidates,
+                    state,
+                )[0]["parent_asin"],
+                "bm25_leader",
+            )
+
+            # A popularity-heavy blend lets the
+            # popularity leader overtake it -- the
+            # weight parameter genuinely changes the
+            # fallback ranking outcome, it is not a
+            # no-op regardless of setting.
+            configure_fallback_blend_weights(
+                bm25_weight=0.2,
+                popularity_weight=0.8,
+            )
+
+            self.assertEqual(
+                rerank_candidates(
+                    candidates,
+                    state,
+                )[0]["parent_asin"],
+                "pop_leader",
+            )
+
+        finally:
+
+            configure_fallback_blend_weights(
+                bm25_weight=1.0,
+                popularity_weight=0.0,
             )
 
 
