@@ -676,6 +676,29 @@ class StructuredSlotStateTest(
             ],
         )
 
+    def test_detector_recognizes_safe_feature_synonyms(
+        self,
+    ) -> None:
+
+        detected = detect_explicit_slots(
+            (
+                "insulation, slip-resistant, anti-slip, "
+                "nonslip and pocket"
+            )
+        )
+
+        features = [
+            item.value.casefold()
+            for item in detected
+            if item.attribute == "feature"
+        ]
+
+        self.assertIn("insulation", features)
+        self.assertIn("slip-resistant", features)
+        self.assertIn("anti-slip", features)
+        self.assertIn("nonslip", features)
+        self.assertIn("pocket", features)
+
     def test_additive_feature_does_not_erase_existing_feature(
         self,
     ) -> None:

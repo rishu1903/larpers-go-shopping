@@ -21,6 +21,15 @@ from src.orchestration import (
     v12_retrieval_plan,
 )
 
+from src.relevance_gate import (
+    filter_observed_exclusions,
+)
+
+from src.shopping_intent import (
+    CompiledShoppingIntent,
+    compile_shopping_intent,
+)
+
 from src.reranker import (
     rerank_candidates,
     rerank_for_exploration,
@@ -135,6 +144,11 @@ class Agent:
             float | None,
         ] = {}
 
+        # Preserve structured details cheaply for the rare exclusion path.
+        # Keeping compact JSON avoids duplicating the full catalogue in memory,
+        # while allowing ProductProfile to retain native key provenance.
+        self._details_json: dict[str, str] = {}
+
         self._asin_to_rowid: dict[
             str,
             int,
@@ -233,6 +247,15 @@ class Agent:
                     )
                 )
 
+                details = product.get("details")
+                if not isinstance(details, dict):
+                    details = {}
+                self._details_json[parent_asin] = json.dumps(
+                    details,
+                    separators=(",", ":"),
+                    ensure_ascii=False,
+                )
+
                 batch.append(
                     (
                         parent_asin,
@@ -327,6 +350,10 @@ class Agent:
             RetrievalPlan
             | None
         ) = None,
+        compiled_intent: (
+            CompiledShoppingIntent
+            | None
+        ) = None,
     ) -> list[dict]:
         """
         Execute one complete candidate plan:
@@ -398,6 +425,14 @@ class Agent:
         if not candidates:
             return []
 
+        if compiled_intent is not None and compiled_intent.exclusions:
+            for candidate in candidates:
+                details_json = self._details_json.get(
+                    candidate["parent_asin"],
+                    "{}",
+                )
+                candidate["details"] = json.loads(details_json)
+
         if exploration:
 
             ranked = (
@@ -407,7 +442,7 @@ class Agent:
                 )
             )
 
-            return [
+            ranked = [
                 candidate
 
                 for candidate
@@ -425,11 +460,21 @@ class Agent:
                 )
             ]
 
-        return (
+            return filter_observed_exclusions(
+                ranked,
+                compiled_intent,
+            )
+
+        ranked = (
             rerank_candidates(
                 candidates,
                 state,
             )
+        )
+
+        return filter_observed_exclusions(
+            ranked,
+            compiled_intent,
         )
 
     def respond(
@@ -460,6 +505,12 @@ class Agent:
         # ----------------------------------
 
         state.update(
+            user_message=user_message,
+            turn=turn,
+        )
+
+        compiled_intent = compile_shopping_intent(
+            state=state,
             user_message=user_message,
             turn=turn,
         )
@@ -505,6 +556,7 @@ class Agent:
                             exploration=True
                         )
                     ),
+                    compiled_intent=compiled_intent,
                 )
             )
 
@@ -518,6 +570,7 @@ class Agent:
                             exploration=True,
                         )
                     ),
+                    compiled_intent=compiled_intent,
                 )
             )
 
@@ -552,6 +605,7 @@ class Agent:
                     exploration=(
                         exploration
                     ),
+                    compiled_intent=compiled_intent,
                 )
             )
 

@@ -18,3 +18,11 @@ tests/test_organizer_pipeline.py
 *.log
 .venv/
 .vscode/
+
+# Local patch files and one-off V15 research outputs.
+/*.patch
+/experiments/v15_reset_baseline.json
+/experiments/v15*_catalog_attribute_audit.json
+/experiments/v15*_product_profile_audit.json
+/experiments/v15*_relevance_gate_eval.json
+/experiments/v15*_relevance_shadow_smoke.json

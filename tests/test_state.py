@@ -155,6 +155,21 @@ class SessionStateTest(unittest.TestCase):
             active,
         )
 
+    def test_negated_feature_is_not_positive_slot_or_retrieval_evidence(self) -> None:
+        state = SessionState(user_profile={})
+        state.update(
+            "Boots. I want waterproof but not insulated",
+            1,
+        )
+
+        active_slots = state.active_slot_values()
+        self.assertIn("waterproof", active_slots.get("feature", []))
+        self.assertNotIn("insulated", active_slots.get("feature", []))
+
+        active_text = state.active_text().casefold()
+        self.assertIn("waterproof", active_text)
+        self.assertNotIn("insulated", active_text)
+
 
 if __name__ == "__main__":
     unittest.main()

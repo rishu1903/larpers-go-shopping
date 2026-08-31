@@ -1,813 +1,313 @@
-# TechJam 2026 — Conversational Shopping Copilot
+TechJam 2026 — Shopping Copilot
 
-AI-powered conversational product search and recommendation system for **TechJam 2026 Problem Statement 4: Shopping Copilot — AI Conversational Search and Recommendations**.
+A local-first conversational shopping search system for TechJam 2026 Problem Statement 4: Shopping Copilot — AI Conversational Search and Recommendations.
 
-The system operates over the frozen **50,000-product Amazon Reviews 2023 Clothing, Shoes & Jewelry catalogue** and maintains conversational state across a maximum of 10 user turns.
+The system is designed for a frozen 50,000-product catalogue and a maximum of 10 dialogue turns per session. The production path prioritizes deterministic, reproducible retrieval and ranking, with semantic search used only as bounded recovery.
 
-Our approach combines:
+Current Production Architecture
 
-- field-aware BM25 lexical retrieval;
-- lightweight catalogue-trained semantic retrieval;
-- deterministic candidate reranking;
-- multi-turn preference accumulation;
-- buying/browsing intent routing;
-- intent override handling;
-- candidate-aware clarification;
-- adaptive long-tail exploration;
-- hard budget constraints;
-- safe aggregate-profile personalization;
-- semantic-aware exploration fusion;
-- failure-aware runtime orchestration;
-- protected deep-retrieval recovery;
-- catalogue-derived robustness evaluation.
+User message
+    ↓
+Session state + structured slots
+    ↓
+Buying / browsing intent routing
+    ↓
+Field-aware BM25 retrieval
+    ↓
+Conditional LSA semantic recovery
+    ↓
+Hard budget filtering
+    ↓
+Constraint-aware deterministic reranking
+    ↓
+Observed negative-constraint filtering
+    ↓
+Candidate-aware clarification / recommendations
+    ↓
+Failure-aware protected recovery on later misses
 
-The original participant-kit README is preserved at:
+Design principle
 
-`docs/participant-kit/ORIGINAL_README.md`
+The system does not let every new signal reorder the entire candidate list.
 
-Dataset attribution is documented at:
+The strongest proven path remains lexical-first. Semantic retrieval, profile information, structured context, failure recovery, and negative constraints are all deliberately bounded so that they add capability without replacing behavior that already works well.
 
-`DATA_ATTRIBUTION.md`
+Current Results
 
----
+The current protected public benchmark result is:
 
-# Current Performance
+Metric
 
-Latest official **200-session public evaluator** result:
+Result
 
-| Metric | Score |
-|---|---:|
-| Hit Rate@10 | **1.0000** |
-| MRR | **0.817089** |
-| MTTC | **2.040** |
-| Efficiency | **0.8960** |
-| Technical Score | **0.924327** |
+Samples
 
-Official starter baseline:
+200
 
-| Metric | Baseline |
-|---|---:|
-| Hit Rate@10 | 0.125 |
-| MRR | 0.068034 |
-| MTTC | 9.81 |
-| Efficiency | 0.119 |
-| Technical Score | 0.10671 |
+Hit Rate@10
 
-The current agent reaches all **200 / 200 public targets** while substantially improving ranking quality and recommendation speed relative to the starter implementation.
+1.000000
 
-The public evaluator is not used as the sole development signal. Because 800 evaluation sessions remain private, production changes are also tested against catalogue-derived, label-free shadow benchmarks intended to reduce public-set overfitting.
+MRR
 
----
+0.820423
 
-# Architecture
+MTTC
 
-```mermaid
-flowchart TD
-    U[User Message] --> S[Session State]
+2.045
 
-    P[Aggregate User Profile] --> S
+Efficiency
 
-    S --> I[Intent Router]
-    S --> H[Hard Constraint Parser]
+0.8955
 
-    I --> Q{Retrieval Route}
+Recommended Technical Score
 
-    Q -->|Buying / strong lexical evidence| L[Field-aware BM25]
-    Q -->|Exploration / sparse browsing| L
-    Q -->|Exploration / sparse browsing| D[LSA Semantic Retrieval]
+0.925227
 
-    L --> C[Candidate Pool]
-    D --> C
+Scenario-level results:
 
-    H --> F[Hard Constraint Filter]
-    C --> F
+Scenario
 
-    F --> R[Constraint-aware Reranker]
+Hit@10
 
-    R --> X{Explicit recommendation failure?}
+MRR
 
-    X -->|No| TOP[Top Recommendations]
+MTTC
 
-    X -->|Yes| O[Failure-aware Orchestrator]
+Boundary
 
-    O --> B[V12 Protected Continuation]
-    O --> E[Expanded Recovery Retrieval]
+1.000
 
-    B --> PF[Protected Recovery Fusion]
-    E --> PF
+1.000000
 
-    PF --> TOP
+2.600
 
-    R --> A[Candidate-aware Clarification]
+Browsing
 
-    A --> S
-    TOP --> U
-```
+1.000
 
-The architecture deliberately remains **lexical-first**.
+0.768333
 
-Catalogue-derived robustness testing showed that BM25 remains substantially stronger as a standalone retriever. Semantic retrieval therefore acts as a complementary recovery mechanism rather than replacing the lexical route.
+1.775
 
-After explicit recommendation failures, V13 can dynamically increase retrieval depth. The deeper route cannot freely replace the proven ranking path: almost the entire existing recommendation set is protected, while only a bounded number of slots are available to genuinely new recovery candidates.
+Buying
 
----
+1.000
 
-# Conversational Flow
+0.822307
 
-```mermaid
-stateDiagram-v2
-    [*] --> Initial
+1.650
 
-    Initial --> Buying: explicit requirement
-    Initial --> Browsing: exploring language
+Intent Override
 
-    Browsing --> Buying: preference becomes explicit
+1.000
 
-    Buying --> Buying: additional constraint
+0.894444
 
-    Buying --> Override: user changes requirement
-    Browsing --> Override: user changes requirement
+3.633
 
-    Override --> Buying: stale evidence removed
+The latest cleanup preserves this public behavior while adding conservative support for explicit negative constraints.
 
-    Buying --> Exploration: no additional preference
-    Browsing --> Exploration: no additional preference
+V15 — Intent-Aware Negative Constraints
 
-    Exploration --> FailureRecovery: recommendations rejected
-    FailureRecovery --> FailureRecovery: repeated rejection
+A key private-set robustness issue was that negated attributes could previously become positive retrieval evidence.
 
-    Exploration --> Buying: new explicit preference
-    FailureRecovery --> Buying: new explicit preference
+Example:
 
-    Buying --> [*]: turn limit / sufficient result
-    Exploration --> [*]: turn limit / sufficient result
-    FailureRecovery --> [*]: turn limit / sufficient result
-```
+User:
+"T-Shirts. without polyester"
 
----
+Old behavior:
+"polyester" entered positive retrieval / slot evidence.
 
-# Retrieval Strategy
+New behavior:
+material = polyester
+is recorded as an exclusion,
+removed from positive retrieval evidence,
+and used only to remove products whose catalogue
+explicitly confirms polyester.
 
-```mermaid
-flowchart LR
-    M[Conversation Evidence] --> B[BM25]
+The production rule is deliberately asymmetric:
 
-    M --> G{Dense route needed?}
+confirmed forbidden attribute
+    → remove product
 
-    G -->|No| B
-    G -->|Yes| S[Semantic LSA]
+missing catalogue evidence
+    → keep product
 
-    B --> U[Candidate Union]
-    S --> U
+This avoids over-filtering products simply because the frozen catalogue is incomplete.
 
-    U --> HC[Hard Constraint Filter]
-    HC --> RR[Reranker]
+Safe canonical aliases
 
-    RR --> F{Failure signal?}
+The controlled vocabulary currently normalizes exact equivalents including:
 
-    F -->|No| T10[Final Top 10]
+hood → hooded
 
-    F -->|Yes| DP[Deeper Retrieval Plan]
-    RR --> VP[V12 Protected Ranking]
+pocket → pockets
 
-    DP --> PR[Recovery-only Candidates]
-    VP --> PF[Protected Fusion]
-    PR --> PF
+insulation → insulated
 
-    PF --> T10
-```
-
-Dense retrieval is **not enabled universally**.
-
-Previous ablations showed that always-on semantic retrieval reduced public MRR. The semantic route is therefore activated as a targeted recovery mechanism during exploration or when browsing retrieval is sparse.
-
----
-
-# Runtime Retrieval Plans
-
-The production system adapts candidate depth according to the conversational state.
-
-## Precision Path
-
-Used before clarification exhaustion:
-
-```text
-Lexical Top 100
-```
-
-Semantic retrieval is normally disabled for high-confidence buying requests.
-
----
-
-## V12 Exploration Path
-
-Used once broad clarification is exhausted:
-
-```text
-Lexical Top 500
-+
-Semantic Top 250
-```
-
----
-
-## V13 Failure Recovery
-
-After explicit recommendation rejection, the search budget expands.
-
-### Failure Level 1
-
-```text
-Lexical Top 875
-+
-Semantic Top 438
-```
-
-### Failure Level 2
-
-```text
-Lexical Top 1250
-+
-Semantic Top 625
-```
-
-Failure depth is capped at level 2 to avoid unconstrained runtime and memory growth.
-
-For a 10-product recommendation set, V13 uses protected recovery:
-
-```text
-9 V12 continuation candidates
-+
-1 candidate found only by deeper recovery
-```
-
-The recovery candidate must be absent from the complete V12 candidate pool. This prevents deeper search from simply reshuffling products that were already available to the baseline path.
-
----
-
-# Implementation Evolution
-
-```mermaid
-flowchart TD
-    V0[Starter BM25<br/>Score 0.106710]
-
-    V1[V1 Multi-turn Evidence<br/>Score 0.738582]
-
-    V1_1[V1.1 Category Preservation<br/>Score 0.752190]
-
-    V2[V2 Constraint-aware Reranker<br/>Score 0.852379]
-
-    V3[V3 Popularity Tie-break<br/>Score 0.920764]
-
-    V4[V4 Adaptive Exploration<br/>Score 0.923814]
-
-    V5[V5 Hybrid Semantic Retrieval<br/>Score 0.923844]
-
-    V6[V6 Candidate-aware Questions]
-
-    V7[V7 Buying / Browsing Routing]
-
-    V8[V8 Context-safe Budget Constraints]
-
-    V9[V9 Safe Profile Personalization]
-
-    V10[V10.2 Robustness Benchmark]
-
-    V11[V11 End-to-end Shadow Evaluation]
-
-    V12[V12 Semantic-aware Exploration Fusion<br/>Score 0.923844]
-
-    V13[V13 Failure-aware Protected Recovery<br/>Score 0.924327]
-
-    V0 --> V1 --> V1_1 --> V2 --> V3 --> V4 --> V5 --> V6 --> V7 --> V8 --> V9 --> V10 --> V11 --> V12 --> V13
-```
-
----
-
-# Version History
-
-## V1 — Conversational State
-
-The starter agent was stateless and searched only the latest customer message.
-
-V1 introduced accumulated conversational evidence so later turns benefited from earlier preferences.
-
-Public score:
-
-```text
-0.106710 → 0.738582
-```
-
----
-
-## V1.1 — Category Preservation
-
-Separated persistent product-category information from mutable user preferences.
-
-This was important for intent override scenarios: when the user changes a preference, stale preference evidence can be removed without accidentally deleting the product category.
-
-Public score:
-
-```text
-0.738582 → 0.752190
-```
-
----
-
-## V2 — Constraint-aware Reranking
-
-Added a deterministic reranker over the BM25 candidate pool.
-
-Signals include:
-
-- category token coverage;
-- exact category phrase matches;
-- accumulated evidence coverage;
-- exact evidence phrases;
-- BM25 ranking.
-
-Public score:
-
-```text
-0.752190 → 0.852379
-```
-
----
-
-## V3 — Popularity Tie-breaking
-
-Many catalogue products can have effectively identical textual relevance.
-
-V3 uses `rating_number` as a deterministic secondary signal inside equal relevance tiers.
-
-Public result:
-
-| Metric | Result |
-|---|---:|
-| Hit Rate@10 | 0.995 |
-| MRR | 0.811881 |
-| Technical Score | 0.920764 |
-
----
-
-## V4 — Adaptive Exploration
-
-One public target was a highly ambiguous long-tail product that could not be distinguished from many lexical matches.
-
-V4 introduced:
-
-- clarification exhaustion detection;
-- wider candidate retrieval after the user has no more information;
-- long-tail exploration ordering;
-- seen-product filtering.
-
-Public result:
-
-| Metric | Result |
-|---|---:|
-| Hit Rate@10 | **1.000** |
-| Technical Score | 0.923814 |
-
----
-
-## V5 — Hybrid Semantic Retrieval
-
-Added a local semantic retrieval path trained entirely on the provided 50k catalogue.
-
-Implementation:
-
-- TF-IDF;
-- 1–2 gram features;
-- Truncated SVD;
-- 96-dimensional LSA representation;
-- normalized document embeddings;
-- `float16` catalogue matrix.
-
-Semantic search is used adaptively rather than universally because always-on dense retrieval reduced public MRR.
-
-Current semantic assets:
-
-- `assets/catalog_lsa.npy`
-- `assets/semantic_asins.json`
-- `assets/semantic_pipeline.joblib`
-
-Public TechnicalScore reached:
-
-```text
-0.923844
-```
-
----
-
-## V6 — Candidate-aware Clarification
-
-The first three turns retain broad `other` clarification because this aligns well with the deterministic competition simulator.
-
-For unresolved later turns, clarification is selected using candidate uncertainty.
-
-Possible dimensions include:
-
-- material;
-- color;
-- size;
-- style;
-- use case;
-- feature.
-
-Questions are chosen using coverage and normalized entropy across the current candidate set.
-
----
-
-## V7 — Intent Routing
-
-Added explicit conversational intent state:
-
-```text
-BUYING
-BROWSING
-```
-
-Browsing language can enable broader retrieval when the lexical pool is weak.
-
-Explicit narrowing such as:
-
-```text
-I prefer
-I would prefer
-I'd like
-I need
-my budget
-what matters most
-```
-
-moves the session into buying mode.
-
-This preserved the public benchmark while making retrieval behavior more intentional.
-
----
-
-## V8 — Hard Budget Constraints
-
-Added structured price filtering.
-
-Examples correctly understood:
-
-```text
-under $80
-budget under 80
-price below 100
-I can spend up to 120
-$50 to $100
-```
-
-The parser intentionally rejects unrelated measurements such as:
-
-```text
-fits up to 8-inch wrist circumference
-water resistant up to 30m
-```
-
-This prevents arbitrary catalogue measurements from being interpreted as monetary constraints.
-
----
-
-## V9 — Safe Profile Personalization
-
-Uses anonymized aggregate profile tags to influence **which clarification dimension** may matter.
-
-The profile never invents a concrete preference.
-
-For example:
-
-```text
-material matters historically
-```
-
-does **not** imply:
-
-```text
-user wants cotton
-```
-
-Profile information is only allowed to break near-ties between candidate-driven clarification choices.
-
-Priority:
-
-```text
-current explicit preference
-        >
-current candidate uncertainty
-        >
-aggregate historical profile
-```
-
-The profile does not directly change product retrieval or hard filtering.
-
----
-
-# V10.2 — Catalogue-derived Robustness Benchmark
-
-The public evaluator contains 200 labeled sessions, while 800 sessions remain private.
-
-To reduce public-set overfitting, we added a self-supervised catalogue-derived robustness benchmark that does **not use public labels**.
-
-The benchmark:
-
-1. identifies explicit product concepts in catalogue metadata;
-2. removes the original concept keyword from the query;
-3. generates semantically equivalent paraphrases;
-4. restricts concepts to sensible product domains;
-5. treats every qualifying same-category product as relevant;
-6. compares lexical and semantic candidate generation.
-
-Examples:
-
-```text
-waterproof
-→ something designed to keep water from getting through
-
-breathable
-→ something that helps reduce heat buildup during wear
-
+nonslip
 non-slip
-→ something with secure traction on slick surfaces
-```
+non slip
+slip-resistant
+slip resistant
+anti-slip
+anti slip
+    → non_slip
 
-## V10.2 Results
+water-resistant
+water resistant
+    → water_resistant
 
-130 cases balanced across 13 concept families:
+stretchy → stretch
 
-| Retrieval Route | Hit@10 | Hit@100 | Macro Recall@100 |
-|---|---:|---:|---:|
-| Lexical | **58.46%** | **90.00%** | **67.78%** |
-| Semantic | 16.15% | 59.23% | 18.86% |
-| Hybrid candidate union | **60.00%** | **94.62%** | **73.43%** |
+jog / jogging → running
 
-Complementarity:
+trail / trails → hiking
 
-```text
-71 cases found by both routes
-46 lexical-only cases
-6 semantic rescue cases
-7 missed by both
-```
+Loose semantic assumptions such as warm → insulated are intentionally not treated as hard exclusions.
 
-This supports the current design:
+Retrieval
 
-> Use lexical retrieval as the precision-first primary route and semantic retrieval as a complementary recovery mechanism.
+Lexical path
 
----
+BM25 remains the primary high-precision retrieval route.
 
-# V11 — End-to-End Shadow Ranking
+The query is field-aware: category evidence and preference evidence are scoped separately instead of flattening every signal into one undifferentiated string.
 
-V10.2 measures whether relevant products enter the candidate pool.
+Semantic path
 
-V11 exercises the actual production interface:
+Semantic retrieval uses a local TF-IDF + TruncatedSVD (LSA) representation.
 
-```text
-Agent.reset(...)
-Agent.respond(...)
-```
+Assets:
 
-against the same catalogue-derived paraphrase benchmark and measures the final top-10 recommendations shown to the user.
+assets/catalog_lsa.npy
+assets/semantic_asins.json
+assets/semantic_pipeline.joblib
 
-```mermaid
-sequenceDiagram
-    participant U as Synthetic User
-    participant A as Production Agent
-    participant R as Retrieval + Reranker
+Semantic search is complementary rather than universal. It is most useful during exploration and recovery when lexical retrieval may be too narrow.
 
-    U->>A: Buying-style paraphrased requirement
-    A->>R: Normal precision-first retrieval
-    R-->>A: Ranked candidates
-    A-->>U: Turn-1 top 10
+Structured Conversation State
 
-    U->>A: No additional preference
-    A->>R: Exploration / semantic recovery
-    R-->>A: Unseen alternatives
-    A-->>U: Turn-2 top 10
-```
+The agent maintains structured state for:
 
-## V11 Results
+category
+budget
+material
+color
+size
+style
+brand
+feature
+use case
 
-Across the 130 domain-gated shadow cases:
+State also tracks lifecycle information for:
 
-| Metric | Result |
-|---|---:|
-| Turn-1 Hit@10 | **77.69%** |
-| Turn-1 MRR@10 | **0.4988** |
-| New Turn-2 rescues | **14** |
-| Cumulative hit by Turn 2 | **88.46%** |
-| Rescue rate among initial misses | **48.28%** |
-| Missed after both turns | **15 / 130** |
+intent overrides
+clarification history
+recommended products
+failed recommendation sets
+intent epochs
+failure depth
 
-The production agent deliberately avoids repeating already-seen products during exploration. A Turn-1 hit therefore remains a successful session even when the product is not repeated on Turn 2.
+Current-session evidence always takes priority over historical profile information.
 
-V11 showed that exploration is valuable: almost half of first-turn misses were recovered by the second recommendation set.
+Context Distillation
 
-However, of the six V10.2 cases in which semantic retrieval found a relevant product that lexical retrieval missed at depth 100, only one reached the final top 10.
+Structured slot state is used to rebuild active retrieval context safely after overrides.
 
-This motivated V12.
+Important safeguards:
 
----
+cleared slots are not restored;
 
-# V12 — Semantic-Aware Exploration Fusion
+unknown free text is preserved;
 
-V11 showed that semantic retrieval could recover products missed by lexical search, but many semantic-only candidates were not promoted into the final recommendation set.
+weak inference is not injected as hard evidence;
 
-V12 adds a bounded semantic reciprocal-rank signal during **exploration only**.
+budget remains structured instead of becoming free-text retrieval evidence;
 
-The normal precision path remains unchanged.
+disabling context distillation preserves the older retrieval path.
 
-Semantic promotion is deliberately conservative:
+Negative Constraint Pipeline
 
-- only semantic-only candidates receive the bonus;
-- hybrid and lexical candidates receive no additional semantic boost;
-- candidates must remain compatible with the active product category;
-- semantic retrieval rank is used instead of raw cosine similarity;
-- the feature activates only during exploration.
-
-A label-free ablation tested semantic weights from `0.0` to `1.5`.
-
-A weight of `1.0` was selected because it was the smallest value that improved session coverage while preserving ranking quality.
-
-| Metric | V11 | V12 |
-|---|---:|---:|
-| Shadow Turn-1 Hit@10 | 77.69% | 77.69% |
-| Shadow cumulative Hit@10 | 88.46% | **89.23%** |
-| Turn-2 rescues | 14 | **15** |
-| Remaining misses | 15 | **14** |
-| Semantic-only rescues | 1 / 6 | **2 / 6** |
-| Public Hit@10 | 1.000 | **1.000** |
-| Public MRR | 0.815145 | **0.815145** |
-| Public TechnicalScore | 0.923844 | **0.923844** |
-
-The result supports semantic retrieval as a targeted recovery mechanism while keeping it subordinate to the stronger lexical relevance path.
-
----
-
-# V13 — Failure-Aware Protected Recovery
-
-V12 improved semantic candidate promotion, but residual analysis showed that some difficult sessions required substantially deeper candidate retrieval.
-
-Simply increasing retrieval depth was not safe.
-
-The first V13 ablation allowed the expanded candidate pool to replace the ordinary V12 exploration ranking.
-
-Although this recovered new cases, it also lost a case that the existing V12 continuation would have found.
-
-V13 therefore introduces **failure-aware protected recovery**.
-
-The agent now observes explicit recommendation rejection as a runtime signal.
-
-After a failed exploration turn, it can increase retrieval depth while retaining almost the entire proven V12 recommendation path.
-
-The selected production configuration is:
-
-```text
-Failure-aware orchestration: enabled
-Retrieval depth step:        0.75
-Maximum failure level:       2
-Protected recovery slots:    1
-```
-
-For a 10-product recommendation set:
-
-```text
-V12 ranks 1–9
-+
-highest-ranked genuinely new recovery candidate
-```
-
-A candidate only qualifies for the recovery slot when it is absent from the complete V12 candidate pool.
-
-If deeper retrieval contributes nothing suitable, the slot falls back to the ordinary V12 continuation.
-
----
-
-## Intent-Epoch Failure Memory
-
-Recommendation failures are associated with the current shopping intent.
-
-The state tracks:
-
-```text
-intent_epoch
-miss_streak
-failure_events
-last_recommendations
-failed_recommendations_by_epoch
-```
-
-When the customer explicitly overrides a previous requirement:
-
-```text
-old intent
+User message
     ↓
-failure history
-
-        OVERRIDE
-
-new intent epoch
+extract_exclusions(...)
     ↓
-miss streak reset
-```
+remove negated phrase from positive retrieval text
+    ↓
+normal retrieval + reranking
+    ↓
+build ProductProfile only for exclusion evaluation
+    ↓
+filter_observed_exclusions(...)
 
-Historical failure information remains available for diagnostics, but does not contaminate the new intent.
+ProductProfile uses provenance-aware product evidence from trusted catalogue fields such as:
 
----
+title
+features
+description
+categories (for use case)
+selected native detail keys
 
-## V13 Initial Expansion Ablation
+Store names are not treated as product attributes.
 
-A naive dynamic-depth version was compared with a Turn-5 V12 continuation control.
+Generic details dictionaries are not flattened indiscriminately.
 
-At depth step `0.75`:
+Failure-Aware Protected Recovery
 
-```text
-V12 continuation:
-7 / 14 residual cases rescued
+After explicit recommendation failure, retrieval breadth can increase.
 
-naive V13 expansion:
-8 / 14 residual cases rescued
-```
+The deeper candidate pool is not allowed to replace the normal ranking wholesale.
 
-However, the unrestricted expansion:
+Instead:
 
-```text
-gained:
-running
+trusted baseline recommendations
+        +
+bounded recovery candidate
+
+Failure memory is scoped to the current intent epoch so an explicit override resets the active miss streak.
+
+Clarification Strategy
+
+The system distinguishes broad browsing from stronger buying intent.
+
+Clarification is candidate-aware and avoids repeatedly asking about dimensions already established in the current session.
+
+Historical aggregate profile information can break near-ties between clarification dimensions, but it never fabricates a concrete preference.
+
+Robustness Evaluation
+
+The project does not accept changes solely because they improve the 200 public sessions.
+
+The evaluation stack is:
+
+unit / regression tests
+        ↓
+catalogue-derived label-free robustness checks
+        ↓
+official public evaluator
+
+The catalogue-derived benchmark uses concept families such as:
+
+waterproof
+breathable
+non-slip
+insulated
+lightweight
+hooded
 pockets
-
-lost:
+stretch
+adjustable
+running
 hiking
-```
+winter
 
-This showed that deeper retrieval contained useful new information but should not be allowed to replace the trusted V12 ranking wholesale.
+This helps detect overfitting and retrieval failures that may appear in the 800-session private evaluation.
 
-That observation motivated protected recovery.
+Repository Structure
 
----
-
-## V13 Protected Recovery Results
-
-The evaluation begins with the 14 shadow cases still unresolved after V12 Turn 2.
-
-The control continues the V12 agent through Turn 5 with the original retrieval depths.
-
-| Metric | V12 Continuation | V13 Protected Recovery |
-|---|---:|---:|
-| Residual cases | 14 | 14 |
-| Residual rescues | 7 | **9** |
-| Residual rescue rate | 50.00% | **64.29%** |
-| Cumulative shadow hits | 123 / 130 | **125 / 130** |
-| Cumulative shadow Hit@10 | 94.62% | **96.15%** |
-| Lost V12 rescues | — | **0** |
-| Shadow first-hit MRR | **0.579154** | 0.575778 |
-| Mean first-hit turn with miss=11 | 1.807692 | **1.692308** |
-| Shadow efficiency analogue | 0.919231 | **0.930769** |
-| Shadow TechnicalScore analogue | 0.830669 | **0.839657** |
-
-The selected `0.75` depth step was preferable to `1.0`.
-
-Both produced the same cumulative coverage, while `0.75` used less retrieval depth and slightly improved the shadow efficiency / TechnicalScore analogue.
-
----
-
-## V13 Public Results
-
-| Metric | V12 | V13 |
-|---|---:|---:|
-| Hit Rate@10 | **1.0000** | **1.0000** |
-| MRR | 0.815145 | **0.817089** |
-| MTTC | **2.035** | 2.040 |
-| Efficiency | **0.8965** | 0.8960 |
-| Technical Score | 0.923844 | **0.924327** |
-
-Scenario-level comparison:
-
-| Scenario | V13 Hit@10 | V13 MRR | V13 MTTC |
-|---|---:|---:|---:|
-| Boundary | 1.000 | 1.000000 | 2.6000 |
-| Browsing | 1.000 | 0.768333 | 1.7750 |
-| Buying | 1.000 | **0.813973** | 1.6375 |
-| Intent Override | 1.000 | 0.894444 | 3.6333 |
-
-The public improvement is intentionally modest because the benchmark was already saturated at 100% Hit@10.
-
-The more important result is that the same architecture:
-
-- improves the independent catalogue-derived robustness benchmark;
-- preserves every V12 continuation rescue in the tested residual set;
-- preserves perfect public Hit@10;
-- improves public MRR and TechnicalScore.
-
-V13 therefore demonstrates runtime workflow re-orchestration rather than applying a fixed retrieval strategy on every turn.
-
----
-
-# Repository Structure
-
-```text
 .
 ├── assets/
 │   ├── catalog_lsa.npy
@@ -815,7 +315,7 @@ V13 therefore demonstrates runtime workflow re-orchestration rather than applyin
 │   └── semantic_pipeline.joblib
 │
 ├── data/
-│   ├── catalog.jsonl
+│   ├── catalog.jsonl        # local / ignored
 │   └── public_set.jsonl
 │
 ├── docs/
@@ -826,23 +326,7 @@ V13 therefore demonstrates runtime workflow re-orchestration rather than applyin
 │   └── local_evaluator.py
 │
 ├── experiments/
-│   ├── v8_hard_constraints.json
-│   ├── v8_1_money_safe_constraints.json
-│   ├── v9_safe_personalization.json
-│   ├── v10_2_concept_smoke.json
-│   ├── v10_2_concept_robustness.json
-│   ├── v11_end_to_end_shadow.json
-│   ├── v11_1_end_to_end_shadow.json
-│   ├── v12_fusion_smoke.json
-│   ├── v12_fusion_ablation.json
-│   ├── v12_end_to_end_shadow.json
-│   ├── v12_semantic_exploration_fusion.json
-│   ├── v13a_disabled_public_check.json
-│   ├── v13_failure_orchestration_smoke.json
-│   ├── v13_failure_orchestration.json
-│   ├── v13_protected_recovery_smoke.json
-│   ├── v13_protected_recovery.json
-│   └── v13_public_eval.json
+│   └── historical accepted evaluation outputs
 │
 ├── scripts/
 │   ├── build_semantic_index.py
@@ -850,516 +334,128 @@ V13 therefore demonstrates runtime workflow re-orchestration rather than applyin
 │   ├── end_to_end_shadow_eval.py
 │   ├── v12_fusion_ablation.py
 │   ├── v13_failure_orchestration_eval.py
-│   └── v13_protected_recovery_eval.py
+│   ├── v13_protected_recovery_eval.py
+│   ├── v14_context_distillation_eval.py
+│   └── v14_context_state_eval.py
 │
 ├── src/
+│   ├── context.py
 │   ├── dialogue.py
 │   ├── fusion.py
 │   ├── hard_constraints.py
 │   ├── intent.py
 │   ├── orchestration.py
+│   ├── product_profile.py
 │   ├── profile.py
 │   ├── questions.py
+│   ├── relevance_gate.py
 │   ├── reranker.py
 │   ├── retrieval.py
 │   ├── semantic.py
+│   ├── shopping_intent.py
+│   ├── slots.py
 │   └── state.py
 │
 ├── starter/
 │   └── agent.py
 │
 ├── tests/
-│
 ├── DATA_ATTRIBUTION.md
 ├── requirements.txt
 └── README.md
-```
 
----
+Temporary V15 audit, shadow-ranking, smoke-result, and patch artifacts are intentionally excluded from the cleaned repository.
 
-# Setup
+Setup
 
-Python 3.10+ is recommended.
+Python 3.10+.
 
-Create the environment:
-
-```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-```
-
-Install dependencies:
-
-```powershell
 pip install -r requirements.txt
-```
 
-Run the full automated test suite:
+Run the full test suite:
 
-```powershell
 python -m unittest -v
-```
 
-Current production suite:
+The cleaned V15 code currently has:
 
-```text
-105 tests
-```
+166 tests
 
----
+Public Evaluation
 
-# Reproducing the Current Results
+python -m evaluator.local_evaluator --output experiments\v15_public_eval.json
 
-## Official Public Evaluation
+Protected expected metrics:
 
-Run:
-
-```powershell
-python -m evaluator.local_evaluator --output experiments\v13_public_eval.json
-```
-
-Expected:
-
-```text
 sample_count                 200
 hit_rate_at_10               1.0
-mrr                          0.817089
-mttc                         2.04
-efficiency                   0.896
-recommended_technical_score  0.924327
-```
+mrr                          0.820423
+mttc                         2.045
+efficiency                   0.8955
+recommended_technical_score  0.925227
 
----
+Robustness Evaluation
 
-## Catalogue-derived Retrieval Robustness
+Catalogue-derived concept robustness:
 
-Run:
+python -m scripts.concept_robustness_eval `
+  --cases 130 `
+  --output experiments\concept_robustness.json
 
-```powershell
-python -m scripts.concept_robustness_eval --cases 130 --output experiments\v10_2_concept_robustness.json
-```
+End-to-end shadow evaluation:
 
----
+python -m scripts.end_to_end_shadow_eval `
+  --output experiments\end_to_end_shadow.json
 
-## End-to-End Shadow Evaluation
+Competition Constraints
 
-Run:
+The implementation is designed around the participant-kit constraints:
 
-```powershell
-python -m scripts.end_to_end_shadow_eval --output experiments\v12_end_to_end_shadow.json
-```
+frozen 50,000-product catalogue;
 
----
+maximum 10 turns;
 
-## V12 Semantic Fusion Ablation
+exact parent_asin recommendation matching;
 
-Run:
+200 public sessions;
 
-```powershell
-python -m scripts.v12_fusion_ablation --output experiments\v12_fusion_ablation.json
-```
+800 separate private sessions;
 
----
+read-only catalogue;
 
-## V13 Failure-Orchestration Ablation
+participant-visible metadata only;
 
-Run:
+no evaluator or target-label modification;
 
-```powershell
-python -m scripts.v13_failure_orchestration_eval --steps "0,0.25,0.5,0.75,1.0" --max-turn 5 --output experiments\v13_failure_orchestration.json
-```
+lightweight local execution;
 
----
+network access may not be available in final scoring.
 
-## V13 Protected-Recovery Ablation
+The production path therefore does not require a paid external LLM API.
 
-Run:
+Development Rules
 
-```powershell
-python -m scripts.v13_protected_recovery_eval --steps "0,0.25,0.5,0.75,1.0" --recovery-slots 1 --max-turn 5 --output experiments\v13_protected_recovery.json
-```
+A production change should satisfy all three:
 
-Selected production configuration:
+Architectural justification — it solves a real shopping-search problem.
 
-```text
-depth_step      = 0.75
-recovery_slots  = 1
-```
+Direct behavioral test — the specific behavior is tested independently.
 
----
+Regression protection — existing public and robustness behavior must not regress.
 
-# Evaluation Discipline
+A small public-score increase alone is not sufficient reason to ship a change.
 
-The official public evaluator is useful but contains only 200 labeled sessions.
+Current Priorities
 
-The final evaluation contains an additional 800 private sessions with different users and target products.
+The strongest next areas are:
 
-For that reason, this project uses three evaluation layers:
+better product-type / query understanding;
 
-```text
-Unit / regression tests
-        ↓
-Catalogue-derived label-free shadow evaluation
-        ↓
-Official public evaluator
-```
+category-specific clarification with higher information gain;
 
-A feature is not accepted merely because it improves the public score.
+improved private-set robustness without changing the proven ranking path;
 
-Where possible, the feature must first have a plausible architectural justification and demonstrate improvement on an independently constructed evaluation.
+latency and memory profiling for final packaging.
 
----
-
-# Design Principles
-
-## Precision Before Breadth
-
-Dense retrieval is not automatically better than lexical search.
-
-The system keeps BM25 as its primary high-precision retrieval route.
-
----
-
-## Semantic Retrieval as Recovery
-
-Semantic search is activated when there is evidence that lexical retrieval may be insufficient.
-
-It expands candidate recall without replacing the lexical precision path universally.
-
----
-
-## Current Session Intent Wins
-
-Explicit current requirements always outrank historical profile information.
-
----
-
-## No Fabricated Preferences
-
-Aggregate profile tags can influence clarification strategy, but never create product preferences that the user did not express.
-
----
-
-## Hard Constraints Must Be Safe
-
-Structured hard filtering is used only when the constraint can be extracted reliably.
-
-The budget parser therefore requires monetary context and rejects unrelated numbers or measurements.
-
----
-
-## Protect Proven Behaviour
-
-A broader retrieval strategy should not automatically replace a narrower strategy that already works well.
-
-V13 demonstrates this principle by retaining nine V12 recommendations and reserving only one slot for a deeper recovery candidate.
-
----
-
-## Failure Is Information
-
-Explicit rejection of a recommendation set is treated as a runtime signal.
-
-Instead of repeating the same workflow indefinitely, the agent can increase search breadth after failure.
-
----
-
-## Bounded Adaptation
-
-Adaptive search is capped.
-
-The system avoids unlimited candidate expansion, uncontrolled compute growth, and unbounded semantic retrieval.
-
----
-
-## Deterministic and Reproducible
-
-The current production pipeline does not require an external paid LLM API.
-
-This minimizes:
-
-- external dependencies;
-- token cost;
-- nondeterminism;
-- credential requirements;
-- network dependence.
-
----
-
-## Public-set Restraint
-
-Production changes are not accepted solely because they improve the 200 public sessions.
-
-Catalogue-derived shadow tests provide an additional evaluation axis for private-set robustness.
-
----
-
-# Competition Constraints
-
-Key constraints from the participant kit:
-
-- frozen 50,000-product catalogue;
-- maximum 10 turns per session;
-- exact `parent_asin` recommendation matching;
-- 200 labeled public sessions;
-- 800 private evaluation sessions;
-- public and private sessions use different users and targets;
-- catalogue is read-only;
-- participant-visible metadata only;
-- no modification of evaluator logic;
-- no modification of public labels or target ASINs;
-- text and structured metadata only;
-- lightweight in-memory execution expected.
-
----
-
-# Limitations
-
-Despite the strong public score, the system still has several limitations.
-
-## Structured State Is Incomplete
-
-Most conversational preferences are currently stored as accumulated free text.
-
-Budget is explicitly structured, but dimensions such as:
-
-```text
-material
-color
-size
-style
-brand
-feature
-use case
-```
-
-are not yet represented as first-class state objects.
-
-This limits precise slot rewriting and context distillation.
-
----
-
-## Semantic Retrieval Is Lightweight
-
-The semantic route uses catalogue-trained TF-IDF + LSA.
-
-This is inexpensive, deterministic and fully local, but less expressive than a modern neural semantic encoder or cross-encoder.
-
----
-
-## The Reranker Is Primarily Deterministic
-
-The current reranker combines lexical evidence, constraint coverage, catalogue popularity and bounded semantic retrieval information.
-
-It does not yet contain a learned semantic cross-encoder or generative LLM ranking stage.
-
----
-
-## Early Clarification Is Simulator-aware
-
-Broad `other` clarification performs well with the deterministic evaluator.
-
-A real commercial shopping assistant would likely want a more natural expected-information-gain policy from the first ambiguous turn.
-
----
-
-## Product Taxonomy Is Mostly Flattened
-
-Category information is used heavily for lexical scoring and safety, but the agent does not yet maintain an explicit hierarchical product taxonomy for structured cross-category browsing.
-
----
-
-## Deep Recovery Costs More
-
-V13 intentionally performs additional retrieval only after explicit failures.
-
-This improves difficult-session coverage but increases runtime on those later recovery turns.
-
-The expansion is capped to control this trade-off.
-
----
-
-## Shadow Relevance Is Imperfect
-
-The catalogue-derived robustness benchmark treats matching same-category products as relevant.
-
-This avoids using public labels, but is only a proxy for real shopper relevance.
-
-Some semantically reasonable cross-category recommendations may therefore be counted as negatives.
-
----
-
-# Future Improvements
-
-The highest-priority future directions are:
-
-1. structured conversational slots and lifecycle management;
-2. selective slot rewriting during intent override;
-3. confidence-aware context distillation and safe slot decay;
-4. local semantic reranking on small candidate sets;
-5. catalogue-grounded query rewriting;
-6. explicit product-category hierarchy for browsing;
-7. richer recommendation explanations;
-8. runtime latency and memory profiling.
-
-Any future production change must continue to pass:
-
-```text
-automated regression tests
-+
-label-free robustness evaluation
-+
-official public evaluator
-```
-
-before it is considered for the final submission.
-
----
-
-# Team Workflow
-
-`main` is treated as the stable shared team baseline.
-
-Experimental development occurs on separate branches so teammates can continue working from a known-good version without being affected by unfinished experiments.
-
-Current development model:
-
-```text
-main
-│
-└── stable shared baseline
-     currently includes V12
-
-harshil/dev
-│
-├── V13 failure-aware protected recovery
-├── future experimental versions
-└── candidate final integration
-```
-
-Near the end of development, proven changes can be reviewed and merged into `main`.
-
-For every production change:
-
-```text
-implement
-    ↓
-unit tests
-    ↓
-shadow evaluation
-    ↓
-public regression gate
-    ↓
-commit to development branch
-    ↓
-final review before main
-```
-
----
-
-# Git Safety
-
-Do not modify:
-
-- evaluator logic;
-- public labels;
-- official target ASINs;
-- catalogue contents.
-
-Do not commit:
-
-```text
-.venv/
-.vscode/
-```
-
-Experimental outputs should be clearly named by version so results remain reproducible.
-
----
-
-# Protected Public Benchmark
-
-The current V13 production benchmark is:
-
-```text
-Hit Rate@10      1.000000
-MRR              0.817089
-MTTC             2.040
-Efficiency       0.8960
-Technical Score  0.924327
-```
-
-The previous V12 benchmark was:
-
-```text
-Hit Rate@10      1.000000
-MRR              0.815145
-MTTC             2.035
-Efficiency       0.8965
-Technical Score  0.923844
-```
-
-A production change that reduces Hit Rate@10 should normally be rejected unless there is compelling independent evidence of substantially better private-set generalization.
-
----
-
-# Team Contributions
-
-> Complete the remaining names and contribution descriptions before the final Devpost submission.
-
-| Team Member | Contribution |
-|---|---|
-| Harshil | Conversational state, retrieval/reranking experimentation, semantic-recovery evaluation, failure-aware orchestration, robustness testing and technical documentation |
-| Team Member 2 | TODO |
-| Team Member 3 | TODO |
-| Team Member 4 | TODO |
-
----
-
-# Current Status
-
-Completed through production V13:
-
-- multi-turn conversational memory;
-- category preservation;
-- intent override handling;
-- field-aware lexical retrieval;
-- constraint-aware reranking;
-- popularity tie-breaking;
-- adaptive long-tail exploration;
-- local semantic retrieval;
-- buying/browsing intent routing;
-- candidate-aware clarification;
-- context-safe budget filtering;
-- safe aggregate-profile personalization;
-- catalogue-derived semantic robustness benchmark;
-- end-to-end shadow ranking benchmark;
-- semantic-aware exploration fusion;
-- failure detection;
-- intent-epoch failure memory;
-- adaptive retrieval-depth escalation;
-- protected deep-retrieval recovery.
-
-Current public result:
-
-```text
-HR@10            1.000000
-MRR              0.817089
-Technical Score  0.924327
-```
-
-Current label-free robustness result:
-
-```text
-V12 continuation through Turn 5:
-123 / 130 cumulative hits
-94.62%
-
-V13 protected recovery:
-125 / 130 cumulative hits
-96.15%
-```
-
-Next development target:
-
-> **Structured conversational context: first-class slots, selective override rewriting, confidence-aware context distillation, and safe slot lifecycle management.**
+Broad positive relevance reranking was tested and rejected because it hurt ranking quality. Structured relevance is therefore currently used only where it has a clear, conservative role: observed negative constraints.

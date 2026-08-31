@@ -14,6 +14,12 @@ from src.intent import (
     infer_intent,
 )
 
+from src.shopping_intent import (
+    canonicalize_attribute_value,
+    extract_exclusions,
+    positive_retrieval_text,
+)
+
 from src.slots import (
     MULTI_VALUE_ATTRIBUTES,
     STRUCTURED_ATTRIBUTES,
@@ -386,6 +392,13 @@ class SessionState:
             )
         )
 
+        exclusions = extract_exclusions(text, turn)
+        excluded_values = {
+            (attribute, signal.value.casefold())
+            for attribute, signals in exclusions.items()
+            for signal in signals
+        }
+
         grouped: dict[
             str,
             list[str],
@@ -399,6 +412,10 @@ class SessionState:
         ] = {}
 
         for detected in detections:
+
+            canonical = canonicalize_attribute_value(detected.value)
+            if (detected.attribute, canonical.casefold()) in excluded_values:
+                continue
 
             grouped[
                 detected.attribute
@@ -885,12 +902,14 @@ class SessionState:
                     ),
                 )
 
-                self.evidence.append(
-                    Evidence(
-                        turn=turn,
-                        text=remaining_text,
+                retrieval_text = positive_retrieval_text(remaining_text)
+                if retrieval_text:
+                    self.evidence.append(
+                        Evidence(
+                            turn=turn,
+                            text=retrieval_text,
+                        )
                     )
-                )
 
             return
 
@@ -913,12 +932,14 @@ class SessionState:
         # EXISTING V13 SEARCH EVIDENCE
         # ----------------------------------
 
-        self.evidence.append(
-            Evidence(
-                turn=turn,
-                text=cleaned,
+        retrieval_text = positive_retrieval_text(cleaned)
+        if retrieval_text:
+            self.evidence.append(
+                Evidence(
+                    turn=turn,
+                    text=retrieval_text,
+                )
             )
-        )
 
     def active_text(
         self,

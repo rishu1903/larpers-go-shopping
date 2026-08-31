@@ -217,6 +217,22 @@ def _candidate_from_row(
             row[3]
             or "",
 
+        "features":
+            row[4]
+            or "",
+
+        "details":
+            row[5]
+            or "",
+
+        "store":
+            row[6]
+            or "",
+
+        "description":
+            row[7]
+            or "",
+
         "searchable_text":
             " ".join(
                 str(

@@ -290,7 +290,7 @@ _ATTRIBUTE_PATTERNS: dict[
             re.IGNORECASE,
         ),
         re.compile(
-            r"\binsulated\b",
+            r"\binsulat(?:ed|ion)\b",
             re.IGNORECASE,
         ),
         re.compile(
@@ -298,7 +298,7 @@ _ATTRIBUTE_PATTERNS: dict[
             re.IGNORECASE,
         ),
         re.compile(
-            r"\bnon[- ]slip\b",
+            r"\b(?:non[- ]?slip|slip[- ]resistant|anti[- ]slip)\b",
             re.IGNORECASE,
         ),
         re.compile(
