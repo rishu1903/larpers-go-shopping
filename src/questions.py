@@ -438,48 +438,38 @@ def _profile_aware_choice(
     ][2]
 
 
-# --------------------------------------------------
-# EARLY-TURN DOMINANT ATTRIBUTE TARGETING
-# --------------------------------------------------
-#
-# Turns 1-3 default to broad discovery ("other")
-# because a small/ambiguous candidate pool usually
-# carries no reliable signal yet. But a real,
-# production-scale retrieval pool (up to 30
-# candidates) can already show an overwhelmingly
-# dominant attribute even before any evidence has
-# been given -- e.g. every candidate sharing one
-# material while spanning many colors. Asking about
-# that dominant attribute immediately, instead of
-# spending a turn on the generic catch-all, gets
-# useful evidence one turn sooner.
-#
-# Deliberately conservative: requires BOTH a much
-# higher information-score bar than the turn 4+
-# threshold AND a minimum pool size, so this never
-# fires on small/synthetic candidate sets (the
-# entropy-based score can already be near its
-# theoretical maximum on a clean 2-item split).
-
-EARLY_TURN_MIN_POOL = 10
-
-EARLY_TURN_INFO_THRESHOLD = 0.50
-
-
-def _scored_attributes(
+def choose_candidate_attribute(
     state: SessionState,
     candidates: list[dict],
-    threshold: float,
-) -> list[
-    tuple[
-        float,
-        str,
-    ]
-]:
+    turn: int,
+) -> str:
     """
-    Score every attribute not already known/asked/
-    declined, keeping only those above `threshold`.
+    Choose the next clarification dimension.
+
+    Turns 1-3
+    ---------
+
+    Keep broad discovery with `other`.
+
+    Turn 4+
+    -------
+
+    1. Estimate candidate information gain.
+    2. Remove attributes already known/asked/
+       explicitly declined.
+    3. Find the strongest candidate-driven
+       clarification.
+    4. Allow the anonymized aggregate profile
+       to break only a near tie.
+    5. Fall back to `other` when no structured
+       attribute is useful.
+
+    No target label or hidden simulator state
+    is available to this policy.
     """
+
+    if turn <= 3:
+        return "other"
 
     known = _known_attributes(
         state
@@ -516,7 +506,7 @@ def _scored_attributes(
             )
         )
 
-        if information > threshold:
+        if information > 0.10:
 
             scored.append(
                 (
@@ -524,75 +514,6 @@ def _scored_attributes(
                     attribute,
                 )
             )
-
-    return scored
-
-
-def choose_candidate_attribute(
-    state: SessionState,
-    candidates: list[dict],
-    turn: int,
-) -> str:
-    """
-    Choose the next clarification dimension.
-
-    Turns 1-3
-    ---------
-
-    Default to broad discovery with `other`, UNLESS
-    the candidate pool is large enough to be a real
-    retrieval result AND one attribute is
-    overwhelmingly dominant (see
-    EARLY_TURN_MIN_POOL / EARLY_TURN_INFO_THRESHOLD
-    above) -- in that case ask about it directly
-    instead of wasting a turn on the catch-all.
-
-    Turn 4+
-    -------
-
-    1. Estimate candidate information gain.
-    2. Remove attributes already known/asked/
-       explicitly declined.
-    3. Find the strongest candidate-driven
-       clarification.
-    4. Allow the anonymized aggregate profile
-       to break only a near tie.
-    5. Fall back to `other` when no structured
-       attribute is useful.
-
-    No target label or hidden simulator state
-    is available to this policy.
-    """
-
-    if turn <= 3:
-
-        if (
-            len(candidates)
-            >= EARLY_TURN_MIN_POOL
-        ):
-
-            early_scored = (
-                _scored_attributes(
-                    state,
-                    candidates,
-                    EARLY_TURN_INFO_THRESHOLD,
-                )
-            )
-
-            if early_scored:
-
-                return _profile_aware_choice(
-                    state=state,
-                    scored=early_scored,
-                )
-
-        return "other"
-
-    scored = _scored_attributes(
-        state,
-        candidates,
-        0.10,
-    )
 
     if not scored:
         return "other"
