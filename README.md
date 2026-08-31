@@ -602,6 +602,54 @@ Practically all of the measured movement traces to V14.1 (query expansion); V14.
 
 ---
 
+# V15 — Scenario Efficiency Improvements
+
+The official evaluator reports MRR and MTTC separately per scenario type (`boundary`, `browsing`, `buying`, `intent_override`). With Hit@10 already perfect everywhere, these per-scenario breakdowns are where remaining headroom actually shows up. Two of three original hypotheses for closing that headroom turned out to be wrong once traced through the actual code -- reported honestly below rather than smoothed over.
+
+## V15.1 — BM25 Order Beats Popularity When No Evidence Exists Yet
+
+Turn 1 of a Browsing session discloses zero constraint content (the scripted opener is just `"I'm looking for {category}, but I'm still exploring."`), so every same-category candidate ties on the deterministic relevance score. `rerank_candidates`'s tie-break order was `(-relevance, -rating_number, bm25_index)` -- with relevance tied, raw popularity decided almost everything, even though BM25's own full-text rank (title=6.0/categories=4.0/features=2.5/details=2.5/store=1.5/description=1.0 weighted) already reflects real textual relevance a popularity count doesn't.
+
+When `state.evidence` is empty, the tie-break now checks `bm25_index` before `-rating_number` instead of after. This is a no-op the instant any evidence exists -- every Buying-session turn and every Browsing-session turn from turn 2 onward are unaffected, confirmed by the buying-style shadow eval being byte-identical before/after.
+
+| Metric | Before | After |
+|---|---:|---:|
+| Browsing MRR | 0.768333 | **0.848140** |
+| Browsing Hit@10 | 1.000 | 1.000 |
+| Overall MRR | 0.815145 | **0.847067** |
+| Overall TechnicalScore | 0.923844 | **0.930420** |
+
+Honest tradeoff: Browsing and Boundary MTTC both got slightly worse (1.775→2.075 and 2.6→3.2). Some sessions that previously hit early via a lucky popularity-driven rank now hit one turn later at a substantially better rank once they do -- net positive on the composite TechnicalScore (MRR is weighted 30% vs. Efficiency/MTTC's 20%), but not a free win on every axis.
+
+## V15.2 — Clear Stale Asked-Attribute Bookkeeping on Intent Override
+
+`state.override_seen` was set on override but never read anywhere (write-only). The override handler already purges stale turn-1 evidence and a turn-1-sourced budget, but never cleared `state.asked_attributes` -- so an attribute the agent happened to ask about *before* the override stayed permanently excluded afterward, even though the override changes what's actually informative to ask. `state.no_preference` is deliberately left untouched: a shopper's stated attribute-indifference plausibly survives an override, unlike pure turn-tracking bookkeeping tied to the discarded context.
+
+Measured impact: byte-identical on the official evaluator's `intent_override` bucket (mrr=0.894444, mttc=3.633333). This is a real correctness fix, not a no-op change -- but it shows no measured movement on this specific 30-sample bucket, most plausibly because Intent-Override sessions already resolve at or very near the scripted override turn itself. The original strategy estimated only ~0.13 turns of slack above the ~3.5-turn structural floor set by the competition's own scripting rule (*"An Intent Override session cannot convert before the new intent is sent"*, override scripted at a random turn 3 or 4) -- there simply wasn't much room for a better follow-up question to matter before most sessions already hit.
+
+## V15.3 — Attempted and Reverted: Exhausting Clarification on a Declined Catch-All Attribute
+
+The third original hypothesis targeted Boundary MTTC (2.6, second-highest): the evaluator's boundary-scenario reply fires on the *first* attribute the agent ever asks about, including `"other"` -- which every session is hardcoded to ask about on turns 1-3 (the broad-discovery rule). That reply's plain phrasing (`"I don't have a preference for {attribute}; please use your judgment."`) doesn't set `clarification_exhausted` the way the rarer "additional" phrasing does, forcing an extra round-trip.
+
+The fix looked correct on paper: also exhaust clarification when the declined attribute is specifically `"other"`. It was implemented, tested, and measured -- and it caused a severe regression: **Boundary `hit_rate_at_10` dropped from 1.000 to 0.400.** Root cause found on inspection: exhausting clarification doesn't just stop asking questions -- it also switches the agent into `rerank_for_exploration` (a wider-candidate, different-ranking retrieval mode) via `starter/agent.py`'s reranker-selection gate. Because Boundary's first scripted reply almost always lands during the turns-1-3 broad-discovery window (which always asks about `"other"`), this fix caused nearly every Boundary session to flip into exploration-mode ranking on essentially turn 1, before any real evidence existed to rank against -- trading a small MTTC gain for a catastrophic accuracy loss.
+
+This was reverted before being committed. A safe fix would need to first decouple "the shopper has nothing more to add" from "switch retrieval/ranking mode," which is a larger, riskier redesign than fits this branch's scope -- left as a documented next step rather than shipped half-validated.
+
+## V15 Summary
+
+| Metric | Before (V14) | After (V15) |
+|---|---:|---:|
+| Browsing MRR | 0.768333 | **0.848140** |
+| Overall MRR | 0.815145 | **0.847067** |
+| Overall TechnicalScore | 0.923844 | **0.930420** |
+| Intent-Override MRR / MTTC | 0.894444 / 3.633 | unchanged |
+| Boundary MTTC | 2.6 | 3.2 (accepted tradeoff, see V15.1) |
+| Public Hit@10 (every scenario) | 1.000 | **1.000** |
+
+Two of three shipped; the third was attempted with full rigor, found unsafe, and reverted rather than forced through. This is the same "if metrics regress, don't ship" discipline applied throughout V13/V14 -- a not-uncommon, honestly-reported outcome rather than an exception to it.
+
+---
+
 # Repository Structure
 
 ```text
@@ -627,7 +675,8 @@ Practically all of the measured movement traces to V14.1 (query expansion); V14.
 │   ├── v11_end_to_end_shadow.json
 │   ├── v12_fusion_ablation.json
 │   ├── v13_budget_constraint_hardening_after.json
-│   └── v14_relevance_scaled_fusion_ablation.json
+│   ├── v14_relevance_scaled_fusion_ablation.json
+│   └── v15_official_after.json
 │
 ├── scripts/
 │   ├── build_semantic_index.py
@@ -843,11 +892,13 @@ Completed:
 - V11 end-to-end shadow top-10 analysis;
 - V12 semantic-aware exploration candidate fusion;
 - V13 hard constraint parser generalization hardening (negation handling, explicit budget removal, evaluator-independent override detection, expanded numeric/vocabulary coverage);
-- V14 ranking generalization improvements (domain-synonym query expansion, relevance-scaled semantic exploration bonus, average-rating tie-break).
+- V14 ranking generalization improvements (domain-synonym query expansion, relevance-scaled semantic exploration bonus, average-rating tie-break);
+- V15 scenario efficiency improvements (BM25-vs-popularity tie-break for zero-evidence turns, override asked-attribute bookkeeping clear).
 
 Next:
 - clause-level negation scope beyond adjacency (e.g. "I don't want to spend more than $X"), relevant to both the constraint parser and retrieval query construction;
 - proximity-based money-context detection to close the remaining false-positive case tracked in the budget constraint eval suite's ACCEPTED_LIMITATIONS;
-- broader domain-synonym coverage beyond the moisture-resistance concept cluster, once further concentrated gaps are identified the same way (concept robustness + shadow eval, not the public benchmark alone).
+- broader domain-synonym coverage beyond the moisture-resistance concept cluster, once further concentrated gaps are identified the same way (concept robustness + shadow eval, not the public benchmark alone);
+- a safe redesign of Boundary-scenario clarification exhaustion that decouples "shopper has nothing more to add" from "switch retrieval/ranking mode" (see V15.3 -- attempted, reverted after a severe regression, not yet re-attempted).
 
 Next production change will be chosen based on evidence from the relevant robustness suite rather than assumed in advance.
