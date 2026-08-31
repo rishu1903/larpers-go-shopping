@@ -1,0 +1,76 @@
+{
+  "benchmark": "V16 early-turn dominant attribute targeting ablation",
+  "settings": [
+    "10/0.5",
+    "10/0.3",
+    "15/0.3"
+  ],
+  "runs": [
+    {
+      "min_pool": 10,
+      "info_threshold": 0.5,
+      "compact": {
+        "overall_hit_rate_at_10": 1.0,
+        "overall_mrr": 0.838248,
+        "overall_mttc": 2.545,
+        "technical_score": 0.920574,
+        "boundary_hit_rate_at_10": 1.0,
+        "boundary_mrr": 1.0,
+        "boundary_mttc": 3.9,
+        "browsing_hit_rate_at_10": 1.0,
+        "browsing_mrr": 0.840223,
+        "browsing_mttc": 2.55,
+        "buying_hit_rate_at_10": 1.0,
+        "buying_mrr": 0.797063,
+        "buying_mttc": 1.85,
+        "intent_override_hit_rate_at_10": 1.0,
+        "intent_override_mrr": 0.888889,
+        "intent_override_mttc": 3.933333
+      }
+    },
+    {
+      "min_pool": 10,
+      "info_threshold": 0.3,
+      "compact": {
+        "overall_hit_rate_at_10": 1.0,
+        "overall_mrr": 0.826454,
+        "overall_mttc": 2.73,
+        "technical_score": 0.913336,
+        "boundary_hit_rate_at_10": 1.0,
+        "boundary_mrr": 0.914286,
+        "boundary_mttc": 4.3,
+        "browsing_hit_rate_at_10": 1.0,
+        "browsing_mrr": 0.829807,
+        "browsing_mttc": 2.7375,
+        "buying_hit_rate_at_10": 1.0,
+        "buying_mrr": 0.789544,
+        "buying_mttc": 2.025,
+        "intent_override_hit_rate_at_10": 1.0,
+        "intent_override_mrr": 0.886667,
+        "intent_override_mttc": 4.066667
+      }
+    },
+    {
+      "min_pool": 15,
+      "info_threshold": 0.3,
+      "compact": {
+        "overall_hit_rate_at_10": 1.0,
+        "overall_mrr": 0.826454,
+        "overall_mttc": 2.73,
+        "technical_score": 0.913336,
+        "boundary_hit_rate_at_10": 1.0,
+        "boundary_mrr": 0.914286,
+        "boundary_mttc": 4.3,
+        "browsing_hit_rate_at_10": 1.0,
+        "browsing_mrr": 0.829807,
+        "browsing_mttc": 2.7375,
+        "buying_hit_rate_at_10": 1.0,
+        "buying_mrr": 0.789544,
+        "buying_mttc": 2.025,
+        "intent_override_hit_rate_at_10": 1.0,
+        "intent_override_mrr": 0.886667,
+        "intent_override_mttc": 4.066667
+      }
+    }
+  ]
+}
