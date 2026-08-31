@@ -2,14 +2,67 @@ from __future__ import annotations
 
 import unittest
 
+from src.intent import (
+    ShoppingIntent,
+)
+
 from src.reranker import (
+    configure_buying_relevance_labels,
     rerank_candidates,
+    rerank_for_exploration,
 )
 
 from src.state import (
     Evidence,
     SessionState,
 )
+
+
+def _color_label_candidates() -> list[dict]:
+    """
+    Two candidates for the same "color: red"
+    evidence chunk: one matches the color but is
+    unpopular, the other only mentions "color" (a
+    different one) but is very popular. Under plain
+    token-coverage scoring both tie at 1-of-2 chunk
+    tokens present, so popularity decides -- which
+    wrongly promotes the mismatched candidate.
+    """
+
+    return [
+        {
+            "parent_asin":
+                "wrong_color_but_popular",
+
+            "title":
+                "Running Shoe",
+
+            "categories":
+                "Shoes",
+
+            "searchable_text":
+                "Shoes Color Blue Running Shoe",
+
+            "rating_number":
+                5000,
+        },
+        {
+            "parent_asin":
+                "true_match",
+
+            "title":
+                "Red Running Shoe",
+
+            "categories":
+                "Shoes",
+
+            "searchable_text":
+                "Shoes Red Running Shoe",
+
+            "rating_number":
+                10,
+        },
+    ]
 
 
 class RerankerTest(
@@ -379,6 +432,269 @@ class RerankerTest(
                 "second",
             ],
         )
+
+
+    def test_buying_intent_strips_attribute_label_for_exact_match(
+        self,
+    ) -> None:
+
+        state = SessionState(
+            user_profile={}
+        )
+
+        state.intent = (
+            ShoppingIntent.BUYING
+        )
+
+        state.evidence = [
+            Evidence(
+                turn=2,
+                text="color: red",
+            )
+        ]
+
+        ranked = rerank_candidates(
+            _color_label_candidates(),
+            state,
+        )
+
+        # Once the "color:" label is stripped, the
+        # bare "red" chunk exact-matches the true
+        # target's text, beating the popular but
+        # wrong-colored decoy.
+        self.assertEqual(
+            ranked[0][
+                "parent_asin"
+            ],
+            "true_match",
+        )
+
+
+    def test_non_buying_intent_relevance_unaffected(
+        self,
+    ) -> None:
+
+        state = SessionState(
+            user_profile={}
+        )
+
+        state.intent = (
+            ShoppingIntent.BROWSING
+        )
+
+        state.evidence = [
+            Evidence(
+                turn=2,
+                text="color: red",
+            )
+        ]
+
+        ranked = rerank_candidates(
+            _color_label_candidates(),
+            state,
+        )
+
+        # Without buying intent, label stripping
+        # never applies -- both candidates tie on
+        # partial coverage and popularity decides,
+        # exactly as before this experiment.
+        self.assertEqual(
+            ranked[0][
+                "parent_asin"
+            ],
+            "wrong_color_but_popular",
+        )
+
+
+    def test_exploration_path_never_strips_attribute_labels(
+        self,
+    ) -> None:
+
+        evidence = [
+            Evidence(
+                turn=2,
+                text="color: red",
+            )
+        ]
+
+        buying_state = SessionState(
+            user_profile={}
+        )
+
+        buying_state.intent = (
+            ShoppingIntent.BUYING
+        )
+
+        buying_state.evidence = evidence
+
+        browsing_state = SessionState(
+            user_profile={}
+        )
+
+        browsing_state.intent = (
+            ShoppingIntent.BROWSING
+        )
+
+        browsing_state.evidence = evidence
+
+        # Exploration mode never passes
+        # strip_attribute_labels to
+        # _candidate_relevance, so its ranking must
+        # be identical regardless of state.intent --
+        # proving Browsing/exploration ranking is
+        # provably unaffected by this experiment.
+        self.assertEqual(
+            [
+                item["parent_asin"]
+                for item in rerank_for_exploration(
+                    _color_label_candidates(),
+                    buying_state,
+                )
+            ],
+            [
+                item["parent_asin"]
+                for item in rerank_for_exploration(
+                    _color_label_candidates(),
+                    browsing_state,
+                )
+            ],
+        )
+
+
+    def test_buying_only_mode_excludes_override_turns(
+        self,
+    ) -> None:
+
+        configure_buying_relevance_labels(
+            "buying_only"
+        )
+
+        try:
+
+            state = SessionState(
+                user_profile={}
+            )
+
+            state.intent = (
+                ShoppingIntent.BUYING
+            )
+
+            state.override_seen = True
+
+            state.evidence = [
+                Evidence(
+                    turn=2,
+                    text="color: red",
+                )
+            ]
+
+            ranked = rerank_candidates(
+                _color_label_candidates(),
+                state,
+            )
+
+            self.assertEqual(
+                ranked[0][
+                    "parent_asin"
+                ],
+                "wrong_color_but_popular",
+            )
+
+        finally:
+
+            configure_buying_relevance_labels(
+                "both"
+            )
+
+
+    def test_override_only_mode_fires_after_override(
+        self,
+    ) -> None:
+
+        configure_buying_relevance_labels(
+            "override_only"
+        )
+
+        try:
+
+            state = SessionState(
+                user_profile={}
+            )
+
+            state.intent = (
+                ShoppingIntent.BUYING
+            )
+
+            state.override_seen = True
+
+            state.evidence = [
+                Evidence(
+                    turn=2,
+                    text="color: red",
+                )
+            ]
+
+            ranked = rerank_candidates(
+                _color_label_candidates(),
+                state,
+            )
+
+            self.assertEqual(
+                ranked[0][
+                    "parent_asin"
+                ],
+                "true_match",
+            )
+
+        finally:
+
+            configure_buying_relevance_labels(
+                "both"
+            )
+
+
+    def test_off_mode_disables_stripping_entirely(
+        self,
+    ) -> None:
+
+        configure_buying_relevance_labels(
+            "off"
+        )
+
+        try:
+
+            state = SessionState(
+                user_profile={}
+            )
+
+            state.intent = (
+                ShoppingIntent.BUYING
+            )
+
+            state.evidence = [
+                Evidence(
+                    turn=2,
+                    text="color: red",
+                )
+            ]
+
+            ranked = rerank_candidates(
+                _color_label_candidates(),
+                state,
+            )
+
+            self.assertEqual(
+                ranked[0][
+                    "parent_asin"
+                ],
+                "wrong_color_but_popular",
+            )
+
+        finally:
+
+            configure_buying_relevance_labels(
+                "both"
+            )
 
 
 if __name__ == "__main__":
