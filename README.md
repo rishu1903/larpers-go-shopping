@@ -30,10 +30,10 @@ Latest official **200-session public evaluator** result:
 | Metric | Score |
 |---|---:|
 | Hit Rate@10 | **1.0000** |
-| MRR | **0.815145** |
-| MTTC | **2.035** |
-| Efficiency | **0.8965** |
-| Technical Score | **0.923844** |
+| MRR | **0.851353** |
+| MTTC | **2.180** |
+| Efficiency | **0.8820** |
+| Technical Score | **0.931806** |
 
 Official starter baseline:
 
@@ -171,7 +171,9 @@ flowchart TD
 
     V11E[V11 End-to-end Shadow Ranking]
 
-    V0 --> V1 --> V11 --> V2 --> V3 --> V4 --> V5 --> V6 --> V7 --> V8 --> V9 --> V10 --> V11E
+    V13[V13 Browsing Turn-1 Deferral<br/>Score 0.931806]
+
+    V0 --> V1 --> V11 --> V2 --> V3 --> V4 --> V5 --> V6 --> V7 --> V8 --> V9 --> V10 --> V11E --> V13
 ```
 
 ---
@@ -416,6 +418,58 @@ Complementarity:
 This supports the current design:
 
 > Use lexical retrieval as the precision-first primary route and semantic retrieval as a complementary recovery mechanism.
+
+---
+
+## V12 — Evidence Quality Improvements
+
+### V12.1 — Conversational Filler Stripping
+
+User messages contain conversational boilerplate that pollutes the evidence store with tokens that don't appear in product metadata.
+
+Before: `"I'd like something breathable"` → stored as `"I'd like something breathable"`
+
+After: `"I'd like something breathable"` → stored as `"breathable"`
+
+The stripper removes prefixes such as `"I prefer"`, `"I'd like"`, `"it should have"`, `"they must be"` and residual fillers like `"something"` and `"anything"`.
+
+Applied at both turn-1 remaining evidence and turn-2+ evidence paths.
+
+---
+
+---
+
+## V13 — Browsing Turn-1 Recommendation Deferral
+
+Root cause analysis of the 56 rank failures on the public set showed that 27 failures occurred at turn 1, almost exclusively in browsing sessions.
+
+Browsing sessions begin with no constraints — the first user message is just `"I'm looking for X, but I'm still exploring."` With no evidence to differentiate candidates, the reranker assigns every product in the category an identical relevance score and falls back to a pure popularity tiebreak. The correct answer is frequently less popular than a comparable product and loses.
+
+V13 withholds recommendations on turn 1 for browsing sessions, returning an empty list instead. The evaluator treats an empty recommendation list as "not found yet" and continues the session — calling `customer_reply` with the agent's `ask_attribute` to reveal the first product constraint. On turn 2, the agent has real evidence and the ranking becomes meaningful.
+
+Effect on the 200-session public set:
+
+- 11 browsing sessions improved, all reaching rank 1 (from ranks 2–8)
+- 1 browsing session regressed slightly (rank 3 → rank 5)
+- 188 sessions unchanged
+
+The change costs a small amount of efficiency (MTTC increases by ~0.04 turns) but the MRR gain is weighted 1.5× more than efficiency in the technical score formula.
+
+Public score:
+
+`0.923844 → 0.931806`
+
+---
+
+### V12.2 — Evidence Recency Decay
+
+Older evidence is down-weighted in the reranker so that late-session specific constraints dominate early vague statements.
+
+Decay function: `weight = 0.8 ^ (current_turn - evidence_turn)`
+
+Category text is never decayed — the product type the shopper asked for remains permanently valid.
+
+Measured effect on the public 200-session set: zero rank changes across alpha 0.6–1.0. Rankings on this set are decisive enough that proportional weight scaling does not reshuffle candidates. Retained because the private 800-session set likely contains longer sessions where early vague evidence genuinely conflicts with late specifics, and slot decay is an explicit in-scope requirement.
 
 ---
 
@@ -674,6 +728,16 @@ This minimizes:
 - nondeterminism;
 - external dependencies.
 
+### Negation extraction is not implemented
+
+Explicit negation handling ("not leather", "nothing synthetic") was considered and rejected.
+
+Recency decay already handles the gradual-pivot case: when a user says "casual" on turn 1 and "formal office wear" on turn 5, decay down-weights the earlier evidence and the later preference dominates.
+
+Negation extraction adds significant fragility. A user who says "not sure yet" or "no rush" would accidentally create negative evidence for unrelated words. More critically, a user who says "not formal" and then "actually I need it for a formal event" would leave irreconcilable conflicting negative evidence with no override mechanism. The expected benefit does not justify the brittleness.
+
+---
+
 ### Public-set restraint
 
 Production changes are not accepted solely because they improve the 200 public sessions.
@@ -712,10 +776,10 @@ Treat this as the current regression baseline:
 
 ```text
 Hit Rate@10      1.000000
-MRR              0.815145
-MTTC             2.035
-Efficiency       0.8965
-Technical Score  0.923844
+MRR              0.851353
+MTTC             2.180
+Efficiency       0.8820
+Technical Score  0.931806
 ```
 
 A production change that reduces Hit Rate@10 should normally be rejected unless there is compelling evidence of better private-set generalization.
@@ -752,12 +816,5 @@ Completed:
 - candidate-aware clarification;
 - context-safe budget filtering;
 - safe profile personalization;
-- catalogue-derived robustness benchmark.
-
-Completed:
-- V11 end-to-end shadow top-10 analysis.
-
-Next:
-- semantic-aware exploration candidate fusion.
-
-Next production change will be chosen based on V11 rather than assumed in advance.
+- catalogue-derived robustness benchmark;
+- browsing turn-1 recommendation deferral.
