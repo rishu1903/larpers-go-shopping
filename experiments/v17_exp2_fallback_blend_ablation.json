@@ -1,0 +1,242 @@
+{
+  "benchmark": "Experiment 2: zero-evidence fallback blend weight sweep",
+  "weights": [
+    {
+      "bm25_weight": 1.0,
+      "popularity_weight": 0.0
+    },
+    {
+      "bm25_weight": 0.9,
+      "popularity_weight": 0.1
+    },
+    {
+      "bm25_weight": 0.75,
+      "popularity_weight": 0.25
+    },
+    {
+      "bm25_weight": 0.5,
+      "popularity_weight": 0.5
+    },
+    {
+      "bm25_weight": 0.0,
+      "popularity_weight": 1.0
+    }
+  ],
+  "runs": [
+    {
+      "bm25_weight": 1.0,
+      "popularity_weight": 0.0,
+      "result": {
+        "sample_count": 200,
+        "hit_rate_at_10": 1.0,
+        "mrr": 0.847067,
+        "mttc": 2.185,
+        "efficiency": 0.8815,
+        "recommended_technical_score": 0.93042,
+        "reported_token_usage": {
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0
+        },
+        "scenario_metrics": {
+          "boundary": {
+            "sample_count": 10,
+            "hit_rate_at_10": 1.0,
+            "mrr": 1.0,
+            "mttc": 3.2
+          },
+          "browsing": {
+            "sample_count": 80,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.84814,
+            "mttc": 2.075
+          },
+          "buying": {
+            "sample_count": 80,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.809112,
+            "mttc": 1.625
+          },
+          "intent_override": {
+            "sample_count": 30,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.894444,
+            "mttc": 3.633333
+          }
+        }
+      }
+    },
+    {
+      "bm25_weight": 0.9,
+      "popularity_weight": 0.1,
+      "result": {
+        "sample_count": 200,
+        "hit_rate_at_10": 1.0,
+        "mrr": 0.829714,
+        "mttc": 2.16,
+        "efficiency": 0.884,
+        "recommended_technical_score": 0.925714,
+        "reported_token_usage": {
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0
+        },
+        "scenario_metrics": {
+          "boundary": {
+            "sample_count": 10,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.911111,
+            "mttc": 3.0
+          },
+          "browsing": {
+            "sample_count": 80,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.815868,
+            "mttc": 2.0375
+          },
+          "buying": {
+            "sample_count": 80,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.809112,
+            "mttc": 1.625
+          },
+          "intent_override": {
+            "sample_count": 30,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.894444,
+            "mttc": 3.633333
+          }
+        }
+      }
+    },
+    {
+      "bm25_weight": 0.75,
+      "popularity_weight": 0.25,
+      "result": {
+        "sample_count": 200,
+        "hit_rate_at_10": 1.0,
+        "mrr": 0.805137,
+        "mttc": 2.115,
+        "efficiency": 0.8885,
+        "recommended_technical_score": 0.919241,
+        "reported_token_usage": {
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0
+        },
+        "scenario_metrics": {
+          "boundary": {
+            "sample_count": 10,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.775,
+            "mttc": 2.6
+          },
+          "browsing": {
+            "sample_count": 80,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.771438,
+            "mttc": 1.975
+          },
+          "buying": {
+            "sample_count": 80,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.809112,
+            "mttc": 1.625
+          },
+          "intent_override": {
+            "sample_count": 30,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.894444,
+            "mttc": 3.633333
+          }
+        }
+      }
+    },
+    {
+      "bm25_weight": 0.5,
+      "popularity_weight": 0.5,
+      "result": {
+        "sample_count": 200,
+        "hit_rate_at_10": 1.0,
+        "mrr": 0.792339,
+        "mttc": 2.06,
+        "efficiency": 0.894,
+        "recommended_technical_score": 0.916502,
+        "reported_token_usage": {
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0
+        },
+        "scenario_metrics": {
+          "boundary": {
+            "sample_count": 10,
+            "hit_rate_at_10": 1.0,
+            "mrr": 1.0,
+            "mttc": 2.6
+          },
+          "browsing": {
+            "sample_count": 80,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.711319,
+            "mttc": 1.8375
+          },
+          "buying": {
+            "sample_count": 80,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.809112,
+            "mttc": 1.625
+          },
+          "intent_override": {
+            "sample_count": 30,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.894444,
+            "mttc": 3.633333
+          }
+        }
+      }
+    },
+    {
+      "bm25_weight": 0.0,
+      "popularity_weight": 1.0,
+      "result": {
+        "sample_count": 200,
+        "hit_rate_at_10": 1.0,
+        "mrr": 0.815145,
+        "mttc": 2.035,
+        "efficiency": 0.8965,
+        "recommended_technical_score": 0.923844,
+        "reported_token_usage": {
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0
+        },
+        "scenario_metrics": {
+          "boundary": {
+            "sample_count": 10,
+            "hit_rate_at_10": 1.0,
+            "mrr": 1.0,
+            "mttc": 2.6
+          },
+          "browsing": {
+            "sample_count": 80,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.768333,
+            "mttc": 1.775
+          },
+          "buying": {
+            "sample_count": 80,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.809112,
+            "mttc": 1.625
+          },
+          "intent_override": {
+            "sample_count": 30,
+            "hit_rate_at_10": 1.0,
+            "mrr": 0.894444,
+            "mttc": 3.633333
+          }
+        }
+      }
+    }
+  ]
+}
