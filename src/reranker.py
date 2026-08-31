@@ -4,7 +4,12 @@ import re
 from collections.abc import Iterable
 
 from src.fusion import (
+    normalized_rrf,
     semantic_exploration_bonus,
+)
+
+from src.intent import (
+    ShoppingIntent,
 )
 
 from src.state import SessionState
@@ -14,6 +19,204 @@ TOKEN_RE = re.compile(
     r"[a-z0-9]+",
     re.IGNORECASE,
 )
+
+
+# --------------------------------------------------
+# BUYING/OVERRIDE RELEVANCE-LABEL STRIPPING
+# --------------------------------------------------
+#
+# The evaluator's scripted constraint text is
+# frequently attribute-label-prefixed, e.g.
+# "color: red" or "size: large" (see
+# evaluator/local_evaluator.py::intent_card). Real
+# product metadata usually states the bare value
+# without that literal label word adjacent to it in
+# the same word order, so the label token can silently
+# drag an otherwise-exact evidence match down to
+# partial token-overlap credit. Stripping a small,
+# generic set of attribute-name prefixes recovers the
+# exact-match bonus for these label-prefixed chunks.
+#
+# This is scoped to buying-intent contexts only (see
+# configure_buying_relevance_labels) so it never
+# touches Browsing/exploration-mode ranking.
+
+_ATTRIBUTE_LABEL_PREFIX_RE = re.compile(
+    r"^(?:category|material|color|size|style|"
+    r"use_case|feature|budget)\s*:\s*",
+    re.IGNORECASE,
+)
+
+
+def _strip_attribute_label(
+    chunk: str,
+) -> str:
+    """
+    Remove a leading "attribute:" label from an
+    evidence chunk, leaving the bare value.
+    """
+
+    return _ATTRIBUTE_LABEL_PREFIX_RE.sub(
+        "",
+        chunk,
+    )
+
+
+# Ablation modes:
+#
+#   "off"           -- never strip (pre-experiment
+#                       behaviour).
+#   "buying_only"   -- strip only for buying-intent
+#                       turns that never saw an
+#                       override.
+#   "override_only" -- strip only for turns after an
+#                       intent override.
+#   "both"          -- strip for every buying-intent
+#                       turn, override or not
+#                       (production setting).
+_BUYING_RELEVANCE_LABEL_MODE = "both"
+
+
+def configure_buying_relevance_labels(
+    mode: str,
+) -> None:
+    """
+    Configure which population receives the
+    buying/override relevance-label stripping.
+
+    Exists primarily for controlled offline
+    ablations -- see the module docstring above.
+    """
+
+    if mode not in (
+        "off",
+        "buying_only",
+        "override_only",
+        "both",
+    ):
+
+        raise ValueError(
+            "mode must be one of: "
+            "off, buying_only, override_only, both"
+        )
+
+    global _BUYING_RELEVANCE_LABEL_MODE
+
+    _BUYING_RELEVANCE_LABEL_MODE = mode
+
+
+def _should_strip_attribute_labels(
+    state: SessionState,
+) -> bool:
+
+    if _BUYING_RELEVANCE_LABEL_MODE == "off":
+        return False
+
+    is_buying = (
+        state.intent
+        == ShoppingIntent.BUYING
+    )
+
+    if _BUYING_RELEVANCE_LABEL_MODE == "both":
+        return is_buying
+
+    if _BUYING_RELEVANCE_LABEL_MODE == "buying_only":
+        return (
+            is_buying
+            and not state.override_seen
+        )
+
+    # "override_only"
+    return state.override_seen
+
+
+# --------------------------------------------------
+# BLENDED ZERO-EVIDENCE FALLBACK
+# --------------------------------------------------
+#
+# V15.1 replaced popularity-first with a hard switch
+# to BM25-first when state.evidence is empty. This
+# generalizes that binary switch into a tunable
+# rank-based blend of the two signals, reusing the
+# bounded reciprocal-rank fusion already defined in
+# src/fusion.py for the semantic exploration bonus.
+#
+# Defaults reproduce the exact V15.1 ordering bit-for
+# -bit (BM25 rank fully weighted, popularity weight
+# zero), so this is a safe, no-op starting point until
+# an ablation demonstrates a better setting.
+
+FALLBACK_BM25_WEIGHT = 1.0
+
+FALLBACK_POPULARITY_WEIGHT = 0.0
+
+
+def configure_fallback_blend_weights(
+    bm25_weight: float,
+    popularity_weight: float,
+) -> None:
+    """
+    Configure the zero-evidence fallback blend.
+
+    Exists primarily for controlled offline
+    ablations -- see the module docstring above.
+    """
+
+    for weight in (
+        bm25_weight,
+        popularity_weight,
+    ):
+
+        if (
+            not isinstance(
+                weight,
+                (int, float),
+            )
+            or weight != weight  # NaN check
+            or weight < 0.0
+        ):
+
+            raise ValueError(
+                "fallback blend weights must be "
+                "finite non-negative numbers"
+            )
+
+    global FALLBACK_BM25_WEIGHT
+    global FALLBACK_POPULARITY_WEIGHT
+
+    FALLBACK_BM25_WEIGHT = float(
+        bm25_weight
+    )
+
+    FALLBACK_POPULARITY_WEIGHT = float(
+        popularity_weight
+    )
+
+
+def _fallback_score(
+    bm25_rank: int,
+    popularity_rank: int,
+) -> float:
+    """
+    Blend BM25 retrieval order and popularity rank
+    into one tie-break score for the zero-evidence
+    fallback, using bounded reciprocal-rank fusion
+    for both signals so neither raw BM25 scores nor
+    raw rating counts need to be independently
+    normalized.
+    """
+
+    return (
+        FALLBACK_BM25_WEIGHT
+        * normalized_rrf(
+            bm25_rank
+        )
+    ) + (
+        FALLBACK_POPULARITY_WEIGHT
+        * normalized_rrf(
+            popularity_rank
+        )
+    )
 
 
 def _normalize(
@@ -62,6 +265,8 @@ def _evidence_chunks(
 def _candidate_relevance(
     candidate: dict,
     state: SessionState,
+    *,
+    strip_attribute_labels: bool = False,
 ) -> float:
     """
     Measure how completely one candidate
@@ -149,6 +354,12 @@ def _candidate_relevance(
     for chunk in _evidence_chunks(
         state
     ):
+        if strip_attribute_labels:
+
+            chunk = _strip_attribute_label(
+                chunk
+            )
+
         chunk_normalized = _normalize(
             chunk
         )
@@ -238,6 +449,12 @@ def rerank_candidates(
         state.evidence
     )
 
+    strip_attribute_labels = (
+        _should_strip_attribute_labels(
+            state
+        )
+    )
+
     scored: list[
         tuple[
             float,
@@ -256,6 +473,9 @@ def rerank_candidates(
         relevance = _candidate_relevance(
             candidate,
             state,
+            strip_attribute_labels=(
+                strip_attribute_labels
+            ),
         )
 
         rating_number = int(
@@ -287,11 +507,45 @@ def rerank_candidates(
 
     else:
 
+        popularity_rank_by_bm25_index = {
+            bm25_index: rank
+
+            for (
+                rank,
+                (
+                    _,
+                    _,
+                    bm25_index,
+                    _,
+                ),
+            )
+            in enumerate(
+                sorted(
+                    scored,
+                    key=lambda item: (
+                        -item[1],
+                        item[2],
+                    ),
+                ),
+                start=1,
+            )
+        }
+
         scored.sort(
             key=lambda item: (
                 -item[0],
+                -_fallback_score(
+                    bm25_rank=(
+                        item[2]
+                        + 1
+                    ),
+                    popularity_rank=(
+                        popularity_rank_by_bm25_index[
+                            item[2]
+                        ]
+                    ),
+                ),
                 item[2],
-                -item[1],
             )
         )
 
