@@ -258,6 +258,12 @@ def rerank_candidates(
             state,
         )
 
+        # Exposed so the shortlist policy can tell a
+        # genuine winner from a popularity tie-break.
+        candidate[
+            "relevance"
+        ] = relevance
+
         rating_number = int(
             candidate.get(
                 "rating_number",

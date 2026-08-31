@@ -30,6 +30,10 @@ from src.semantic import (
     SemanticRetriever,
 )
 
+from src.shortlist import (
+    shortlist_width,
+)
+
 from src.state import (
     SessionState,
 )
@@ -403,6 +407,7 @@ class Agent:
             dict
         ] = []
 
+        width = top_k
         if candidates:
 
             # ----------------------------------
@@ -460,6 +465,13 @@ class Agent:
             # 6. RETURN TOP K
             # ----------------------------------
 
+            width = shortlist_width(
+                ranked=ranked,
+                state=state,
+                turn=turn,
+                top_k=top_k,
+            )
+
             recommendations = [
                 {
                     "parent_asin":
@@ -469,30 +481,25 @@ class Agent:
                 }
 
                 for candidate
-                in ranked[:top_k]
+                in ranked[:width]
             ]
 
         # ----------------------------------
         # 7. REMEMBER SHOWN PRODUCTS
         # ----------------------------------
 
-        # Browsing sessions on turn 1 have no evidence beyond
-        # the category, making the ranking a pure popularity
-        # tiebreak. Withhold recommendations and let the
-        # question cycle run first so turn 2 has real signal.
-        if state.intent == ShoppingIntent.BROWSING and turn == 1:
-            recommendations = []
+        if width >= top_k:
 
-        state.record_recommendations(
-            [
-                item[
-                    "parent_asin"
+            state.record_recommendations(
+                [
+                    item[
+                        "parent_asin"
+                    ]
+
+                    for item
+                    in recommendations
                 ]
-
-                for item
-                in recommendations
-            ]
-        )
+            )
 
         # ----------------------------------
         # 8. CHOOSE NEXT QUESTION
