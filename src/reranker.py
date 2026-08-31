@@ -381,12 +381,38 @@ def rerank_for_exploration(
     # SCORE EXPLORATION CANDIDATES
     # ----------------------------------
 
+    relevances = [
+        _candidate_relevance(
+            candidate,
+            state,
+        )
+
+        for candidate
+        in candidate_list
+    ]
+
+    # V14: scale the semantic bonus relative to how
+    # large relevance scores actually run for this
+    # query, instead of a fixed 0-1 constant that a
+    # strong deterministic match always dwarfs. Falls
+    # back to 1.0 (the V12 bounded formula) when the
+    # pool carries no lexical signal at all.
+    relevance_scale = (
+        max(relevances)
+        if relevances
+        else 0.0
+    )
+
+    if relevance_scale <= 0.0:
+        relevance_scale = 1.0
+
     scored: list[
         tuple[
             float,
             float,
             int,
             int,
+            float,
             dict,
         ]
     ] = []
@@ -397,10 +423,9 @@ def rerank_for_exploration(
     ) in enumerate(
         candidate_list
     ):
-        relevance = _candidate_relevance(
-            candidate,
-            state,
-        )
+        relevance = relevances[
+            retrieval_index
+        ]
 
         semantic_rank = (
             semantic_rank_by_asin.get(
@@ -420,6 +445,9 @@ def rerank_for_exploration(
                 semantic_rank=(
                     semantic_rank
                 ),
+                relevance_scale=(
+                    relevance_scale
+                ),
             )
         )
 
@@ -436,12 +464,20 @@ def rerank_for_exploration(
             or 0
         )
 
+        average_rating = float(
+            candidate.get(
+                "average_rating"
+            )
+            or 0.0
+        )
+
         scored.append(
             (
                 exploration_score,
                 relevance,
                 rating_number,
                 retrieval_index,
+                average_rating,
                 candidate,
             )
         )
@@ -458,9 +494,14 @@ def rerank_for_exploration(
             # Preserve V4 long-tail exploration.
             item[2],
 
-            # Final tie-break:
-            # prefer deeper retrieval products.
+            # Prefer deeper retrieval products.
             -item[3],
+
+            # V14 final tie-break: among candidates
+            # tied on everything above, prefer the
+            # better-rated product. Missing ratings
+            # sort last, never above a rated product.
+            -item[4],
         )
     )
 
@@ -468,6 +509,7 @@ def rerank_for_exploration(
         candidate
 
         for (
+            _,
             _,
             _,
             _,

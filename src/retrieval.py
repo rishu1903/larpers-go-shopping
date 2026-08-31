@@ -7,6 +7,10 @@ from src.intent import (
     ShoppingIntent,
 )
 
+from src.query_expansion import (
+    expand_query_text,
+)
+
 from src.semantic import (
     SemanticRetriever,
 )
@@ -130,11 +134,13 @@ def build_expression(
     )
 
     evidence_terms = terms(
-        " ".join(
-            item.text
+        expand_query_text(
+            " ".join(
+                item.text
 
-            for item
-            in state.evidence
+                for item
+                in state.evidence
+            )
         )
     )
 
@@ -421,7 +427,9 @@ def retrieve_candidates(
 
     semantic_hits = (
         semantic.search(
-            state.active_text(),
+            expand_query_text(
+                state.active_text()
+            ),
             top_n=semantic_limit,
         )
     )

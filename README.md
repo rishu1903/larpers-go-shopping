@@ -546,6 +546,62 @@ Known, documented limitations not addressed in this pass:
 
 ---
 
+# V14 — Ranking Generalization Improvements
+
+The public 200-session benchmark is already saturated (Hit@10 = 1.000, MRR = 0.815145, unchanged since V10). Any further improvement can only be evidenced through the catalogue-derived robustness benchmarks (concept robustness, shadow eval), so V14's three changes were measured entirely against those, then confirmed not to move the public benchmark at all.
+
+## V14.1 — Domain-Synonym Query Expansion
+
+Water/moisture-resistance concepts (`waterproof`, `water_resistant`) were the single largest concentrated cluster of residual shadow-eval failures -- 6 of 14 `miss_both` cases (43%), unchanged across V11 and V12 despite ranking tuning in between. The underlying cause was retrieval, not ranking: a paraphrase like *"something suitable for occasional wet conditions"* shares no words with catalogue listing text like *"Water-Resistant"*, so the right product was often never retrieved as a candidate at all -- no amount of reranking can promote a candidate that was never found.
+
+Added `src/query_expansion.py`: a small, generic, extensible synonym-group mechanism that appends canonical catalogue-style terms (`waterproof`, `water resistant`, `weatherproof`, ...) to retrieval query text whenever a short domain trigger phrase is present. Purely additive -- the original text is never altered or removed -- and wired into both retrieval routes (BM25 evidence terms, and the semantic route's query text) so neither route is left behind. Trigger phrases are short generic fragments, not copied verbatim from any benchmark case, so the expansion targets the concept rather than the benchmark's exact wording.
+
+| Metric | Before | After |
+|---|---:|---:|
+| Lexical Hit@10 | 58.5% | **60.0%** |
+| Hybrid Hit@10 | 60.0% | **61.5%** |
+| Hybrid Hit@100 | 94.6% | **95.4%** |
+| Concept-robustness cases missed by both routes | 7 | **6** |
+| Shadow-eval `miss_both` | 14 | **12** |
+
+## V14.2 — Relevance-Scaled Semantic Exploration Bonus
+
+V12's own ablation showed the semantic-only exploration bonus plateaus completely at weight ≥ 1.0: larger weights changed nothing, which was evidence the fixed 0-1 bonus was simply too small to compete with deterministic relevance scores that can run into double digits, not that the weight itself was well-tuned. Even at maximum weight, only 2 of 6 V10.2 semantic-rescue cases were ever promoted into the exploration top-10.
+
+`semantic_exploration_bonus()` now multiplies the bounded rank signal by the current query's own relevance range (`relevance_scale`, default `1.0` reproduces the exact V12 formula) instead of a fixed constant. Re-running the same label-free 130-case ablation methodology (`scripts/v14_relevance_scaled_fusion_ablation.py`) against the new formula shape produced a genuinely useful, if humbling, result:
+
+| Weight | Cumulative Hit@10 | Rescues | Misses | Semantic-only rescued |
+|---:|---:|---:|---:|---:|
+| 0.0 | 90.00% | 15 | 13 | 1 |
+| **0.25** | **90.77%** | **16** | **12** | **2** |
+| 0.5 | 90.77% | 16 | 12 | 2 |
+| 0.75 | 84.62% | 8 | 20 | 2 |
+| 1.0 (old default) | 80.00% | 2 | 26 | 0 |
+
+The old weight of `1.0` is now *too strong* under the rescaled formula and actively regresses cumulative Hit@10. `0.25` is the smallest tested value reaching the sweep's best result -- but that best result exactly ties the old fixed formula's own best setting on every primary metric. Stated plainly: this redesign does not unlock further improvement on this benchmark. What it does provide is a properly calibrated weight range (a fixed constant no longer has to be tuned against an unknown, query-dependent relevance scale), which is why it was still adopted (`SEMANTIC_EXPLORATION_WEIGHT = 0.25`) rather than reverted.
+
+## V14.3 — Average Rating as a Last-Resort Exploration Tie-Break
+
+`average_rating` is present in the catalogue for every product but was used nowhere in the pipeline -- not in retrieval, not in reranking, not in the semantic embedding (that last exclusion is intentional and unchanged: the semantic model describes what a product *is*, not how good it is). As a ranking signal it was simply unused, free information.
+
+`starter/agent.py` now precomputes `average_rating` per product exactly like the existing `price` attachment. `rerank_for_exploration` appends it (descending, missing treated as lowest) as a 5th and final tie-break key, after the existing long-tail `rating_number` key -- so it only activates when fusion score, relevance, `rating_number`, and retrieval depth are already fully tied. `rerank_candidates` (the buying path) is deliberately untouched, respecting its own `"V12 deliberately does NOT modify this path"` docstring. As expected for a narrow last-resort tie-break, this showed no measurable movement on the 130-case shadow benchmark -- it is a low-risk, evidence-honest addition rather than a proven win.
+
+## V14 Summary
+
+| Metric | Before (V12) | After (V14) |
+|---|---:|---:|
+| Shadow cumulative Hit@10 | 89.23% | **90.77%** |
+| Turn-2 rescues | 15 | **16** |
+| Remaining misses | 14 | **12** |
+| Concept-robustness hybrid Hit@10 | 60.0% | **61.5%** |
+| Public Hit@10 | 1.000 | **1.000** |
+| Public MRR | 0.815145 | **0.815145** |
+| Public TechnicalScore | 0.923844 | **0.923844** |
+
+Practically all of the measured movement traces to V14.1 (query expansion); V14.2 ties rather than beats the prior formula's own best setting, and V14.3 is a low-risk addition with no measured effect on this benchmark. The public benchmark is confirmed byte-identical throughout -- consistent with the "Public-set restraint" principle above, none of these changes were accepted on public-benchmark movement (there was none to have), only on the catalogue-derived robustness benchmarks.
+
+---
+
 # Repository Structure
 
 ```text
@@ -569,19 +625,25 @@ Known, documented limitations not addressed in this pass:
 │   ├── v10_2_concept_smoke.json
 │   ├── v10_2_concept_robustness.json
 │   ├── v11_end_to_end_shadow.json
-│   └── v13_budget_constraint_hardening_after.json
+│   ├── v12_fusion_ablation.json
+│   ├── v13_budget_constraint_hardening_after.json
+│   └── v14_relevance_scaled_fusion_ablation.json
 │
 ├── scripts/
 │   ├── build_semantic_index.py
 │   ├── budget_constraint_eval.py
 │   ├── concept_robustness_eval.py
-│   └── end_to_end_shadow_eval.py
+│   ├── end_to_end_shadow_eval.py
+│   ├── v12_fusion_ablation.py
+│   └── v14_relevance_scaled_fusion_ablation.py
 │
 ├── src/
 │   ├── dialogue.py
+│   ├── fusion.py
 │   ├── hard_constraints.py
 │   ├── intent.py
 │   ├── profile.py
+│   ├── query_expansion.py
 │   ├── questions.py
 │   ├── reranker.py
 │   ├── retrieval.py
@@ -656,6 +718,12 @@ Run the budget constraint parser eval suite:
 
 ```powershell
 python -m scripts.budget_constraint_eval --output experiments\v13_budget_constraint_hardening.json
+```
+
+Run the semantic exploration fusion weight ablation:
+
+```powershell
+python -m scripts.v14_relevance_scaled_fusion_ablation --output experiments\v14_relevance_scaled_fusion_ablation.json
 ```
 
 ---
@@ -774,10 +842,12 @@ Completed:
 Completed:
 - V11 end-to-end shadow top-10 analysis;
 - V12 semantic-aware exploration candidate fusion;
-- V13 hard constraint parser generalization hardening (negation handling, explicit budget removal, evaluator-independent override detection, expanded numeric/vocabulary coverage).
+- V13 hard constraint parser generalization hardening (negation handling, explicit budget removal, evaluator-independent override detection, expanded numeric/vocabulary coverage);
+- V14 ranking generalization improvements (domain-synonym query expansion, relevance-scaled semantic exploration bonus, average-rating tie-break).
 
 Next:
-- clause-level negation scope beyond adjacency (e.g. "I don't want to spend more than $X");
-- proximity-based money-context detection to close the remaining false-positive case tracked in the budget constraint eval suite's ACCEPTED_LIMITATIONS.
+- clause-level negation scope beyond adjacency (e.g. "I don't want to spend more than $X"), relevant to both the constraint parser and retrieval query construction;
+- proximity-based money-context detection to close the remaining false-positive case tracked in the budget constraint eval suite's ACCEPTED_LIMITATIONS;
+- broader domain-synonym coverage beyond the moisture-resistance concept cluster, once further concentrated gaps are identified the same way (concept robustness + shadow eval, not the public benchmark alone).
 
 Next production change will be chosen based on evidence from the relevant robustness suite rather than assumed in advance.

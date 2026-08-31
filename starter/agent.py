@@ -119,6 +119,11 @@ class Agent:
             float | None,
         ] = {}
 
+        self._average_ratings: dict[
+            str,
+            float | None,
+        ] = {}
+
         self._asin_to_rowid: dict[
             str,
             int,
@@ -213,6 +218,19 @@ class Agent:
                 ] = coerce_price(
                     product.get(
                         "price"
+                    )
+                )
+
+                # V14: average_rating is likewise
+                # structured numeric metadata, kept
+                # out of the FTS text index. Used only
+                # as a last-resort exploration
+                # tie-break (see src/reranker.py).
+                self._average_ratings[
+                    parent_asin
+                ] = coerce_price(
+                    product.get(
+                        "average_rating"
                     )
                 )
 
@@ -369,6 +387,23 @@ class Agent:
             candidate[
                 "price"
             ] = self._prices.get(
+                candidate[
+                    "parent_asin"
+                ]
+            )
+
+        # ----------------------------------
+        # 3B. ATTACH STRUCTURED RATING (V14)
+        # ----------------------------------
+        #
+        # Used only as a last-resort exploration
+        # tie-break -- see src/reranker.py.
+
+        for candidate in candidates:
+
+            candidate[
+                "average_rating"
+            ] = self._average_ratings.get(
                 candidate[
                     "parent_asin"
                 ]

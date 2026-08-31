@@ -12,21 +12,36 @@ TOKEN_RE = re.compile(
 )
 
 
-# V12 production configuration.
+# V14 production configuration.
 #
-# Selected through the label-free 130-case
-# semantic exploration fusion ablation.
+# The V12 ablation (fixed 0-1 bonus, weight=1.0)
+# plateaued at weight >= 1.0 -- larger weights
+# changed nothing, which was the first sign the
+# bonus was simply too small to compete with
+# relevance scores that can run into double digits,
+# not that the weight itself was well-tuned.
 #
-# Weight 1.0 was the smallest tested value that:
+# V14 scales the bonus by the query's own relevance
+# range (see semantic_exploration_bonus). Re-running
+# the same label-free 130-case ablation against this
+# new formula shape shows the OLD weight of 1.0 is
+# now too strong -- it overshoots and actively
+# regresses cumulative shadow Hit@10 (0.90 -> 0.80).
+# Weight 0.25 is the smallest tested value that
+# reaches the sweep's best cumulative Hit@10 and
+# rescue count.
 #
-# - improved cumulative shadow Hit@10;
-# - increased second-turn rescues;
-# - increased semantic-only rescues; and
-# - preserved the protected turn-1 ranking path.
-#
-# Larger weights produced no additional coverage
-# while degrading secondary ranking metrics.
-SEMANTIC_EXPLORATION_WEIGHT = 1.0
+# Measured outcome, stated plainly: at its best
+# setting, the rescaled formula ties the old fixed
+# formula's own best setting on every primary metric
+# (cumulative Hit@10, rescues, misses) -- it does not
+# unlock further improvement on this benchmark. What
+# it does provide is a properly calibrated weight
+# range (a fixed constant no longer has to be tuned
+# against an unknown, query-dependent relevance
+# scale), which is the reason it is still adopted
+# here rather than reverting to the fixed formula.
+SEMANTIC_EXPLORATION_WEIGHT = 0.25
 
 
 SEMANTIC_RRF_K = 60.0
@@ -141,9 +156,11 @@ def semantic_exploration_bonus(
     candidate: dict,
     state: SessionState,
     semantic_rank: int | None,
+    relevance_scale: float = 1.0,
 ) -> float:
     """
-    Return the V12 exploration bonus.
+    Return the exploration bonus for a semantic-only
+    candidate.
 
     The bonus is intentionally conservative.
 
@@ -163,6 +180,15 @@ def semantic_exploration_bonus(
 
     Normal non-exploration ranking never calls
     this function.
+
+    `relevance_scale` (V14) multiplies the bounded
+    0-1 rank signal by the current query's
+    deterministic relevance range, so the bonus is
+    meaningful relative to *this* candidate pool
+    instead of being a fixed constant that a strong
+    lexical relevance score (which can run into the
+    5-15+ range) always dwarfs. Defaults to 1.0,
+    which reproduces the exact V12 formula.
     """
 
     if (
@@ -193,4 +219,5 @@ def semantic_exploration_bonus(
         * normalized_rrf(
             semantic_rank
         )
+        * relevance_scale
     )
