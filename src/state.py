@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 import re
 
 from src.hard_constraints import (
+    REMOVE_BUDGET,
     BudgetConstraint,
     parse_budget_constraint,
 )
@@ -27,6 +28,55 @@ _ADDITIONAL_NO_PREFERENCE_RE = re.compile(
     r"preference for ([a-z_]+)",
     re.IGNORECASE,
 )
+
+
+# --------------------------------------------------
+# INTENT OVERRIDE DETECTION
+# --------------------------------------------------
+#
+# An override requires BOTH a correction cue
+# ("actually", "never mind", ...) AND a reset cue
+# ("ignore my earlier preference", "forget what I
+# said", ...). Requiring both, from two independent
+# generic word lists, keeps the detector conservative
+# (casual "actually" alone never triggers an override)
+# while not being hardcoded to one exact sentence.
+
+_OVERRIDE_CORRECTION_CUES_RE = re.compile(
+    r"\bactually\b"
+    r"|\bon second thought\b"
+    r"|\bnever\s*mind\b"
+    r"|\bscratch that\b"
+    r"|\bchange of plan\b",
+    re.IGNORECASE,
+)
+
+_OVERRIDE_RESET_CUES_RE = re.compile(
+    r"\bignore\s+(?:my\s+)?(?:earlier|previous|prior)\s+preferences?\b"
+    r"|\bforget\s+(?:what\s+i\s+said|my\s+earlier|my\s+previous)\b"
+    r"|\bdisregard\s+(?:my\s+)?(?:earlier|previous|prior)\b"
+    r"|\bwhat\s+i\s+(?:really\s+)?need\s+is\b",
+    re.IGNORECASE,
+)
+
+
+def _is_intent_override(
+    message: str,
+) -> bool:
+
+    lowered = message.lower()
+
+    return (
+        _OVERRIDE_CORRECTION_CUES_RE.search(
+            lowered
+        )
+        is not None
+        and
+        _OVERRIDE_RESET_CUES_RE.search(
+            lowered
+        )
+        is not None
+    )
 
 
 def _clean_customer_message(
@@ -265,14 +315,8 @@ class SessionState:
         # 3. INTENT OVERRIDE
         # ----------------------------------
 
-        is_override = (
-            "actually"
-            in user_message.lower()
-
-            and
-
-            "ignore my earlier preference"
-            in user_message.lower()
+        is_override = _is_intent_override(
+            user_message
         )
 
         if is_override:
@@ -325,7 +369,17 @@ class SessionState:
             )
         )
 
-        if parsed_budget is not None:
+        if parsed_budget is REMOVE_BUDGET:
+
+            self.budget_constraint = (
+                None
+            )
+
+            self.budget_source_turn = (
+                None
+            )
+
+        elif parsed_budget is not None:
 
             self.budget_constraint = (
                 parsed_budget

@@ -10,7 +10,7 @@ from collections.abc import Iterable
 # --------------------------------------------------
 
 _NUMBER = (
-    r"(\d+(?:,\d{3})*(?:\.\d{1,2})?)"
+    r"(\d+(?:,\d{3})*(?:\.\d{1,2})?|\.\d{1,2})"
 )
 
 
@@ -166,6 +166,27 @@ _MAX_PATTERNS = (
         rf"{_NUMBER}",
         re.IGNORECASE,
     ),
+
+    re.compile(
+        rf"\bcheaper than\s+"
+        rf"(?:[$]\s*)?{_NUMBER}",
+        re.IGNORECASE,
+    ),
+
+    # cap/ceiling/capped at/of $X
+    #
+    # Deliberately distinct wording from the
+    # existing "over"/"above" MIN patterns above --
+    # "capped at $50" does not overlap with "over
+    # $50" or "above $50", so this does not risk
+    # also satisfying a MIN pattern on the same
+    # number.
+    re.compile(
+        rf"\b(?:cap|ceiling|capped)\s+"
+        rf"(?:at|of)\s+"
+        rf"(?:[$]\s*)?{_NUMBER}",
+        re.IGNORECASE,
+    ),
 )
 
 
@@ -213,6 +234,46 @@ _MIN_PATTERNS = (
         re.IGNORECASE,
     ),
 )
+
+
+# --------------------------------------------------
+# NEGATION
+# --------------------------------------------------
+#
+# A bound keyword immediately preceded by a negation
+# word inverts the meaning of the phrase instead of
+# stating it:
+#
+#     not over $100
+#     not under $80
+#
+# Without this guard, the "over"/"under" patterns
+# above would match regardless of the negation and
+# silently produce the opposite of what the shopper
+# said.
+
+_NEGATION_PREFIX_RE = re.compile(
+    r"\b(?:not|n't|never)\s+$",
+    re.IGNORECASE,
+)
+
+
+def _is_negated_at(
+    text: str,
+    start: int,
+    window: int = 12,
+) -> bool:
+
+    prefix = text[
+        max(0, start - window):start
+    ]
+
+    return (
+        _NEGATION_PREFIX_RE.search(
+            prefix
+        )
+        is not None
+    )
 
 
 @dataclass(
@@ -269,6 +330,59 @@ class BudgetConstraint:
             return False
 
         return True
+
+
+# --------------------------------------------------
+# EXPLICIT REMOVAL
+# --------------------------------------------------
+#
+# A shopper can explicitly cancel a previously
+# stated budget without providing a replacement
+# value:
+#
+#     no budget limit
+#     doesn't matter on price
+#     any price is fine
+#
+# parse_budget_constraint() returns the REMOVE_BUDGET
+# sentinel for these phrases so the caller can
+# distinguish "explicit removal requested" from
+# "nothing budget-related said" (both of which would
+# otherwise be indistinguishable None results).
+
+class _RemoveBudget:
+
+    __slots__ = ()
+
+    def __repr__(self) -> str:
+        return "REMOVE_BUDGET"
+
+
+REMOVE_BUDGET = _RemoveBudget()
+
+
+_NO_CONSTRAINT_RE = re.compile(
+    r"\bno\s+budget(?:\s+limit)?\b"
+    r"|\bno\s+price\s+limit\b"
+    r"|\bno\s+limit\s+on\s+(?:budget|price|spending)\b"
+    r"|\b(?:any|no)\s+price\s+is\s+fine\b"
+    r"|\bprice\s+(?:doesn't|does\s+not)\s+matter\b"
+    r"|\b(?:doesn't|does\s+not)\s+matter\s+on\s+price\b"
+    r"|\bnot\s+picky\s+about\s+price\b",
+    re.IGNORECASE,
+)
+
+
+def _is_explicit_no_constraint(
+    text: str,
+) -> bool:
+
+    return (
+        _NO_CONSTRAINT_RE.search(
+            text
+        )
+        is not None
+    )
 
 
 def _number(
@@ -368,7 +482,7 @@ def coerce_price(
 
     match = re.search(
         r"(?:[$]\s*)?"
-        r"(\d+(?:,\d{3})*(?:\.\d{1,2})?)",
+        r"(\d+(?:,\d{3})*(?:\.\d{1,2})?|\.\d{1,2})",
         text,
     )
 
@@ -387,9 +501,18 @@ def coerce_price(
 
 def parse_budget_constraint(
     text: str,
-) -> BudgetConstraint | None:
+) -> BudgetConstraint | _RemoveBudget | None:
     """
     Extract an explicit hard budget constraint.
+
+    Returns REMOVE_BUDGET when the shopper explicitly
+    cancels a budget without providing a replacement
+    value (e.g. "no budget limit"), and None when
+    nothing budget-related was said at all -- callers
+    that only replace an existing constraint on a new
+    value should treat any non-None result as
+    actionable and branch on `result is REMOVE_BUDGET`
+    to distinguish the two.
 
     A hard price constraint requires monetary
     context.
@@ -489,7 +612,10 @@ def parse_budget_constraint(
             normalized
         )
 
-        if match:
+        if match and not _is_negated_at(
+            normalized,
+            match.start(),
+        ):
 
             min_price = _number(
                 match.group(1)
@@ -503,7 +629,10 @@ def parse_budget_constraint(
             normalized
         )
 
-        if match:
+        if match and not _is_negated_at(
+            normalized,
+            match.start(),
+        ):
 
             max_price = _number(
                 match.group(1)
@@ -516,6 +645,12 @@ def parse_budget_constraint(
         and
         max_price is None
     ):
+
+        if _is_explicit_no_constraint(
+            normalized
+        ):
+            return REMOVE_BUDGET
+
         return None
 
     # Reject contradictory constraints instead

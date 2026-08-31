@@ -503,6 +503,49 @@ The result suggests semantic retrieval is useful as a targeted recovery mechanis
 
 ---
 
+# V13 — Hard Constraint Parser Generalization Hardening
+
+`data/public_set.jsonl` contains no free-text customer messages at all -- every budget phrase the parser was ever validated against locally is synthesized by `evaluator/local_evaluator.py`'s own template functions. A code and data audit found that the parser and its session-state coupling had, in places, been tuned to that same narrow template distribution rather than to budget language in general:
+
+- the intent-override detector was a hardcoded exact match on two substrings (`"actually"` and `"ignore my earlier preference"`), character-for-character the evaluator's own override sentence;
+- negated bounds such as `not over $100` were parsed as the opposite positive constraint (`min_price=100`);
+- there was no way to explicitly cancel a budget (`"actually, no budget limit"` was a silent no-op);
+- the bound vocabulary was closed -- any phrasing outside ~15 templates silently dropped the constraint.
+
+None of this showed up in the public benchmark, because the public benchmark only exercises the same template phrasings the code was tuned against. V13 fixes the four gaps above with small, additive changes to `src/hard_constraints.py` and `src/state.py` -- no restructuring of the existing money-context → approximate-language → range/bound staged pipeline, and no new hard-filter attribute types (brand/size/color/etc. remain soft reranking signals by design).
+
+Examples now handled correctly:
+
+- `Not above $50, please.` / `Not under $80.` → no longer misparsed as an inverted bound.
+- `Actually, no budget limit anymore.` → clears an existing budget instead of leaving it stale.
+- `On second thought, forget my earlier preference -- here's what I actually need: waterproof shoes.` → triggers the override despite not matching the evaluator's literal sentence.
+- `Show me something cheaper than $60.` / `I'm capped at $90.` → new generic vocabulary.
+- `Budget: $.75` → bare-decimal amounts now parse.
+
+A new held-out parser eval suite (`scripts/budget_constraint_eval.py`), phrased independently of the evaluator's templates, was built first and used to measure the change:
+
+| Metric | Before | After |
+|---|---:|---:|
+| Suite pass rate | 60% (15/25) | **96% (24/25)** |
+| Detection precision | 0.625 | **0.909** |
+| Detection recall | 0.5 | **1.000** |
+| Detection F1 | 0.556 | **0.952** |
+| Negation accuracy | 0.0 | **1.000** |
+| Numeric accuracy | 0.6 | **1.000** |
+| Multi-turn state accuracy | 0.667 | **1.000** |
+| Public Hit@10 | 1.000 | **1.000** |
+| Public MRR | 0.815145 | **0.815145** |
+| Public TechnicalScore | 0.923844 | **0.923844** |
+
+The public benchmark is byte-identical before and after -- every change is additive (a new guard, a new sentinel, new vocabulary) rather than a modification to any currently-matching pattern, so nothing that previously passed can regress.
+
+Known, documented limitations not addressed in this pass:
+
+- negation handling is adjacency-based only -- semantically displaced negation such as `I don't want to spend more than $90` is not detected;
+- the money-context gate scans the whole message rather than text near the numeric match, so an unrelated money-context word can still license an unrelated `up to N` phrase (e.g. `The cost is unclear, but it holds up to 10 items.`) -- tracked in the eval suite's `ACCEPTED_LIMITATIONS` rather than silently unmeasured.
+
+---
+
 # Repository Structure
 
 ```text
@@ -525,10 +568,12 @@ The result suggests semantic retrieval is useful as a targeted recovery mechanis
 │   ├── v9_safe_personalization.json
 │   ├── v10_2_concept_smoke.json
 │   ├── v10_2_concept_robustness.json
-│   └── v11_end_to_end_shadow.json
+│   ├── v11_end_to_end_shadow.json
+│   └── v13_budget_constraint_hardening_after.json
 │
 ├── scripts/
 │   ├── build_semantic_index.py
+│   ├── budget_constraint_eval.py
 │   ├── concept_robustness_eval.py
 │   └── end_to_end_shadow_eval.py
 │
@@ -605,6 +650,12 @@ Run the end-to-end top-10 benchmark:
 
 ```powershell
 python -m scripts.end_to_end_shadow_eval --output experiments\v11_end_to_end_shadow.json
+```
+
+Run the budget constraint parser eval suite:
+
+```powershell
+python -m scripts.budget_constraint_eval --output experiments\v13_budget_constraint_hardening.json
 ```
 
 ---
@@ -721,9 +772,12 @@ Completed:
 - catalogue-derived robustness benchmark.
 
 Completed:
-- V11 end-to-end shadow top-10 analysis.
+- V11 end-to-end shadow top-10 analysis;
+- V12 semantic-aware exploration candidate fusion;
+- V13 hard constraint parser generalization hardening (negation handling, explicit budget removal, evaluator-independent override detection, expanded numeric/vocabulary coverage).
 
 Next:
-- semantic-aware exploration candidate fusion.
+- clause-level negation scope beyond adjacency (e.g. "I don't want to spend more than $X");
+- proximity-based money-context detection to close the remaining false-positive case tracked in the budget constraint eval suite's ACCEPTED_LIMITATIONS.
 
-Next production change will be chosen based on V11 rather than assumed in advance.
+Next production change will be chosen based on evidence from the relevant robustness suite rather than assumed in advance.
