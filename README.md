@@ -635,6 +635,18 @@ The fix looked correct on paper: also exhaust clarification when the declined at
 
 This was reverted before being committed. A safe fix would need to first decouple "the shopper has nothing more to add" from "switch retrieval/ranking mode," which is a larger, riskier redesign than fits this branch's scope -- left as a documented next step rather than shipped half-validated.
 
+## V15.4 — MTTC Investigation: Root Cause and a Second Attempted-and-Reverted Fix
+
+A dedicated follow-up investigation into whether Browsing/Boundary MTTC could be clawed back without giving up V15.1's MRR gain.
+
+**Root cause, established via per-session forensics** (`experiments/v15_official_before.json` vs `v15_official_after.json`, cross-referenced by `sample_id`): **the MRR win and the MTTC cost are the same mechanism, not two separate bugs.** 26 of 80 Browsing sessions and all 3 changed Boundary sessions shifted `first_hit_turn` later after V15.1's reranker change -- in the overwhelming majority (~24/26 Browsing, all 3 Boundary), the pattern is *hit one turn later but at a dramatically better rank* (e.g. turn 1/rank 8 → turn 2/rank 1). Sessions that previously got a *lucky* popularity-driven hit on turn 1 now correctly wait one extra turn for real evidence, then rank near-perfectly. Boundary's entire +0.6 MTTC delta is fully explained by exactly its 3 changed sessions (3 × 2 extra turns / 10 samples = 0.6).
+
+A wider investigation checklist was worked through against the actual code: recommendations are computed and returned every turn unconditionally (there is no confidence-gated "wait to recommend" branch to relax); no repeated-question bug exists (`state.asked_attributes` already prevents that); intent routing correctly distinguishes Browsing/Buying/Boundary. The one credible remaining lever was `choose_candidate_attribute()`'s unconditional `turn <= 3 → "other"` broad-discovery rule -- a targeted fix (ask the statistically most differentiating attribute directly, gated by a pool-size floor and a strict information-score threshold, never touching `clarification_exhausted`) was designed, implemented, and ablated at three settings against the full 200-session evaluator.
+
+**Result: a comprehensive regression at every setting, on every scenario type** -- including Buying and Intent-Override, which V15.1 never touched (e.g. Buying MRR 0.809112 → 0.797063/0.789544, Overall MTTC 2.185 → 2.545/2.730 -- worse, not better). Root cause on inspection: the heuristic scores which attribute best separates the *retrieved candidate pool*, but the evaluator's simulated customer only discloses real information when the *specific* attribute asked happens to match one of their actual hidden constraints -- candidate-pool diversity and shopper intent are not the same signal, so a targeted-but-wrong guess is strictly worse than the generic catch-all. Reverted via `git revert` (`src/questions.py`'s net change across this investigation: none); working tree confirmed byte-identical to V15.1/V15.2's own metrics afterward. Two new regression tests were kept regardless (`tests/test_questions.py::test_already_asked_attribute_is_not_repeated`, `test_overloaded_ambiguous_pool_stays_on_broad_discovery`), and the ablation numbers are preserved in `experiments/v16_early_turn_targeting_ablation.json`.
+
+**Remaining failure cases:** 2 Browsing sessions show a genuine same-turn rank downgrade from V15.1 (low volume, not individually investigated); the 3 Boundary sessions driving the Boundary MTTC delta remain an accepted tradeoff, not a bug with a known fix; Intent-Override MTTC (3.633) sits only ~0.13 turns above the ~3.5-turn structural floor the competition's own scripting imposes (override cannot be sent before turn 3 or 4), leaving little room regardless of agent-side changes; and early-turn question targeting via candidate-pool statistics alone is a confirmed dead end for this architecture -- a working version would need a shopper-intent signal distinct from catalogue diversity, which isn't exposed to this policy by design (no hidden target/simulator state reaches the agent).
+
 ## V15 Summary
 
 | Metric | Before (V14) | After (V15) |
@@ -643,69 +655,11 @@ This was reverted before being committed. A safe fix would need to first decoupl
 | Overall MRR | 0.815145 | **0.847067** |
 | Overall TechnicalScore | 0.923844 | **0.930420** |
 | Intent-Override MRR / MTTC | 0.894444 / 3.633 | unchanged |
-| Boundary MTTC | 2.6 | 3.2 (accepted tradeoff, see V15.1) |
+| Boundary MTTC | 2.6 | 3.2 (accepted tradeoff, see V15.1; confirmed structural, see V15.4) |
+| Buying MRR / MTTC | 0.809112 / 1.625 | unchanged |
 | Public Hit@10 (every scenario) | 1.000 | **1.000** |
 
-Two of three shipped; the third was attempted with full rigor, found unsafe, and reverted rather than forced through. This is the same "if metrics regress, don't ship" discipline applied throughout V13/V14 -- a not-uncommon, honestly-reported outcome rather than an exception to it.
-
----
-
-# V16 — MTTC Investigation
-
-A dedicated, rigorous attempt to reduce Browsing/Boundary MTTC without giving back V15's MRR/Hit@10/TechScore gains. One candidate change was designed, implemented, tested via ablation, found to regress every metric it touched, and reverted. The investigation itself is the deliverable -- reported in full per the six points requested.
-
-## 1. Root cause of the MTTC regression
-
-Per-session forensics (`experiments/v15_official_before.json` vs `v15_official_after.json`, cross-referenced by `sample_id`) show **the V15 MRR win and the MTTC cost are the same mechanism, not two separate bugs.** 26 of 80 Browsing sessions and all 3 changed Boundary sessions shifted `first_hit_turn` later after V15's reranker change -- in the overwhelming majority (~24/26 Browsing, all 3 Boundary), the pattern is *hit one turn later but at a dramatically better rank* (e.g. turn 1/rank 8 → turn 2/rank 1). Sessions that previously got a *lucky* popularity-driven hit on turn 1 (correct by coincidence, often at a mediocre rank) now correctly wait one extra turn for real evidence, then rank near-perfectly. Boundary's entire +0.6 MTTC delta is fully explained by exactly its 3 changed sessions (3 × 2 extra turns / 10 samples = 0.6).
-
-Working through the user's investigation checklist against the actual code:
-
-- **"Asking clarification when retrieval is already confident"** -- does not apply as literally framed. `starter/agent.py::respond()` computes and returns recommendations **every turn unconditionally**, regardless of whether a question is also asked. There is no confidence-gated "wait to recommend" branch in this architecture to relax.
-- **"Failing to return recommendations after a useful constraint is available"** -- not found; recommendations are never withheld.
-- **"Overly high confidence thresholds"** -- none exist to lower; the only turn-count-relevant gates are `turn <= 3` (broad discovery) and `clarification_exhausted` (which V15.3, on the prior branch commit, already proved is unsafe to touch further -- it also switches the retrieval/ranking mode).
-- **"Repeated or low-value clarification questions"** -- audited; `state.asked_attributes` correctly prevents repeats (confirmed by new regression test, see below).
-- **"Poor distinction between browsing/buying/boundary states"** -- intent routing (`src/intent.py`) correctly distinguishes all three; the turns-1-3 broad-discovery default is a deliberate, already-tested design choice, not a routing bug.
-- **"Delayed conversion because the agent waits for unnecessary information"** -- this was the one credible, testable lever: `choose_candidate_attribute()`'s unconditional `turn <= 3 → "other"` rule. A targeted fix (ask the statistically most differentiating attribute directly, gated by pool size + a strict information-score threshold to stay safely scoped, never touching `clarification_exhausted`) was designed, implemented, and ablated at three settings against the full 200-session evaluator. **Result: a comprehensive regression at every setting, on every scenario type** -- including Buying and Intent-Override, which V15 never touched. Root cause on inspection: the heuristic scores which attribute best separates the *retrieved candidate pool*, but the evaluator's simulated customer only discloses real information when the *specific* attribute asked happens to match one of their actual hidden constraints. Candidate-pool diversity and shopper intent are not the same signal -- asking a targeted-but-wrong attribute is strictly worse than the generic catch-all, both immediately and because it marks that attribute "already asked" regardless of whether it helped. Reverted.
-- **"Semantic candidates ranked well but not returned at the right turn"** -- not found; the forensics above show ranking recovers fully by turn 2 in nearly every affected session once real evidence exists.
-- **"State updates failing to preserve information for early retrieval"** -- not found; `state.evidence`/`budget_constraint`/override handling are extensively covered by existing V13/V15 tests and were not touched here.
-
-**Bottom line:** the Browsing/Boundary MTTC cost is intrinsic to the exact mechanism that produced V15's MRR gain, not an independent bug. The one credible orthogonal lever available in this architecture (early question targeting) was tested rigorously and shown to actively hurt every metric it touches -- there is currently no known change that reduces MTTC without giving back the MRR/TechScore gains.
-
-## 2. Files changed
-
-- `tests/test_questions.py` -- two new regression tests kept: no-repeated-questions, and a large ambiguous/overloaded candidate pool correctly staying on broad discovery (`test_already_asked_attribute_is_not_repeated`, `test_overloaded_ambiguous_pool_stays_on_broad_discovery`).
-- `src/questions.py` -- the candidate policy change (`_scored_attributes()` helper, `EARLY_TURN_MIN_POOL`/`EARLY_TURN_INFO_THRESHOLD`, `configure_early_turn_targeting()`) was implemented, ablated, and fully reverted (`git revert`) after the ablation results came in. Net change to this file: none.
-- `experiments/v16_early_turn_targeting_ablation.json` -- the ablation results that led to the revert.
-- No changes to `src/reranker.py`, `src/fusion.py`, `src/state.py`, `starter/agent.py`, or `src/dialogue.py` -- the fragile V15.3/V15.1 areas were deliberately left untouched this round.
-
-## 3. Policy/design changes
-
-None shipped. The one candidate design -- ask the statistically dominant attribute directly on turns 1-3 when the candidate pool is large (≥10) and one attribute's information score clears a strict bar (≥0.50, vs. the normal 0.10 turn-4+ bar) -- was implemented with real engineering care (a shared, DRY scoring helper; a pool-size floor specifically added so it couldn't fire on small/synthetic test fixtures; direct unit tests for both the "fires" and "stays broad" cases) and still failed decisively under evaluation. This is reported as a completed, honest investigation, not a shipped feature.
-
-## 4. Before/after metrics
-
-Unchanged from V15 -- the only candidate change was reverted, and the working tree was confirmed byte-identical to `experiments/v15_official_after.json` and `v15_shadow_eval_after.json` after the revert.
-
-| Metric | V14 baseline | V15 / V16 final |
-|---|---:|---:|
-| Browsing MRR | 0.768333 | **0.848140** |
-| Overall MRR | 0.815145 | **0.847067** |
-| Overall TechnicalScore | 0.923844 | **0.930420** |
-| Public Hit@10 (every scenario) | 1.000 | **1.000** |
-| Browsing MTTC | 1.775 | 2.075 |
-| Boundary MTTC | 2.6 | 3.2 |
-| Buying / Intent-Override metrics | -- | byte-identical to V14 |
-
-## 5. Per-scenario tradeoffs
-
-Identical to V15's already-documented tradeoff, now confirmed (via the per-session forensics above) to be structural rather than incidental: Browsing and Boundary each trade a small amount of MTTC for a large amount of rank quality once they do hit. Buying and Intent-Override are completely unaffected in either direction, in both V15 and this investigation.
-
-## 6. Remaining failure cases
-
-- 2 Browsing sessions show a genuine same-turn rank downgrade (not a turn shift) from V15's reranker change -- not individually investigated; low volume (2/80).
-- The 3 Boundary sessions driving the entire Boundary MTTC delta remain 2 turns slower than the pre-V15 baseline -- an accepted tradeoff for the MRR gain, not a bug with a known fix.
-- Intent-Override MTTC (3.633) sits only ~0.13 turns above the ~3.5-turn structural floor imposed by the competition's own scripting rule (override cannot be sent before turn 3 or 4) -- there is very little remaining room here regardless of agent-side changes.
-- Early-turn question targeting based on candidate-pool statistics alone does not work in this evaluation harness; a version that actually helped would need some proxy for *shopper* intent distinct from *catalogue* diversity, which is not available to this policy by design (no hidden target/simulator state is exposed to the agent) -- flagged as a dead end for this specific approach, not a to-do.
+Two of four sub-changes shipped (V15.1, V15.2); the other two (V15.3, V15.4) were attempted with full rigor, found unsafe or ineffective, and reverted rather than forced through. This is the same "if metrics regress, don't ship" discipline applied throughout V13/V14 -- a not-uncommon, honestly-reported outcome rather than an exception to it.
 
 ---
 
@@ -952,14 +906,13 @@ Completed:
 - V12 semantic-aware exploration candidate fusion;
 - V13 hard constraint parser generalization hardening (negation handling, explicit budget removal, evaluator-independent override detection, expanded numeric/vocabulary coverage);
 - V14 ranking generalization improvements (domain-synonym query expansion, relevance-scaled semantic exploration bonus, average-rating tie-break);
-- V15 scenario efficiency improvements (BM25-vs-popularity tie-break for zero-evidence turns, override asked-attribute bookkeeping clear);
-- V16 MTTC investigation (early-turn attribute targeting designed, ablated, found to regress every metric, reverted -- root cause established: the Browsing/Boundary MTTC cost is intrinsic to V15's MRR-improving reranker change, not an independent bug).
+- V15 scenario efficiency improvements (BM25-vs-popularity tie-break for zero-evidence turns, override asked-attribute bookkeeping clear, MTTC root-cause investigation -- early-turn attribute targeting designed, ablated, found to regress every metric, reverted; root cause established: the Browsing/Boundary MTTC cost is intrinsic to the same reranker change that produced the MRR gain, not an independent bug).
 
 Next:
 - clause-level negation scope beyond adjacency (e.g. "I don't want to spend more than $X"), relevant to both the constraint parser and retrieval query construction;
 - proximity-based money-context detection to close the remaining false-positive case tracked in the budget constraint eval suite's ACCEPTED_LIMITATIONS;
 - broader domain-synonym coverage beyond the moisture-resistance concept cluster, once further concentrated gaps are identified the same way (concept robustness + shadow eval, not the public benchmark alone);
 - a safe redesign of Boundary-scenario clarification exhaustion that decouples "shopper has nothing more to add" from "switch retrieval/ranking mode" (see V15.3 -- attempted, reverted after a severe regression, not yet re-attempted);
-- a shopper-intent signal for early-turn clarification distinct from catalogue-candidate diversity, if MTTC is revisited (see V16 -- the candidate-diversity-only approach is a confirmed dead end, not a to-do).
+- a shopper-intent signal for early-turn clarification distinct from catalogue-candidate diversity, if MTTC is revisited (see V15.4 -- the candidate-diversity-only approach is a confirmed dead end, not a to-do).
 
 Next production change will be chosen based on evidence from the relevant robustness suite rather than assumed in advance.
