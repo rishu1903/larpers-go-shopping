@@ -109,6 +109,36 @@ def _clean_customer_message(
     ).strip(" .")
 
 
+def _extract_product_keywords(
+    text: str,
+) -> str:
+    # Step 1: strip "I prefer / I'd like / I want / I would (like|prefer)" prefix
+    text = re.sub(
+        r"^i(?:'d| would)? (?:like|prefer|want)\s+",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    ).strip()
+
+    # Step 2: strip "they/it/this should/must/needs to (have/be)" prefix
+    text = re.sub(
+        r"^(?:it |they |this )?(?:should|must|needs?\s+to)\s+(?:have\s+|be\s+)?",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    ).strip()
+
+    # Step 3: strip leading "something/anything" left over after step 1
+    text = re.sub(
+        r"^(?:something|anything)\s+",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    ).strip()
+
+    return text.strip(" ,;.") if text else text
+
+
 @dataclass
 class Evidence:
     turn: int
@@ -188,11 +218,15 @@ class SessionState:
         default_factory=set
     )
 
+    current_turn: int = 0
+
     def update(
         self,
         user_message: str,
         turn: int,
     ) -> None:
+
+        self.current_turn = turn
 
         # ----------------------------------
         # 1. UPDATE SHOPPING INTENT
@@ -254,6 +288,7 @@ class SessionState:
             additional_no_pref
             .group(1)
             .lower()
+            
             == "other"
         ):
 
@@ -371,7 +406,7 @@ class SessionState:
                 self.evidence.append(
                     Evidence(
                         turn=turn,
-                        text=(
+                        text=_extract_product_keywords(
                             remaining.strip()
                         ),
                     )
@@ -382,7 +417,9 @@ class SessionState:
         self.evidence.append(
             Evidence(
                 turn=turn,
-                text=cleaned,
+                text=_extract_product_keywords(
+                    cleaned
+                ),
             )
         )
 
