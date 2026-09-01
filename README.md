@@ -32,10 +32,10 @@ The system searches a frozen catalogue of **50,000 Amazon Reviews 2023 Clothing,
 | Metric              |        Score |
 | ------------------- | -----------: |
 | **Hit Rate@10**     |   **1.0000** |
-| **MRR**             | **0.815145** |
-| **MTTC**            |    **2.035** |
-| **Efficiency**      |   **0.8965** |
-| **Technical Score** | **0.923844** |
+| **MRR**             | **0.950583** |
+| **MTTC**            |    **2.360** |
+| **Efficiency**      |   **0.8640** |
+| **Technical Score** | **0.957975** |
 
 For comparison, the provided starter scored **0.125 Hit Rate@10**, **0.068034 MRR**, and **9.81 MTTC**.
 
