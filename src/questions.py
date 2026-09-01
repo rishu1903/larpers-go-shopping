@@ -438,6 +438,59 @@ def _profile_aware_choice(
     ][2]
 
 
+def choose_differentiating_attribute(
+    state: SessionState,
+    candidate_a: dict,
+    candidate_b: dict,
+    turn: int,
+) -> str:
+    """
+    When the top-2 candidates are tied, pick the
+    attribute that is most asymmetric between them.
+
+    No turn guard: a tie on turn 2 must still
+    produce a specific attribute (not "other").
+    No > 0.10 threshold: with exactly two candidates
+    any asymmetric token is meaningful signal.
+    """
+
+    tokens_a = _tokens(
+        candidate_a.get("searchable_text", "")
+    )
+    tokens_b = _tokens(
+        candidate_b.get("searchable_text", "")
+    )
+
+    scored: list[tuple[float, str]] = []
+
+    for attribute, values in ATTRIBUTE_VALUES.items():
+
+        if attribute in state.asked_attributes:
+            continue
+
+        if attribute in state.no_preference:
+            continue
+
+        asymmetric = sum(
+            1
+            for v in values
+            if (v in tokens_a) != (v in tokens_b)
+        )
+
+        raw = asymmetric * QUESTION_PRIORITY[attribute]
+
+        if raw > 0:
+            scored.append((raw, attribute))
+
+    if not scored:
+        return "other"
+
+    return _profile_aware_choice(
+        state=state,
+        scored=scored,
+    )
+
+
 def choose_candidate_attribute(
     state: SessionState,
     candidates: list[dict],

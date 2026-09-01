@@ -178,17 +178,13 @@ def should_use_semantic(
     Decide whether the dense retrieval route
     should be activated.
 
-    BUYING
-    -------
-
-    Prefer the high-precision lexical path.
-
-    BROWSING
-    --------
+    BUYING / BROWSING
+    -----------------
 
     Activate semantic recall when lexical
     retrieval produces too small a candidate
-    pool.
+    pool (< 50 results). This recovers targets
+    that BM25 misses due to vocabulary mismatch.
 
     EXPLORATION
     -----------
@@ -205,12 +201,15 @@ def should_use_semantic(
         return True
 
     if (
-        state.intent
-        == ShoppingIntent.BROWSING
+        lexical_count < 50
 
         and
 
-        lexical_count < 50
+        state.intent
+        in (
+            ShoppingIntent.BROWSING,
+            ShoppingIntent.BUYING,
+        )
     ):
 
         return True
@@ -289,23 +288,18 @@ def retrieve_candidates(
     ],
     semantic: SemanticRetriever | None,
     exploration: bool = False,
+    catalog_size: int = 0,
 ) -> list[dict]:
     """
     Execute the route-aware candidate
     retrieval policy.
 
-    BUYING
-    ======
+    BUYING / BROWSING
+    =================
 
-        BM25 Top 100
+        BM25 Top max(100, catalog_size // 500)
 
-    BROWSING
-    ========
-
-        BM25 Top 100
-
-        If lexical recall is sparse:
-
+        If lexical recall is sparse (< 50):
             +
         Semantic Top 100
 
@@ -331,7 +325,10 @@ def retrieve_candidates(
     lexical_limit = (
         500
         if exploration
-        else 100
+        else max(
+            100,
+            catalog_size // 500,
+        )
     )
 
     lexical: list[

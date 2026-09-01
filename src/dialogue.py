@@ -6,6 +6,7 @@ from src.profile import (
 
 from src.questions import (
     choose_candidate_attribute,
+    choose_differentiating_attribute,
 )
 
 from src.state import (
@@ -136,12 +137,18 @@ def choose_clarification(
     state: SessionState,
     turn: int,
     candidates: list[dict],
+    tied_pair: list[dict] | None = None,
 ) -> tuple[
     str | None,
     str,
 ]:
     """
     Choose the next conversational action.
+
+    When tied_pair is provided, prefer an attribute
+    that differentiates the two tied candidates.
+    Falls through to choose_candidate_attribute if
+    no asymmetric attribute exists.
     """
 
     if turn >= 10:
@@ -165,13 +172,25 @@ def choose_clarification(
             ),
         )
 
-    attribute = (
-        choose_candidate_attribute(
+    if tied_pair is not None and len(tied_pair) == 2:
+        attribute = choose_differentiating_attribute(
+            state=state,
+            candidate_a=tied_pair[0],
+            candidate_b=tied_pair[1],
+            turn=turn,
+        )
+        if attribute == "other":
+            attribute = choose_candidate_attribute(
+                state=state,
+                candidates=candidates,
+                turn=turn,
+            )
+    else:
+        attribute = choose_candidate_attribute(
             state=state,
             candidates=candidates,
             turn=turn,
         )
-    )
 
     return (
         attribute,

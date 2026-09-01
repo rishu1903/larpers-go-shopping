@@ -361,6 +361,12 @@ class Agent:
                     state
                     .clarification_exhausted
                 ),
+
+                catalog_size=(
+                    len(
+                        self._asin_to_rowid
+                    )
+                ),
             )
         )
 
@@ -403,6 +409,9 @@ class Agent:
             dict
         ] = []
 
+        tied_pair: list[dict] | None = None
+
+        width = top_k
         if candidates:
 
             # ----------------------------------
@@ -456,6 +465,20 @@ class Agent:
                 ranked[:30]
             )
 
+            top_relevance = ranked[0].get(
+                "relevance", 0.0
+            )
+            if (
+                turn >= 4
+                and len(ranked) >= 2
+                and top_relevance > 0.0
+                and top_relevance
+                == ranked[1].get(
+                    "relevance", 0.0
+                )
+            ):
+                tied_pair = [ranked[0], ranked[1]]
+
             # ----------------------------------
             # 6. RETURN TOP K
             # ----------------------------------
@@ -506,6 +529,11 @@ class Agent:
             turn=turn,
             candidates=(
                 question_candidates
+            ),
+            tied_pair=(
+                tied_pair
+                if candidates
+                else None
             ),
         )
 
