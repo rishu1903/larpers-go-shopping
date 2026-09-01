@@ -30,10 +30,19 @@ Latest official **200-session public evaluator** result:
 | Metric | Score |
 |---|---:|
 | Hit Rate@10 | **1.0000** |
-| MRR | **0.935353** |
-| MTTC | **2.280** |
-| Efficiency | **0.8720** |
-| Technical Score | **0.955006** |
+| MRR | **0.950583** |
+| MTTC | **2.360** |
+| Efficiency | **0.8640** |
+| Technical Score | **0.957975** |
+
+Per scenario, all 200 sessions:
+
+| Scenario | n | Hit@10 | MRR | MTTC |
+|---|---:|---:|---:|---:|
+| buying | 80 | 1.000 | 0.960833 | 1.8625 |
+| browsing | 80 | 1.000 | 0.955208 | 2.2750 |
+| intent_override | 30 | 1.000 | 0.894444 | 3.6333 |
+| boundary | 10 | 1.000 | 1.000000 | 3.2000 |
 
 Official starter baseline:
 
@@ -46,6 +55,28 @@ Official starter baseline:
 | Technical Score | 0.10671 |
 
 The current agent therefore reaches all 200 public targets while substantially improving ranking quality and recommendation speed relative to the starter implementation.
+
+### Integration Status
+
+`staging` is the integration branch. `main` is fully contained in it, so `main` is behind `staging` rather than diverged from it.
+
+Merged into `staging`:
+
+- `origin/main`
+- `origin/fix/override`
+- `origin/kaushal-retrieval-improvement`
+- `origin/feature/buying-override-technical-score`
+- `origin/feature/scenario-efficiency-improvements`
+- `origin/feature/ranking-generalization-improvements`
+- `origin/feature/hard-constraint-parser-hardening`
+- `origin/feature/semantic-exploration-fusion`
+- `origin/feature/end-to-end-shadow-ranking`
+- `origin/feature/shadow-robustness-eval`
+
+Not yet merged:
+
+- `origin/harshil/dev` — 5 commits, ~6,900 insertions (structured slot state, context distillation, negative constraints, failure-aware protected recovery). Conflicts against the current tip in `starter/agent.py`, `src/state.py` and `src/retrieval.py`; the shortlist-width call sits inside one of those conflict regions, so the resolution decides whether that policy survives.
+- `origin/fix/llm-context-extraction` — 2 commits, ~1,280 insertions (LLM extraction layer). Needs a rules decision before merging: `docs/submission_rules.md` notes that organizer policy may disable network access for official final scoring, and disallows code depending on undeclared external services.
 
 ---
 
