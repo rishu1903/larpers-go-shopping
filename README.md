@@ -540,18 +540,16 @@ Measured effect on the public 200-session set: zero rank changes across alpha 0.
 
 # V11 — End-to-End Shadow Ranking
 
-V10.2 measures whether relevant products reach the candidate pool.
+V10.2 measures whether relevant products enter the candidate pool.
 
-V11 evaluates whether the **actual production agent** can turn those candidates into final top-10 recommendations.
-
-It exercises the public competition interface:
+V11 exercises the actual production interface:
 
 ```text
 Agent.reset(...)
 Agent.respond(...)
 ```
 
-For each V10.2 case:
+against the same catalogue-derived paraphrase benchmark and measures the final top-10 recommendations shown to the user.
 
 ```mermaid
 sequenceDiagram
@@ -560,17 +558,302 @@ sequenceDiagram
     participant R as Retrieval + Reranker
 
     U->>A: Buying-style paraphrased requirement
-    A->>R: Normal production retrieval
+    A->>R: Normal precision-first retrieval
     R-->>A: Ranked candidates
-    A-->>U: Top-10 + clarification
+    A-->>U: Turn-1 top 10
 
     U->>A: No additional preference
-    A->>R: Exploration / recovery route
-    R-->>A: New ranked candidates
-    A-->>U: New top-10
+    A->>R: Exploration / semantic recovery
+    R-->>A: Unseen alternatives
+    A-->>U: Turn-2 top 10
 ```
 
-This distinguishes whether semantic recovery is merely producing deep candidates or is actually improving the recommendation surface.
+## V11 Results
+
+Across the 130 domain-gated shadow cases:
+
+| Metric | Result |
+|---|---:|
+| Turn-1 Hit@10 | **77.69%** |
+| Turn-1 MRR@10 | **0.4988** |
+| New turn-2 rescues | **14** |
+| Cumulative hit by turn 2 | **88.46%** |
+| Rescue rate among initial misses | **48.28%** |
+| Missed after both turns | **15 / 130** |
+
+The production agent deliberately avoids repeating already-seen products during exploration. Therefore a turn-1 hit remains a successful session even when the target is not repeated on turn 2.
+
+V11 shows that exploration is valuable: almost half of the cases that missed on the first recommendation set were recovered by the second.
+
+However, semantic promotion remains an opportunity. Of the six V10.2 cases in which semantic retrieval found a relevant product that lexical retrieval completely missed at depth 100, only one was promoted into the final top 10 during exploration.
+
+This motivates the next experiment:
+
+> Improve semantic candidate fusion during exploration without changing the protected turn-1 lexical ranking path.
+
+## V12 — Semantic-Aware Exploration Fusion
+
+V11 showed that semantic retrieval could recover products missed by lexical search, but many semantic-only candidates were not promoted into the final recommendation set.
+
+V12 adds a bounded semantic reciprocal-rank signal during **exploration only**. The normal buying path remains unchanged.
+
+Semantic promotion is deliberately conservative:
+
+- only semantic-only candidates receive the bonus;
+- hybrid/lexical candidates receive no additional semantic boost;
+- candidates must remain compatible with the active product category;
+- semantic retrieval rank is used instead of raw cosine similarity;
+- the feature activates only during exploration.
+
+A label-free ablation tested weights from `0.0` to `1.5`. A weight of `1.0` was selected because it was the smallest value that improved session coverage while preserving ranking quality.
+
+| Metric | V11 | V12 |
+|---|---:|---:|
+| Shadow Turn-1 Hit@10 | 77.69% | 77.69% |
+| Shadow cumulative Hit@10 | 88.46% | **89.23%** |
+| Turn-2 rescues | 14 | **15** |
+| Remaining misses | 15 | **14** |
+| Semantic-only rescues | 1 / 6 | **2 / 6** |
+| Public Hit@10 | 1.000 | **1.000** |
+| Public MRR | 0.815145 | **0.815145** |
+| Public TechnicalScore | 0.923844 | **0.923844** |
+
+The result suggests semantic retrieval is useful as a targeted recovery mechanism, but should remain subordinate to the stronger lexical relevance path.
+
+---
+
+# V13 — Hard Constraint Parser Generalization Hardening
+
+`data/public_set.jsonl` contains no free-text customer messages at all -- every budget phrase the parser was ever validated against locally is synthesized by `evaluator/local_evaluator.py`'s own template functions. A code and data audit found that the parser and its session-state coupling had, in places, been tuned to that same narrow template distribution rather than to budget language in general:
+
+- the intent-override detector was a hardcoded exact match on two substrings (`"actually"` and `"ignore my earlier preference"`), character-for-character the evaluator's own override sentence;
+- negated bounds such as `not over $100` were parsed as the opposite positive constraint (`min_price=100`);
+- there was no way to explicitly cancel a budget (`"actually, no budget limit"` was a silent no-op);
+- the bound vocabulary was closed -- any phrasing outside ~15 templates silently dropped the constraint.
+
+None of this showed up in the public benchmark, because the public benchmark only exercises the same template phrasings the code was tuned against. V13 fixes the four gaps above with small, additive changes to `src/hard_constraints.py` and `src/state.py` -- no restructuring of the existing money-context → approximate-language → range/bound staged pipeline, and no new hard-filter attribute types (brand/size/color/etc. remain soft reranking signals by design).
+
+Examples now handled correctly:
+
+- `Not above $50, please.` / `Not under $80.` → no longer misparsed as an inverted bound.
+- `Actually, no budget limit anymore.` → clears an existing budget instead of leaving it stale.
+- `On second thought, forget my earlier preference -- here's what I actually need: waterproof shoes.` → triggers the override despite not matching the evaluator's literal sentence.
+- `Show me something cheaper than $60.` / `I'm capped at $90.` → new generic vocabulary.
+- `Budget: $.75` → bare-decimal amounts now parse.
+
+A new held-out parser eval suite (`scripts/budget_constraint_eval.py`), phrased independently of the evaluator's templates, was built first and used to measure the change:
+
+| Metric | Before | After |
+|---|---:|---:|
+| Suite pass rate | 60% (15/25) | **96% (24/25)** |
+| Detection precision | 0.625 | **0.909** |
+| Detection recall | 0.5 | **1.000** |
+| Detection F1 | 0.556 | **0.952** |
+| Negation accuracy | 0.0 | **1.000** |
+| Numeric accuracy | 0.6 | **1.000** |
+| Multi-turn state accuracy | 0.667 | **1.000** |
+| Public Hit@10 | 1.000 | **1.000** |
+| Public MRR | 0.815145 | **0.815145** |
+| Public TechnicalScore | 0.923844 | **0.923844** |
+
+The public benchmark is byte-identical before and after -- every change is additive (a new guard, a new sentinel, new vocabulary) rather than a modification to any currently-matching pattern, so nothing that previously passed can regress.
+
+Known, documented limitations not addressed in this pass:
+
+- negation handling is adjacency-based only -- semantically displaced negation such as `I don't want to spend more than $90` is not detected;
+- the money-context gate scans the whole message rather than text near the numeric match, so an unrelated money-context word can still license an unrelated `up to N` phrase (e.g. `The cost is unclear, but it holds up to 10 items.`) -- tracked in the eval suite's `ACCEPTED_LIMITATIONS` rather than silently unmeasured.
+
+---
+
+# V14 — Ranking Generalization Improvements
+
+The public 200-session benchmark is already saturated (Hit@10 = 1.000, MRR = 0.815145, unchanged since V10). Any further improvement can only be evidenced through the catalogue-derived robustness benchmarks (concept robustness, shadow eval), so V14's three changes were measured entirely against those, then confirmed not to move the public benchmark at all.
+
+## V14.1 — Domain-Synonym Query Expansion
+
+Water/moisture-resistance concepts (`waterproof`, `water_resistant`) were the single largest concentrated cluster of residual shadow-eval failures -- 6 of 14 `miss_both` cases (43%), unchanged across V11 and V12 despite ranking tuning in between. The underlying cause was retrieval, not ranking: a paraphrase like *"something suitable for occasional wet conditions"* shares no words with catalogue listing text like *"Water-Resistant"*, so the right product was often never retrieved as a candidate at all -- no amount of reranking can promote a candidate that was never found.
+
+Added `src/query_expansion.py`: a small, generic, extensible synonym-group mechanism that appends canonical catalogue-style terms (`waterproof`, `water resistant`, `weatherproof`, ...) to retrieval query text whenever a short domain trigger phrase is present. Purely additive -- the original text is never altered or removed -- and wired into both retrieval routes (BM25 evidence terms, and the semantic route's query text) so neither route is left behind. Trigger phrases are short generic fragments, not copied verbatim from any benchmark case, so the expansion targets the concept rather than the benchmark's exact wording.
+
+| Metric | Before | After |
+|---|---:|---:|
+| Lexical Hit@10 | 58.5% | **60.0%** |
+| Hybrid Hit@10 | 60.0% | **61.5%** |
+| Hybrid Hit@100 | 94.6% | **95.4%** |
+| Concept-robustness cases missed by both routes | 7 | **6** |
+| Shadow-eval `miss_both` | 14 | **12** |
+
+## V14.2 — Relevance-Scaled Semantic Exploration Bonus
+
+V12's own ablation showed the semantic-only exploration bonus plateaus completely at weight ≥ 1.0: larger weights changed nothing, which was evidence the fixed 0-1 bonus was simply too small to compete with deterministic relevance scores that can run into double digits, not that the weight itself was well-tuned. Even at maximum weight, only 2 of 6 V10.2 semantic-rescue cases were ever promoted into the exploration top-10.
+
+`semantic_exploration_bonus()` now multiplies the bounded rank signal by the current query's own relevance range (`relevance_scale`, default `1.0` reproduces the exact V12 formula) instead of a fixed constant. Re-running the same label-free 130-case ablation methodology (`scripts/v14_relevance_scaled_fusion_ablation.py`) against the new formula shape produced a genuinely useful, if humbling, result:
+
+| Weight | Cumulative Hit@10 | Rescues | Misses | Semantic-only rescued |
+|---:|---:|---:|---:|---:|
+| 0.0 | 90.00% | 15 | 13 | 1 |
+| **0.25** | **90.77%** | **16** | **12** | **2** |
+| 0.5 | 90.77% | 16 | 12 | 2 |
+| 0.75 | 84.62% | 8 | 20 | 2 |
+| 1.0 (old default) | 80.00% | 2 | 26 | 0 |
+
+The old weight of `1.0` is now *too strong* under the rescaled formula and actively regresses cumulative Hit@10. `0.25` is the smallest tested value reaching the sweep's best result -- but that best result exactly ties the old fixed formula's own best setting on every primary metric. Stated plainly: this redesign does not unlock further improvement on this benchmark. What it does provide is a properly calibrated weight range (a fixed constant no longer has to be tuned against an unknown, query-dependent relevance scale), which is why it was still adopted (`SEMANTIC_EXPLORATION_WEIGHT = 0.25`) rather than reverted.
+
+## V14.3 — Average Rating as a Last-Resort Exploration Tie-Break
+
+`average_rating` is present in the catalogue for every product but was used nowhere in the pipeline -- not in retrieval, not in reranking, not in the semantic embedding (that last exclusion is intentional and unchanged: the semantic model describes what a product *is*, not how good it is). As a ranking signal it was simply unused, free information.
+
+`starter/agent.py` now precomputes `average_rating` per product exactly like the existing `price` attachment. `rerank_for_exploration` appends it (descending, missing treated as lowest) as a 5th and final tie-break key, after the existing long-tail `rating_number` key -- so it only activates when fusion score, relevance, `rating_number`, and retrieval depth are already fully tied. `rerank_candidates` (the buying path) is deliberately untouched, respecting its own `"V12 deliberately does NOT modify this path"` docstring. As expected for a narrow last-resort tie-break, this showed no measurable movement on the 130-case shadow benchmark -- it is a low-risk, evidence-honest addition rather than a proven win.
+
+## V14 Summary
+
+| Metric | Before (V12) | After (V14) |
+|---|---:|---:|
+| Shadow cumulative Hit@10 | 89.23% | **90.77%** |
+| Turn-2 rescues | 15 | **16** |
+| Remaining misses | 14 | **12** |
+| Concept-robustness hybrid Hit@10 | 60.0% | **61.5%** |
+| Public Hit@10 | 1.000 | **1.000** |
+| Public MRR | 0.815145 | **0.815145** |
+| Public TechnicalScore | 0.923844 | **0.923844** |
+
+Practically all of the measured movement traces to V14.1 (query expansion); V14.2 ties rather than beats the prior formula's own best setting, and V14.3 is a low-risk addition with no measured effect on this benchmark. The public benchmark is confirmed byte-identical throughout -- consistent with the "Public-set restraint" principle above, none of these changes were accepted on public-benchmark movement (there was none to have), only on the catalogue-derived robustness benchmarks.
+
+---
+
+# V15 — Scenario Efficiency Improvements
+
+The official evaluator reports MRR and MTTC separately per scenario type (`boundary`, `browsing`, `buying`, `intent_override`). With Hit@10 already perfect everywhere, these per-scenario breakdowns are where remaining headroom actually shows up. Two of three original hypotheses for closing that headroom turned out to be wrong once traced through the actual code -- reported honestly below rather than smoothed over.
+
+## V15.1 — BM25 Order Beats Popularity When No Evidence Exists Yet
+
+Turn 1 of a Browsing session discloses zero constraint content (the scripted opener is just `"I'm looking for {category}, but I'm still exploring."`), so every same-category candidate ties on the deterministic relevance score. `rerank_candidates`'s tie-break order was `(-relevance, -rating_number, bm25_index)` -- with relevance tied, raw popularity decided almost everything, even though BM25's own full-text rank (title=6.0/categories=4.0/features=2.5/details=2.5/store=1.5/description=1.0 weighted) already reflects real textual relevance a popularity count doesn't.
+
+When `state.evidence` is empty, the tie-break now checks `bm25_index` before `-rating_number` instead of after. This is a no-op the instant any evidence exists -- every Buying-session turn and every Browsing-session turn from turn 2 onward are unaffected, confirmed by the buying-style shadow eval being byte-identical before/after.
+
+| Metric | Before | After |
+|---|---:|---:|
+| Browsing MRR | 0.768333 | **0.848140** |
+| Browsing Hit@10 | 1.000 | 1.000 |
+| Overall MRR | 0.815145 | **0.847067** |
+| Overall TechnicalScore | 0.923844 | **0.930420** |
+
+Honest tradeoff: Browsing and Boundary MTTC both got slightly worse (1.775→2.075 and 2.6→3.2). Some sessions that previously hit early via a lucky popularity-driven rank now hit one turn later at a substantially better rank once they do -- net positive on the composite TechnicalScore (MRR is weighted 30% vs. Efficiency/MTTC's 20%), but not a free win on every axis.
+
+## V15.2 — Clear Stale Asked-Attribute Bookkeeping on Intent Override
+
+`state.override_seen` was set on override but never read anywhere (write-only). The override handler already purges stale turn-1 evidence and a turn-1-sourced budget, but never cleared `state.asked_attributes` -- so an attribute the agent happened to ask about *before* the override stayed permanently excluded afterward, even though the override changes what's actually informative to ask. `state.no_preference` is deliberately left untouched: a shopper's stated attribute-indifference plausibly survives an override, unlike pure turn-tracking bookkeeping tied to the discarded context.
+
+Measured impact: byte-identical on the official evaluator's `intent_override` bucket (mrr=0.894444, mttc=3.633333). This is a real correctness fix, not a no-op change -- but it shows no measured movement on this specific 30-sample bucket, most plausibly because Intent-Override sessions already resolve at or very near the scripted override turn itself. The original strategy estimated only ~0.13 turns of slack above the ~3.5-turn structural floor set by the competition's own scripting rule (*"An Intent Override session cannot convert before the new intent is sent"*, override scripted at a random turn 3 or 4) -- there simply wasn't much room for a better follow-up question to matter before most sessions already hit.
+
+## V15.3 — Attempted and Reverted: Exhausting Clarification on a Declined Catch-All Attribute
+
+The third original hypothesis targeted Boundary MTTC (2.6, second-highest): the evaluator's boundary-scenario reply fires on the *first* attribute the agent ever asks about, including `"other"` -- which every session is hardcoded to ask about on turns 1-3 (the broad-discovery rule). That reply's plain phrasing (`"I don't have a preference for {attribute}; please use your judgment."`) doesn't set `clarification_exhausted` the way the rarer "additional" phrasing does, forcing an extra round-trip.
+
+The fix looked correct on paper: also exhaust clarification when the declined attribute is specifically `"other"`. It was implemented, tested, and measured -- and it caused a severe regression: **Boundary `hit_rate_at_10` dropped from 1.000 to 0.400.** Root cause found on inspection: exhausting clarification doesn't just stop asking questions -- it also switches the agent into `rerank_for_exploration` (a wider-candidate, different-ranking retrieval mode) via `starter/agent.py`'s reranker-selection gate. Because Boundary's first scripted reply almost always lands during the turns-1-3 broad-discovery window (which always asks about `"other"`), this fix caused nearly every Boundary session to flip into exploration-mode ranking on essentially turn 1, before any real evidence existed to rank against -- trading a small MTTC gain for a catastrophic accuracy loss.
+
+This was reverted before being committed. A safe fix would need to first decouple "the shopper has nothing more to add" from "switch retrieval/ranking mode," which is a larger, riskier redesign than fits this branch's scope -- left as a documented next step rather than shipped half-validated.
+
+## V15.4 — MTTC Investigation: Root Cause and a Second Attempted-and-Reverted Fix
+
+A dedicated follow-up investigation into whether Browsing/Boundary MTTC could be clawed back without giving up V15.1's MRR gain.
+
+**Root cause, established via per-session forensics** (`experiments/v15_official_before.json` vs `v15_official_after.json`, cross-referenced by `sample_id`): **the MRR win and the MTTC cost are the same mechanism, not two separate bugs.** 26 of 80 Browsing sessions and all 3 changed Boundary sessions shifted `first_hit_turn` later after V15.1's reranker change -- in the overwhelming majority (~24/26 Browsing, all 3 Boundary), the pattern is *hit one turn later but at a dramatically better rank* (e.g. turn 1/rank 8 → turn 2/rank 1). Sessions that previously got a *lucky* popularity-driven hit on turn 1 now correctly wait one extra turn for real evidence, then rank near-perfectly. Boundary's entire +0.6 MTTC delta is fully explained by exactly its 3 changed sessions (3 × 2 extra turns / 10 samples = 0.6).
+
+A wider investigation checklist was worked through against the actual code: recommendations are computed and returned every turn unconditionally (there is no confidence-gated "wait to recommend" branch to relax); no repeated-question bug exists (`state.asked_attributes` already prevents that); intent routing correctly distinguishes Browsing/Buying/Boundary. The one credible remaining lever was `choose_candidate_attribute()`'s unconditional `turn <= 3 → "other"` broad-discovery rule -- a targeted fix (ask the statistically most differentiating attribute directly, gated by a pool-size floor and a strict information-score threshold, never touching `clarification_exhausted`) was designed, implemented, and ablated at three settings against the full 200-session evaluator.
+
+**Result: a comprehensive regression at every setting, on every scenario type** -- including Buying and Intent-Override, which V15.1 never touched (e.g. Buying MRR 0.809112 → 0.797063/0.789544, Overall MTTC 2.185 → 2.545/2.730 -- worse, not better). Root cause on inspection: the heuristic scores which attribute best separates the *retrieved candidate pool*, but the evaluator's simulated customer only discloses real information when the *specific* attribute asked happens to match one of their actual hidden constraints -- candidate-pool diversity and shopper intent are not the same signal, so a targeted-but-wrong guess is strictly worse than the generic catch-all. Reverted via `git revert` (`src/questions.py`'s net change across this investigation: none); working tree confirmed byte-identical to V15.1/V15.2's own metrics afterward. Two new regression tests were kept regardless (`tests/test_questions.py::test_already_asked_attribute_is_not_repeated`, `test_overloaded_ambiguous_pool_stays_on_broad_discovery`), and the ablation numbers are preserved in `experiments/v16_early_turn_targeting_ablation.json`.
+
+**Remaining failure cases:** 2 Browsing sessions show a genuine same-turn rank downgrade from V15.1 (low volume, not individually investigated); the 3 Boundary sessions driving the Boundary MTTC delta remain an accepted tradeoff, not a bug with a known fix; Intent-Override MTTC (3.633) sits only ~0.13 turns above the ~3.5-turn structural floor the competition's own scripting imposes (override cannot be sent before turn 3 or 4), leaving little room regardless of agent-side changes; and early-turn question targeting via candidate-pool statistics alone is a confirmed dead end for this architecture -- a working version would need a shopper-intent signal distinct from catalogue diversity, which isn't exposed to this policy by design (no hidden target/simulator state reaches the agent).
+
+## V15 Summary
+
+| Metric | Before (V14) | After (V15) |
+|---|---:|---:|
+| Browsing MRR | 0.768333 | **0.848140** |
+| Overall MRR | 0.815145 | **0.847067** |
+| Overall TechnicalScore | 0.923844 | **0.930420** |
+| Intent-Override MRR / MTTC | 0.894444 / 3.633 | unchanged |
+| Boundary MTTC | 2.6 | 3.2 (accepted tradeoff, see V15.1; confirmed structural, see V15.4) |
+| Buying MRR / MTTC | 0.809112 / 1.625 | unchanged |
+| Public Hit@10 (every scenario) | 1.000 | **1.000** |
+
+Two of four sub-changes shipped (V15.1, V15.2); the other two (V15.3, V15.4) were attempted with full rigor, found unsafe or ineffective, and reverted rather than forced through. This is the same "if metrics regress, don't ship" discipline applied throughout V13/V14 -- a not-uncommon, honestly-reported outcome rather than an exception to it.
+
+---
+
+# V16 — Buying/Intent-Override Reranking + Blended Zero-Evidence Fallback
+
+Two independent, ablated experiments targeting the one population V15 never touched: Buying (MRR 0.809) and Intent-Override (MRR 0.894) had no reranking-specific work done on them at all. HitRate@10 stays saturated at 1.000 in both experiments, so all headroom is in MRR/MTTC.
+
+## V16.1 — Strip Attribute-Label Prefixes from Evidence Chunks for Buying-Intent Relevance Scoring
+
+The evaluator's scripted constraint text is frequently attribute-label-prefixed -- `intent_card()` (`evaluator/local_evaluator.py`) builds strings like `"color: red"` or `"size: large"`, used across every scenario type's hard/soft constraints. `_candidate_relevance()`'s exact-match bonus requires the *whole* normalized evidence chunk (`"color red"`) to appear contiguously in a product's normalized searchable text -- but real product metadata almost never states the label word adjacent to the value in that exact order (a product says "Red", not "Color Red"). The label token was silently dragging an otherwise-exact match down to partial token-overlap credit, missing the +3.0 exact-match bonus entirely.
+
+`_candidate_relevance()` gained an opt-in `strip_attribute_labels` parameter that removes a small, generic set of leading `"attribute:"` labels before scoring. `rerank_candidates()` (the "protected buying path") enables it only when `state.intent == ShoppingIntent.BUYING` -- which covers Buying sessions and post-override Intent-Override sessions automatically, since `infer_intent()`'s override branch always returns `BUYING`. `rerank_for_exploration()` never enables it, so Browsing/exploration-mode ranking is provably unchanged (verified by a byte-identical-output regression test).
+
+Four modes were ablated against the full 200-session official evaluator:
+
+| Mode | Overall MRR | TechScore | Buying MRR | Intent-Override MRR | Browsing MRR |
+|---|---:|---:|---:|---:|---:|
+| off (control) | 0.847067 | 0.930420 | 0.809112 | 0.894444 | 0.848140 |
+| buying_only | 0.866298 | 0.936289 | **0.847188** | 0.894444 | 0.858140 |
+| override_only | 0.847067 | 0.930420 | 0.809112 | 0.894444 | 0.848140 |
+| both (kept) | 0.866298 | 0.936289 | **0.847188** | 0.894444 | 0.858140 |
+
+`buying_only` and `both` are numerically identical -- `override_only` alone moves nothing. Root cause: the evaluator's scripted intent-override "new value" is disproportionately the bare material word (`intent_card()` inserts material *unlabeled*, only color gets a label), so this specific fix's mechanism rarely has anything to strip on override turns. Intent-Override MRR/MTTC are therefore honestly unchanged (0.894444 / 3.633) in every mode -- consistent with V15.2's earlier finding that this 30-sample bucket has very little slack for a follow-up question or ranking change to matter.
+
+Browsing MRR moved *up* (0.848140 → 0.858140), not down -- an incidental but genuinely measured side effect, not scope creep: Browsing sessions that internally narrow into `ShoppingIntent.BUYING` (a shopper stating a concrete preference mid-session) already flowed through the shared `rerank_candidates()` path before this branch existed (see V15.1's own docstring); this experiment's `state.intent == BUYING` gate simply inherits that pre-existing coupling rather than introducing a new one. Browsing MTTC improved slightly too (2.075 → 2.0625). Buying MTTC is unchanged (1.625).
+
+Shadow eval (`experiments/v17_exp1_shadow_eval.json`) is byte-identical to the pre-change baseline (`experiments/v15_shadow_eval_after.json`), confirming no regression on the shared code path exercised by both reranker functions.
+
+**Kept: `mode="both"`.**
+
+## V16.2 — Blended Zero-Evidence Fallback (Negative Result)
+
+V15.1 replaced popularity-first tie-breaking with a *binary* switch to BM25-first whenever `state.evidence` is empty. This experiment generalized that switch into a tunable blend, reusing `normalized_rrf` (the bounded reciprocal-rank fusion already used by the semantic exploration bonus) so neither raw BM25 scores nor raw rating counts need independent normalization:
+
+```text
+fallback_score = alpha * normalized_rrf(bm25_rank) + beta * normalized_rrf(popularity_rank)
+```
+
+Defaults (`alpha=1.0, beta=0.0`) reproduce V15.1's exact ordering bit-for-bit. Relevance stays the unconditional primary sort key throughout, so the blend can never override strong relevance or the pre-applied hard budget filter, by construction -- satisfying "popularity must only be a tie-break or weak secondary signal" directly.
+
+Five weight points were swept against the full official evaluator, isolated from V16.1 (`configure_buying_relevance_labels("off")` during the sweep):
+
+| alpha | beta | Overall MRR | TechScore | Browsing MRR | Browsing MTTC | Boundary MTTC |
+|---:|---:|---:|---:|---:|---:|---:|
+| 1.0 (kept) | 0.0 | **0.847067** | **0.930420** | **0.848140** | 2.075 | 3.2 |
+| 0.9 | 0.1 | 0.829714 | 0.925714 | 0.815868 | 2.0375 | 3.0 |
+| 0.75 | 0.25 | 0.805137 | 0.919241 | 0.771438 | 1.975 | 2.6 |
+| 0.5 | 0.5 | 0.792339 | 0.916502 | 0.711319 | 1.8375 | 2.6 |
+| 0.0 | 1.0 | 0.815145 | 0.923844 | 0.768333 | 1.775 | 2.6 |
+
+**Negative result: every weight that gives popularity any nonzero influence strictly reduces TechnicalScore, Overall MRR, and Browsing MRR** relative to the current default -- monotonically in the popularity weight, not noise. MTTC does improve as popularity weight rises (the same pre-V15 popularity-first tradeoff), but never enough to offset the MRR/TechScore loss (MTTC is 20% of TechnicalScore vs. MRR's 30% and HitRate@10's 50%, and HitRate@10 stayed 1.000 throughout so it never varies). Root cause: turn-1-of-Browsing candidates already tie on relevance, so BM25's own full-text rank is the *only* signal in this bucket that correlates with true relevance -- exactly V15.1's original finding. Blending in popularity doesn't add complementary signal here the way it does for semantic exploration fusion; it can only occasionally promote a popular-but-textually-worse candidate ahead of the correct one, which is strictly a regression in this specific zero-evidence context. This sweep re-confirms V15.1's original binary decision was already the correct point on the spectrum, not merely one of two untested extremes. Buying/Intent-Override metrics are unaffected at every weight, as expected (`has_evidence` is true for those turns, so this branch never executes for them).
+
+**Kept: production defaults unchanged (`alpha=1.0, beta=0.0`).** The tunable code stays in the codebase as documented, ablated infrastructure (the same pattern as `SEMANTIC_EXPLORATION_WEIGHT`), but no configuration change ships. This is a completed, honest investigation with a negative result, not a shipped feature -- no revert was needed since the default is already a byte-identical no-op to pre-experiment behavior.
+
+## V16 Summary
+
+| Metric | Before (V15) | After (V16) |
+|---|---:|---:|
+| Buying MRR | 0.809112 | **0.847188** |
+| Browsing MRR | 0.848140 | **0.858140** |
+| Overall MRR | 0.847067 | **0.866298** |
+| Overall TechnicalScore | 0.930420 | **0.936289** |
+| Intent-Override MRR / MTTC | 0.894444 / 3.633 | unchanged |
+| Browsing MTTC | 2.075 | **2.0625** |
+| Buying MTTC | 1.625 | unchanged |
+| Boundary MTTC | 3.2 | unchanged |
+| Public Hit@10 (every scenario) | 1.000 | **1.000** |
+
+One of two experiments shipped (V16.1); the other (V16.2) was ablated with full rigor across five weight settings and honestly found to be a strict regression at every nonzero setting, so production keeps V15.1's original binary decision unchanged. Every headline metric moved in a positive or neutral direction -- no metric regressed anywhere, on any scenario, in the shipped configuration.
+
+**Files changed:** `src/reranker.py` (both experiments' scoring/blending logic and `configure_*` ablation hooks), `tests/test_reranker.py` (13 new/updated regression tests), `scripts/v17_exp1_buying_override_ablation.py` and `scripts/v17_exp2_fallback_blend_ablation.py` (ablation harnesses), `experiments/v17_*.json` (baseline, both ablation sweeps, final snapshot). No changes to `src/state.py`, `src/intent.py`, `src/questions.py`, `src/dialogue.py`, `src/fusion.py`, or `starter/agent.py` -- both experiments were scoped entirely inside the reranker.
+
+**Regression analysis:** every acceptance criterion held -- Hit@10 stayed 1.000 in every scenario across every ablation run of both experiments; Browsing MRR moved up, never down; Overall MRR, Buying MRR, and Intent-Override MRR never dropped below baseline in the shipped configuration; the only MTTC movement was a small Browsing improvement. `python -m unittest -v` stayed green (120 tests) after every commit, including both ablation-documentation commits, and the shared-code-path shadow eval (`experiments/v17_exp1_shadow_eval.json`) is byte-identical to the pre-branch baseline.
+
+**Remaining limitations:** Intent-Override's own bucket (MRR 0.894444, MTTC 3.633) is untouched by either experiment -- confirmed structurally low-slack (same finding as V15.2 and V15.4); V16.2's negative result means there is currently no known way to improve Browsing/Boundary MTTC without giving back MRR in the zero-evidence fallback specifically (a distinct, already-documented dead end from V15.4's early-turn-targeting investigation); and V16.1's own uplift is fully attributable to the "both"/"buying_only" mechanism -- the intent-override-specific half of the fix has zero measured effect on this dataset, so a differently-scripted override population could behave differently and would need its own re-ablation, not an assumption that this fix generalizes to override text that never happens to be label-prefixed.
 
 ---
 
@@ -596,18 +879,33 @@ This distinguishes whether semantic recovery is merely producing deep candidates
 │   ├── v9_safe_personalization.json
 │   ├── v10_2_concept_smoke.json
 │   ├── v10_2_concept_robustness.json
-│   └── v11_end_to_end_shadow.json
+│   ├── v11_end_to_end_shadow.json
+│   ├── v12_fusion_ablation.json
+│   ├── v13_budget_constraint_hardening_after.json
+│   ├── v14_relevance_scaled_fusion_ablation.json
+│   ├── v15_official_after.json
+│   ├── v17_exp1_buying_override_ablation.json
+│   └── v17_exp2_fallback_blend_ablation.json
 │
 ├── scripts/
 │   ├── build_semantic_index.py
+│   ├── budget_constraint_eval.py
 │   ├── concept_robustness_eval.py
-│   └── end_to_end_shadow_eval.py
+│   ├── end_to_end_shadow_eval.py
+│   └── tune_override_threshold.py
+│   ├── v12_fusion_ablation.py
+│   ├── v14_relevance_scaled_fusion_ablation.py
+│   ├── v17_exp1_buying_override_ablation.py
+│   └── v17_exp2_fallback_blend_ablation.py
 │
 ├── src/
 │   ├── dialogue.py
+│   ├── fusion.py
 │   ├── hard_constraints.py
 │   ├── intent.py
+│   ├── override_semantic.py
 │   ├── profile.py
+│   ├── query_expansion.py
 │   ├── questions.py
 │   ├── reranker.py
 │   ├── retrieval.py
@@ -638,6 +936,15 @@ Install dependencies:
 ```powershell
 pip install -r requirements.txt
 ```
+
+`sentence-transformers` (the optional semantic fallback for override detection) pulls in `torch`. To avoid downloading large CUDA wheels on a CPU-only machine, install torch first:
+
+```powershell
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements.txt
+```
+
+The agent works correctly without this dependency installed — it falls back to regex-only override detection. See "V13 — Semantic Fallback for Override Detection" above.
 
 Run the full automated test suite:
 
@@ -676,6 +983,18 @@ Run the end-to-end top-10 benchmark:
 
 ```powershell
 python -m scripts.end_to_end_shadow_eval --output experiments\v11_end_to_end_shadow.json
+```
+
+Run the budget constraint parser eval suite:
+
+```powershell
+python -m scripts.budget_constraint_eval --output experiments\v13_budget_constraint_hardening.json
+```
+
+Run the semantic exploration fusion weight ablation:
+
+```powershell
+python -m scripts.v14_relevance_scaled_fusion_ablation --output experiments\v14_relevance_scaled_fusion_ablation.json
 ```
 
 ---
@@ -802,3 +1121,22 @@ Completed:
 - catalogue-derived robustness benchmark;
 - browsing turn-1 recommendation deferral (superseded by V14);
 - confidence-gated shortlist width.
+- catalogue-derived robustness benchmark.
+
+Completed:
+- V11 end-to-end shadow top-10 analysis;
+- V12 semantic-aware exploration candidate fusion;
+- V13 hard constraint parser generalization hardening (negation handling, explicit budget removal, evaluator-independent override detection, expanded numeric/vocabulary coverage);
+- V14 ranking generalization improvements (domain-synonym query expansion, relevance-scaled semantic exploration bonus, average-rating tie-break);
+- V15 scenario efficiency improvements (BM25-vs-popularity tie-break for zero-evidence turns, override asked-attribute bookkeeping clear, MTTC root-cause investigation -- early-turn attribute targeting designed, ablated, found to regress every metric, reverted; root cause established: the Browsing/Boundary MTTC cost is intrinsic to the same reranker change that produced the MRR gain, not an independent bug);
+- V16 buying/intent-override reranking + blended zero-evidence fallback (attribute-label-prefix stripping for buying-intent relevance scoring shipped, +0.038 Buying MRR with Hit@10 still 1.000 everywhere; a tunable BM25/popularity blend for the zero-evidence fallback was ablated across 5 weight settings and honestly found to be a strict regression at every nonzero setting, so V15.1's original binary decision stays unchanged).
+
+Next:
+- clause-level negation scope beyond adjacency (e.g. "I don't want to spend more than $X"), relevant to both the constraint parser and retrieval query construction;
+- proximity-based money-context detection to close the remaining false-positive case tracked in the budget constraint eval suite's ACCEPTED_LIMITATIONS;
+- broader domain-synonym coverage beyond the moisture-resistance concept cluster, once further concentrated gaps are identified the same way (concept robustness + shadow eval, not the public benchmark alone);
+- a safe redesign of Boundary-scenario clarification exhaustion that decouples "shopper has nothing more to add" from "switch retrieval/ranking mode" (see V15.3 -- attempted, reverted after a severe regression, not yet re-attempted);
+- a shopper-intent signal for early-turn clarification distinct from catalogue-candidate diversity, if MTTC is revisited (see V15.4 -- the candidate-diversity-only approach is a confirmed dead end, not a to-do);
+- a genuinely differentiating signal for Intent-Override sessions specifically -- V15.2, V15.4, and V16.1 have each independently found this 30-sample bucket has almost no measured slack for either a follow-up question or a reranking change to move.
+
+Next production change will be chosen based on evidence from the relevant robustness suite rather than assumed in advance.

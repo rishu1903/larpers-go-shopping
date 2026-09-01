@@ -3,6 +3,7 @@ from __future__ import annotations
 import unittest
 
 from src.hard_constraints import (
+    REMOVE_BUDGET,
     BudgetConstraint,
     apply_budget_constraint,
     coerce_price,
@@ -432,6 +433,55 @@ class HardConstraintTest(
         self.assertEqual(
             state.budget_source_turn,
             2,
+        )
+
+
+    def test_explicit_no_budget_phrase_returns_remove_sentinel(
+        self,
+    ) -> None:
+
+        result = parse_budget_constraint(
+            "Actually, no budget limit -- surprise me."
+        )
+
+        self.assertIs(
+            result,
+            REMOVE_BUDGET,
+        )
+
+
+    def test_explicit_removal_clears_existing_budget(
+        self,
+    ) -> None:
+
+        state = SessionState(
+            user_profile={}
+        )
+
+        state.update(
+            (
+                "I'm looking for Shoes. "
+                "A key requirement is: "
+                "under $100."
+            ),
+            1,
+        )
+
+        self.assertIsNotNone(
+            state.budget_constraint
+        )
+
+        state.update(
+            "Doesn't matter on price for now.",
+            2,
+        )
+
+        self.assertIsNone(
+            state.budget_constraint
+        )
+
+        self.assertIsNone(
+            state.budget_source_turn
         )
 
 

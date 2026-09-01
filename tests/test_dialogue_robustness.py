@@ -159,6 +159,47 @@ class DialogueRobustnessTest(
         )
 
 
+    def test_override_clears_stale_asked_attributes(
+        self,
+    ) -> None:
+
+        state = SessionState(
+            user_profile={}
+        )
+
+        state.update(
+            (
+                "I'm looking for Shoes. "
+                "A key requirement is: "
+                "leather."
+            ),
+            1,
+        )
+
+        state.record_question(
+            "material"
+        )
+
+        self.assertIn(
+            "material",
+            state.asked_attributes,
+        )
+
+        state.update(
+            (
+                "Actually, ignore my earlier "
+                "preference. What I need is: "
+                "waterproof."
+            ),
+            3,
+        )
+
+        self.assertNotIn(
+            "material",
+            state.asked_attributes,
+        )
+
+
     def test_measurement_does_not_become_budget_then_real_budget_does(
         self,
     ) -> None:

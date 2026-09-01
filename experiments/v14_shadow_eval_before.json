@@ -1,7 +1,7 @@
 {
   "benchmark": "end-to-end production two-turn shadow evaluation",
   "uses_public_labels": false,
-  "source_benchmark": "experiments\\v10_2_concept_robustness.json",
+  "source_benchmark": "experiments/v10_2_concept_robustness.json",
   "methodology": {
     "uses_public_agent_api": true,
     "initial_turn_is_buying_style": true,
@@ -12,8 +12,8 @@
     "complete_concept_positive_sets_reconstructed": true
   },
   "config": {
-    "catalog": "data\\catalog.jsonl",
-    "source": "experiments\\v10_2_concept_robustness.json",
+    "catalog": "data/catalog.jsonl",
+    "source": "experiments/v10_2_concept_robustness.json",
     "top_k": 10,
     "case_count": 130
   },

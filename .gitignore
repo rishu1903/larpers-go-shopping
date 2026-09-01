@@ -18,3 +18,7 @@ tests/test_organizer_pipeline.py
 *.log
 .venv/
 .vscode/
+# Understand Anything codebase-analysis tool data
+.ua/
+# Stray local evaluator output
+experimentslatest_public_eval.json

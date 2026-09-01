@@ -1,7 +1,7 @@
 {
   "benchmark": "end-to-end production two-turn shadow evaluation",
   "uses_public_labels": false,
-  "source_benchmark": "experiments\\v10_2_concept_robustness.json",
+  "source_benchmark": "experiments/v10_2_concept_robustness.json",
   "methodology": {
     "uses_public_agent_api": true,
     "initial_turn_is_buying_style": true,
@@ -12,8 +12,8 @@
     "complete_concept_positive_sets_reconstructed": true
   },
   "config": {
-    "catalog": "data\\catalog.jsonl",
-    "source": "experiments\\v10_2_concept_robustness.json",
+    "catalog": "data/catalog.jsonl",
+    "source": "experiments/v10_2_concept_robustness.json",
     "top_k": 10,
     "case_count": 130
   },
@@ -21,36 +21,36 @@
     "sample_count": 130,
     "initial": {
       "sample_count": 130,
-      "hit_rate_at_10": 0.776923,
-      "mrr_at_10": 0.498803,
-      "macro_precision_at_10": 0.273077,
-      "macro_recall_at_10": 0.333189,
+      "hit_rate_at_10": 0.784615,
+      "mrr_at_10": 0.501764,
+      "macro_precision_at_10": 0.277692,
+      "macro_recall_at_10": 0.337551,
       "mean_recommendation_count": 10.0
     },
     "exploration_turn_only": {
       "sample_count": 130,
-      "hit_rate_at_10": 0.723077,
-      "mrr_at_10": 0.365986,
-      "macro_precision_at_10": 0.203846,
-      "macro_recall_at_10": 0.208937,
+      "hit_rate_at_10": 0.738462,
+      "mrr_at_10": 0.356657,
+      "macro_precision_at_10": 0.205385,
+      "macro_recall_at_10": 0.217846,
       "mean_recommendation_count": 10.0
     },
     "session_by_turn_2": {
       "sample_count": 130,
-      "cumulative_hit_rate_by_turn_2": 0.892308,
-      "first_turn_hits": 101,
-      "second_turn_rescues": 15,
-      "misses_after_turn_2": 14,
-      "rescue_rate_among_initial_misses": 0.517241,
-      "first_hit_mrr": 0.559466,
-      "macro_recall_across_20": 0.542127,
+      "cumulative_hit_rate_by_turn_2": 0.907692,
+      "first_turn_hits": 102,
+      "second_turn_rescues": 16,
+      "misses_after_turn_2": 12,
+      "rescue_rate_among_initial_misses": 0.571429,
+      "first_hit_mrr": 0.560375,
+      "macro_recall_across_20": 0.555397,
       "mean_recommendation_overlap": 0.0
     },
     "transition": {
-      "rescued_after_exploration": 15,
+      "rescued_after_exploration": 16,
       "initial_only": 22,
-      "hit_both": 79,
-      "miss_both": 14
+      "hit_both": 80,
+      "miss_both": 12
     },
     "v10_2_semantic_rescue_subset": {
       "sample_count": 6,
@@ -80,7 +80,7 @@
         "after_exploration": {
           "sample_count": 10,
           "hit_rate_at_10": 0.8,
-          "mrr_at_10": 0.300952,
+          "mrr_at_10": 0.304286,
           "macro_precision_at_10": 0.27,
           "macro_recall_at_10": 0.172175,
           "mean_recommendation_count": 10.0
@@ -92,7 +92,7 @@
           "second_turn_rescues": 2,
           "misses_after_turn_2": 1,
           "rescue_rate_among_initial_misses": 0.666667,
-          "first_hit_mrr": 0.473333,
+          "first_hit_mrr": 0.476667,
           "macro_recall_across_20": 0.289509,
           "mean_recommendation_overlap": 0.0
         }
@@ -196,7 +196,7 @@
         "after_exploration": {
           "sample_count": 10,
           "hit_rate_at_10": 0.8,
-          "mrr_at_10": 0.419167,
+          "mrr_at_10": 0.435833,
           "macro_precision_at_10": 0.26,
           "macro_recall_at_10": 0.275263,
           "mean_recommendation_count": 10.0
@@ -254,9 +254,9 @@
         "after_exploration": {
           "sample_count": 10,
           "hit_rate_at_10": 0.6,
-          "mrr_at_10": 0.27,
-          "macro_precision_at_10": 0.19,
-          "macro_recall_at_10": 0.103011,
+          "mrr_at_10": 0.22,
+          "macro_precision_at_10": 0.18,
+          "macro_recall_at_10": 0.101124,
           "mean_recommendation_count": 10.0
         },
         "session": {
@@ -267,7 +267,7 @@
           "misses_after_turn_2": 1,
           "rescue_rate_among_initial_misses": 0.5,
           "first_hit_mrr": 0.45873,
-          "macro_recall_across_20": 0.38147,
+          "macro_recall_across_20": 0.379584,
           "mean_recommendation_overlap": 0.0
         }
       },
@@ -283,7 +283,7 @@
         "after_exploration": {
           "sample_count": 10,
           "hit_rate_at_10": 0.8,
-          "mrr_at_10": 0.486667,
+          "mrr_at_10": 0.480952,
           "macro_precision_at_10": 0.33,
           "macro_recall_at_10": 0.331818,
           "mean_recommendation_count": 10.0
@@ -361,29 +361,29 @@
       "water_resistant": {
         "initial": {
           "sample_count": 10,
-          "hit_rate_at_10": 0.7,
-          "mrr_at_10": 0.209524,
-          "macro_precision_at_10": 0.14,
-          "macro_recall_at_10": 0.259286,
+          "hit_rate_at_10": 0.8,
+          "mrr_at_10": 0.253968,
+          "macro_precision_at_10": 0.16,
+          "macro_recall_at_10": 0.306905,
           "mean_recommendation_count": 10.0
         },
         "after_exploration": {
           "sample_count": 10,
-          "hit_rate_at_10": 0.4,
-          "mrr_at_10": 0.3,
-          "macro_precision_at_10": 0.11,
-          "macro_recall_at_10": 0.125,
+          "hit_rate_at_10": 0.5,
+          "mrr_at_10": 0.236111,
+          "macro_precision_at_10": 0.12,
+          "macro_recall_at_10": 0.139286,
           "mean_recommendation_count": 10.0
         },
         "session": {
           "sample_count": 10,
-          "cumulative_hit_rate_by_turn_2": 0.7,
-          "first_turn_hits": 7,
+          "cumulative_hit_rate_by_turn_2": 0.8,
+          "first_turn_hits": 8,
           "second_turn_rescues": 0,
-          "misses_after_turn_2": 3,
+          "misses_after_turn_2": 2,
           "rescue_rate_among_initial_misses": 0.0,
-          "first_hit_mrr": 0.209524,
-          "macro_recall_across_20": 0.384286,
+          "first_hit_mrr": 0.253968,
+          "macro_recall_across_20": 0.44619,
           "mean_recommendation_overlap": 0.0
         }
       },
@@ -391,28 +391,28 @@
         "initial": {
           "sample_count": 10,
           "hit_rate_at_10": 0.6,
-          "mrr_at_10": 0.253571,
-          "macro_precision_at_10": 0.15,
-          "macro_recall_at_10": 0.273374,
+          "mrr_at_10": 0.247619,
+          "macro_precision_at_10": 0.19,
+          "macro_recall_at_10": 0.282465,
           "mean_recommendation_count": 10.0
         },
         "after_exploration": {
           "sample_count": 10,
-          "hit_rate_at_10": 0.5,
-          "mrr_at_10": 0.316667,
-          "macro_precision_at_10": 0.14,
-          "macro_recall_at_10": 0.143566,
+          "hit_rate_at_10": 0.6,
+          "mrr_at_10": 0.295,
+          "macro_precision_at_10": 0.16,
+          "macro_recall_at_10": 0.246976,
           "mean_recommendation_count": 10.0
         },
         "session": {
           "sample_count": 10,
-          "cumulative_hit_rate_by_turn_2": 0.7,
+          "cumulative_hit_rate_by_turn_2": 0.8,
           "first_turn_hits": 6,
-          "second_turn_rescues": 1,
-          "misses_after_turn_2": 3,
-          "rescue_rate_among_initial_misses": 0.25,
-          "first_hit_mrr": 0.353571,
-          "macro_recall_across_20": 0.416941,
+          "second_turn_rescues": 2,
+          "misses_after_turn_2": 2,
+          "rescue_rate_among_initial_misses": 0.5,
+          "first_hit_mrr": 0.317619,
+          "macro_recall_across_20": 0.52944,
           "mean_recommendation_overlap": 0.0
         }
       },
@@ -488,7 +488,6 @@
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
           "B096H9H6LP",
-          "B0072BSOVC",
           "B0028Y50TW",
           "B01LZKEJR1",
           "B005ADL1UA",
@@ -496,24 +495,25 @@
           "B086HX15PV",
           "B07NQJPFB4",
           "B07CH6QZDT",
-          "B0141R0YGC"
+          "B0141R0YGC",
+          "B0B2XL9LPM"
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 6,
-        "reciprocal_rank": 0.166667,
+        "first_relevant_rank": 5,
+        "reciprocal_rank": 0.2,
         "relevant_hits": 1,
         "precision_at_10": 0.1,
         "recall_at_10": 0.25,
         "relevant_ranks": [
-          6
+          5
         ]
       },
       "session": {
         "hit_by_turn_2": true,
         "first_hit_turn": 2,
-        "first_relevant_rank": 6,
-        "first_hit_reciprocal_rank": 0.166667,
+        "first_relevant_rank": 5,
+        "first_hit_reciprocal_rank": 0.2,
         "relevant_hits_across_20": 1,
         "recall_across_20": 0.25,
         "recommendation_overlap": 0
@@ -1208,25 +1208,26 @@
         "message": "What else matters most to you for this purchase?",
         "recommendations": [
           "B098WP6FNN",
+          "B07S6DT19G",
+          "B092V5XB23",
           "B07XM5LF6Q",
-          "B0B5TX3C7V",
-          "B00NYY56Y4",
-          "B00J6EZEKC",
-          "B083JK8NRM",
-          "B01D04INWE",
-          "B07ZNZMWS1",
-          "B07DCMP8BM",
-          "B08ZSDJ9CV"
+          "B07YXXQ4TH",
+          "B09MQ388RD",
+          "B0164G5HR4",
+          "B01MUCL9VZ",
+          "B0BPM97R3Y",
+          "B0B5TX3C7V"
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 6,
-        "reciprocal_rank": 0.166667,
-        "relevant_hits": 1,
-        "precision_at_10": 0.1,
-        "recall_at_10": 0.142857,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
+        "relevant_hits": 2,
+        "precision_at_10": 0.2,
+        "recall_at_10": 0.285714,
         "relevant_ranks": [
-          6
+          2,
+          7
         ]
       },
       "after_exploration": {
@@ -1234,35 +1235,37 @@
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
           "B07X6GRX3V",
-          "B07791KH2D",
-          "B0919Y37TR",
           "B093225VLW",
+          "B01D04INWE",
+          "B07791KH2D",
+          "B07ZNZMWS1",
+          "B0919Y37TR",
           "B07Q579SKB",
-          "B082K8V1Q2",
-          "B0BL6VP288",
-          "B08RNHKLVX",
-          "B09VNHVG6S",
-          "B07BKWB29R"
+          "B00J6EZEKC",
+          "B083JK8NRM",
+          "B00NYY56Y4"
         ],
         "recommendation_count": 10,
-        "hit": false,
-        "first_relevant_rank": null,
-        "reciprocal_rank": 0.0,
-        "relevant_hits": 0,
-        "precision_at_10": 0.0,
-        "recall_at_10": 0.0,
-        "relevant_ranks": []
+        "hit": true,
+        "first_relevant_rank": 9,
+        "reciprocal_rank": 0.111111,
+        "relevant_hits": 1,
+        "precision_at_10": 0.1,
+        "recall_at_10": 0.142857,
+        "relevant_ranks": [
+          9
+        ]
       },
       "session": {
         "hit_by_turn_2": true,
         "first_hit_turn": 1,
-        "first_relevant_rank": 6,
-        "first_hit_reciprocal_rank": 0.166667,
-        "relevant_hits_across_20": 1,
-        "recall_across_20": 0.142857,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 3,
+        "recall_across_20": 0.428571,
         "recommendation_overlap": 0
       },
-      "transition": "initial_only"
+      "transition": "hit_both"
     },
     {
       "case_id": "concept_waterproof_2b71cdf482_p2",
@@ -1845,9 +1848,9 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
+          "B0838227K3",
           "B06WLHD6PL",
           "B07W4CFNFG",
-          "B0838227K3",
           "B01LP0RKVA",
           "B07XC73BK3",
           "B09T6FH4L4",
@@ -2202,38 +2205,40 @@
         "recommendations": [
           "B07H29RGQ4",
           "B07WLNX6VW",
-          "B01MSYKE17",
-          "B08H8GM56V",
           "B07JHQGHR9",
           "B09Z2632HP",
           "B07TN1845M",
-          "B07RNQHLKX",
-          "B092JJHWL5",
-          "B08GKQBFLN"
+          "B0C6TT7L94",
+          "B081V49DQW",
+          "B083JJ1XJJ",
+          "B01M69TDJS",
+          "B00DR4KY5W"
         ],
         "recommendation_count": 10,
-        "hit": false,
-        "first_relevant_rank": null,
-        "reciprocal_rank": 0.0,
-        "relevant_hits": 0,
-        "precision_at_10": 0.0,
-        "recall_at_10": 0.0,
-        "relevant_ranks": []
+        "hit": true,
+        "first_relevant_rank": 9,
+        "reciprocal_rank": 0.111111,
+        "relevant_hits": 1,
+        "precision_at_10": 0.1,
+        "recall_at_10": 0.333333,
+        "relevant_ranks": [
+          9
+        ]
       },
       "after_exploration": {
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B00QQMK23G",
           "B08JJ4VKHS",
-          "B0BQW5V4JB",
-          "B07B5N7SF8",
-          "B01M1I3VKK",
-          "B08HK4JYX7",
-          "B019IIXTX4",
-          "B0167LW76A",
-          "B07ZHQTFKC",
-          "B07Q1GMV76"
+          "B0C4VLWWYY",
+          "B00QQMK23G",
+          "B072JW5YXC",
+          "B088876LP6",
+          "B08VN9VT8N",
+          "B07QYB2W1Q",
+          "B08H8GM56V",
+          "B01MSYKE17",
+          "B085GL7YNB"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -2245,15 +2250,15 @@
         "relevant_ranks": []
       },
       "session": {
-        "hit_by_turn_2": false,
-        "first_hit_turn": null,
-        "first_relevant_rank": null,
-        "first_hit_reciprocal_rank": 0.0,
-        "relevant_hits_across_20": 0,
-        "recall_across_20": 0.0,
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 9,
+        "first_hit_reciprocal_rank": 0.111111,
+        "relevant_hits_across_20": 1,
+        "recall_across_20": 0.333333,
         "recommendation_overlap": 0
       },
-      "transition": "miss_both"
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_waterproof_cc8b9bee2f_p1",
@@ -2270,16 +2275,16 @@
         "ask_attribute": "other",
         "message": "What else matters most to you for this purchase?",
         "recommendations": [
-          "B071H2GLMC",
-          "B0C3YJMRRD",
-          "B07D6LLXZM",
-          "B09KQ74TSF",
           "B09Y8TL49Y",
-          "B087N87DB6",
-          "B094Z4X7Y9",
           "B08T5ZM554",
           "B07MDC1M4Y",
-          "B0925MM7CD"
+          "B0925MM7CD",
+          "B08THNTHVR",
+          "B07RC122XL",
+          "B08RS3FJR6",
+          "B09SP8CBCS",
+          "B0CBCP1LSH",
+          "B01N6DUC4P"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -2294,16 +2299,16 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B09W8HSXPT",
+          "B071H2GLMC",
+          "B006I0185M",
+          "B00E7ONSWC",
+          "B08BTJ8P42",
           "B071K7TFQV",
+          "B094Z4X7Y9",
           "B07ZDFGXR3",
           "B09KSZ6JNY",
-          "B0962V3P3F",
-          "B01H7588IQ",
-          "B00LG837SM",
-          "B01J4BJL7S",
-          "B005GC5CSW",
-          "B07212MG9D"
+          "B087N87DB6",
+          "B0962V3P3F"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -3189,9 +3194,9 @@
           "B008B1YWHW",
           "B0089Y93I4",
           "B005AMCD7Q",
-          "B06XW5H35Q",
+          "B07CKL31NC",
           "B00APQ9TN8",
-          "B0089ZRW90",
+          "B000WG7SD4",
           "B08HSJ6764",
           "B013HK5WMU"
         ],
@@ -3208,13 +3213,13 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B08W1ZC2FY",
+          "B07SQX196P",
+          "B0B4WB8YXW",
+          "B002AMVZZK",
           "B0193VH13U",
           "B00DOEDFPG",
-          "B09P1XJ772",
           "B00GF0RYFS",
           "B07WV4F2VR",
-          "B01LZ4236E",
           "B00JR9WYAO",
           "B00IRKEW90",
           "B005EUDPOO"
@@ -3254,16 +3259,16 @@
         "ask_attribute": "other",
         "message": "What else matters most to you for this purchase?",
         "recommendations": [
-          "B089B6M81B",
-          "B08CXRD64S",
-          "B01MXVW2VN",
-          "B07C2QRSW2",
           "B01N6DUC4P",
           "B08MDRTL62",
           "B07K719KQG",
           "B08T68NF5V",
           "B09GB6PPNG",
-          "B01MXZT0NI"
+          "B01MXZT0NI",
+          "B078FXVLM9",
+          "B0BNLLJGZX",
+          "B08B55DZ34",
+          "B09N77JJ5Z"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -3278,16 +3283,16 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B00823JIFA",
-          "B07SNQYPY6",
-          "B07FP3CFKK",
-          "B06X8ZHV3C",
-          "B08929W3MW",
-          "B083HWSJ5Q",
-          "B07TSQHTGC",
-          "B08FLD24NK",
-          "B084JKY4S5",
-          "B083NKWX42"
+          "B071J8986T",
+          "B085VJHJYS",
+          "B07X3LLR9R",
+          "B08CCZBPHB",
+          "B08WM7CVLC",
+          "B0836TK8JR",
+          "B01MXVW2VN",
+          "B07RWQ61F7",
+          "B089B6M81B",
+          "B07H253XTD"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -5155,10 +5160,10 @@
           "B0861MZV3D",
           "B07PJG1HGY",
           "B08PN2X1VS",
-          "B096N6JC1P",
           "B094QV9ZCM",
           "B08JH3CJ6J",
-          "B081N6F8TY"
+          "B081N6F8TY",
+          "B074HVQ41Y"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -5173,16 +5178,16 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B07JCJYS6M",
-          "B08GPGW8W8",
-          "B00GV46IW8",
-          "B07HQKTYM5",
+          "B096N6JC1P",
+          "B00EB929N2",
           "B00P1SN6GG",
           "B00SWBMVE2",
-          "B00EB929N2",
           "B00KTZTXW2",
           "B01M6WDJ0W",
-          "B078PHC8HJ"
+          "B078PHC8HJ",
+          "B08DCHHQH2",
+          "B0BBVN65BN",
+          "B077ZGY7GQ"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -5221,14 +5226,14 @@
         "recommendations": [
           "B0B8227GB9",
           "B07XGN5PJ8",
+          "B08BF53L68",
+          "B08DNVCJW4",
           "B07F84CKNC",
-          "B00GSTR88O",
           "B0B2DNJTVB",
-          "B07HN8V8GZ",
           "B07X99HVSX",
           "B07K46GBFM",
           "B07R4YP5TH",
-          "B07XDJX81Q"
+          "B08VDZ1TDR"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -5243,35 +5248,36 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
+          "B09KCGL2XJ",
           "B09HXN7ZJ5",
-          "B08BF53L68",
+          "B0BXJ86YZQ",
           "B07F8NKWG3",
           "B07H5SZS1W",
-          "B0BXJ86YZQ",
           "B07KGMVKL4",
           "B07Y9T7R11",
           "B07VMCLJHZ",
           "B07P2Z7GP4",
-          "B0BBQ9TTHK"
+          "B08L8JF923"
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 1,
-        "reciprocal_rank": 1.0,
-        "relevant_hits": 1,
-        "precision_at_10": 0.1,
-        "recall_at_10": 0.5,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
+        "relevant_hits": 2,
+        "precision_at_10": 0.2,
+        "recall_at_10": 1.0,
         "relevant_ranks": [
-          1
+          2,
+          10
         ]
       },
       "session": {
         "hit_by_turn_2": true,
         "first_hit_turn": 2,
-        "first_relevant_rank": 1,
-        "first_hit_reciprocal_rank": 1.0,
-        "relevant_hits_across_20": 1,
-        "recall_across_20": 0.5,
+        "first_relevant_rank": 2,
+        "first_hit_reciprocal_rank": 0.5,
+        "relevant_hits_across_20": 2,
+        "recall_across_20": 1.0,
         "recommendation_overlap": 0
       },
       "transition": "rescued_after_exploration"
@@ -5698,7 +5704,6 @@
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
           "B09LRJ6NQX",
-          "B07JCJYS6M",
           "B00P1SN6GG",
           "B00PI431KY",
           "B078PHC8HJ",
@@ -5706,22 +5711,23 @@
           "B096N6JC1P",
           "B077ZGY7GQ",
           "B07HRQW641",
-          "B07GX9ZC3K"
+          "B07GX9ZC3K",
+          "B081N6F8TY"
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 3,
-        "reciprocal_rank": 0.333333,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
         "relevant_hits": 6,
         "precision_at_10": 0.6,
         "recall_at_10": 0.352941,
         "relevant_ranks": [
+          2,
           3,
           4,
           5,
           6,
-          7,
-          8
+          7
         ]
       },
       "session": {
@@ -5855,6 +5861,7 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
+          "B087TPNC51",
           "B071R1YVS3",
           "B07BS9ZF69",
           "B008VTLQ96",
@@ -5863,22 +5870,20 @@
           "B0057MG2PS",
           "B07S1Y4BYV",
           "B07RBP5DR9",
-          "B06VT7SCW9",
-          "B07TKVRMNN"
+          "B06VT7SCW9"
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 1,
-        "reciprocal_rank": 1.0,
-        "relevant_hits": 5,
-        "precision_at_10": 0.5,
-        "recall_at_10": 0.09434,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
+        "relevant_hits": 4,
+        "precision_at_10": 0.4,
+        "recall_at_10": 0.075472,
         "relevant_ranks": [
-          1,
           2,
           3,
-          7,
-          10
+          4,
+          8
         ]
       },
       "session": {
@@ -5886,8 +5891,8 @@
         "first_hit_turn": 1,
         "first_relevant_rank": 1,
         "first_hit_reciprocal_rank": 1.0,
-        "relevant_hits_across_20": 10,
-        "recall_across_20": 0.188679,
+        "relevant_hits_across_20": 9,
+        "recall_across_20": 0.169811,
         "recommendation_overlap": 0
       },
       "transition": "hit_both"
@@ -6225,63 +6230,64 @@
         "ask_attribute": "other",
         "message": "What else matters most to you for this purchase?",
         "recommendations": [
-          "B0861MZV3D",
-          "B07PJG1HGY",
           "B08JH3CJ6J",
           "B07TXZ1G8N",
           "B00KOKA7S6",
-          "B00GV46IW8",
-          "B00C826IHM",
           "B08FM5QT8P",
           "B077V2Q2CG",
-          "B09DCBFKQK"
+          "B09DCBFKQK",
+          "B07R9Y26PY",
+          "B08FDTMHS4",
+          "B07F84CKNC",
+          "B07R4YP5TH"
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 7,
-        "reciprocal_rank": 0.142857,
-        "relevant_hits": 2,
-        "precision_at_10": 0.2,
-        "recall_at_10": 1.0,
+        "first_relevant_rank": 4,
+        "reciprocal_rank": 0.25,
+        "relevant_hits": 1,
+        "precision_at_10": 0.1,
+        "recall_at_10": 0.5,
         "relevant_ranks": [
-          7,
-          8
+          4
         ]
       },
       "after_exploration": {
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B08242X27K",
-          "B0871R9JDP",
-          "B07PR8GZS5",
-          "B07HGWH9DW",
-          "B07R4DKRZW",
-          "B098Q7ZNHQ",
-          "B08VDZ1TDR",
-          "B0BB61SR1P",
-          "B081N6F8TY",
-          "B089QYV4SD"
+          "B07PJG1HGY",
+          "B0861MZV3D",
+          "B00GV46IW8",
+          "B00C826IHM",
+          "B00BV3B93W",
+          "B014X1GDKM",
+          "B0033X0Y5W",
+          "B09VTLWWGZ",
+          "B07VK9DQ9K",
+          "B09K7HSZ19"
         ],
         "recommendation_count": 10,
-        "hit": false,
-        "first_relevant_rank": null,
-        "reciprocal_rank": 0.0,
-        "relevant_hits": 0,
-        "precision_at_10": 0.0,
-        "recall_at_10": 0.0,
-        "relevant_ranks": []
+        "hit": true,
+        "first_relevant_rank": 4,
+        "reciprocal_rank": 0.25,
+        "relevant_hits": 1,
+        "precision_at_10": 0.1,
+        "recall_at_10": 0.5,
+        "relevant_ranks": [
+          4
+        ]
       },
       "session": {
         "hit_by_turn_2": true,
         "first_hit_turn": 1,
-        "first_relevant_rank": 7,
-        "first_hit_reciprocal_rank": 0.142857,
+        "first_relevant_rank": 4,
+        "first_hit_reciprocal_rank": 0.25,
         "relevant_hits_across_20": 2,
         "recall_across_20": 1.0,
         "recommendation_overlap": 0
       },
-      "transition": "initial_only"
+      "transition": "hit_both"
     },
     {
       "case_id": "concept_winter_aa189807a4_p1",
@@ -6796,12 +6802,12 @@
         "recommendations": [
           "B08T5YWZXN",
           "B08Z8DKYKP",
-          "B0B181TTCN",
           "B093LL9PGF",
           "B00DUGJBO2",
           "B00DUGJLM4",
           "B0108R9G9A",
           "B07TXQF52F",
+          "B0B181TTCN",
           "B09BYYDMV1",
           "B09QJ6TJCQ"
         ],
@@ -7121,8 +7127,8 @@
           "B0BRX7VNNR",
           "B00OKLCQ0C",
           "B07FR49R3H",
-          "B07CB4N9B4",
-          "B0036EBAC4"
+          "B0036EBAC4",
+          "B081B9G63P"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -7232,65 +7238,64 @@
         "ask_attribute": "other",
         "message": "What else matters most to you for this purchase?",
         "recommendations": [
-          "B07P61QD2W",
-          "B09QJ6TJCQ",
-          "B092C1ML9P",
-          "B07FXWWPN6",
-          "B08V13PVM8",
           "B083Q1ZGHC",
-          "B00E83OCD6",
-          "B005I6PTP2",
-          "B0040JK2I2",
-          "B00FJPLRAS"
+          "B01N6DUC4P",
+          "B08MDRTL62",
+          "B07K719KQG",
+          "B08T68NF5V",
+          "B09GB6PPNG",
+          "B01MXZT0NI",
+          "B078FXVLM9",
+          "B08G1F3BLC",
+          "B08T5ZM554"
         ],
         "recommendation_count": 10,
-        "hit": true,
-        "first_relevant_rank": 2,
-        "reciprocal_rank": 0.5,
-        "relevant_hits": 1,
-        "precision_at_10": 0.1,
-        "recall_at_10": 0.125,
-        "relevant_ranks": [
-          2
-        ]
+        "hit": false,
+        "first_relevant_rank": null,
+        "reciprocal_rank": 0.0,
+        "relevant_hits": 0,
+        "precision_at_10": 0.0,
+        "recall_at_10": 0.0,
+        "relevant_ranks": []
       },
       "after_exploration": {
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B0B181TTCN",
-          "B08Z8DKYKP",
-          "B0767DVYHD",
-          "B01HQB1RYI",
-          "B07PSKG82X",
+          "B07P61QD2W",
+          "B08F9F5R6F",
+          "B000ZYGHV2",
+          "B092C1ML9P",
           "B00Y9R760C",
-          "B07Z7S3SSL",
+          "B09QJ6TJCQ",
           "B07TXQF52F",
-          "B07R1ZX96G",
-          "B08T5YWZXN"
+          "B0C1CR3WBS",
+          "B07PBZCDVD",
+          "B01B1YGOT4"
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 6,
-        "reciprocal_rank": 0.166667,
-        "relevant_hits": 2,
-        "precision_at_10": 0.2,
-        "recall_at_10": 0.25,
+        "first_relevant_rank": 5,
+        "reciprocal_rank": 0.2,
+        "relevant_hits": 3,
+        "precision_at_10": 0.3,
+        "recall_at_10": 0.375,
         "relevant_ranks": [
+          5,
           6,
-          8
+          7
         ]
       },
       "session": {
         "hit_by_turn_2": true,
-        "first_hit_turn": 1,
-        "first_relevant_rank": 2,
-        "first_hit_reciprocal_rank": 0.5,
+        "first_hit_turn": 2,
+        "first_relevant_rank": 5,
+        "first_hit_reciprocal_rank": 0.2,
         "relevant_hits_across_20": 3,
         "recall_across_20": 0.375,
         "recommendation_overlap": 0
       },
-      "transition": "hit_both"
+      "transition": "rescued_after_exploration"
     },
     {
       "case_id": "concept_winter_f3ffe733e0_p2",
@@ -7975,24 +7980,24 @@
         "recommendations": [
           "B0BYJMLV5X",
           "B07L45HM4M",
+          "B01FWQZ1V4",
+          "B094DZCZ9F",
           "B0BDG9PJPY",
           "B0873ZZ76X",
           "B07R1JH679",
-          "B01FWQZ1V4",
-          "B094DZCZ9F",
           "B008G5174E",
           "B07DKYDKZG",
-          "B01B5KF9OA"
+          "B09FR514SJ"
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 5,
-        "reciprocal_rank": 0.2,
+        "first_relevant_rank": 7,
+        "reciprocal_rank": 0.142857,
         "relevant_hits": 2,
         "precision_at_10": 0.2,
         "recall_at_10": 0.166667,
         "relevant_ranks": [
-          5,
+          7,
           8
         ]
       },
@@ -8245,37 +8250,43 @@
         "message": "What else matters most to you for this purchase?",
         "recommendations": [
           "B07VT87K2N",
-          "B07VT99C38",
-          "B00G337MMM",
-          "B007GNI43Y",
-          "B007GNI2VS",
-          "B00QHCWZS0",
-          "B00HWZHWDY",
-          "B006H50XT0",
-          "B00J6ZLDY2",
-          "B00TRCRLJU"
+          "B08T68NF5V",
+          "B01FKMFY80",
+          "B07C452XQS",
+          "B01N1XK337",
+          "B075K4JRSR",
+          "B00HEPD03I",
+          "B0C6Q7FDJV",
+          "B00REAOCKI",
+          "B099JMRVGF"
         ],
         "recommendation_count": 10,
-        "hit": false,
-        "first_relevant_rank": null,
-        "reciprocal_rank": 0.0,
-        "relevant_hits": 0,
-        "precision_at_10": 0.0,
-        "recall_at_10": 0.0,
-        "relevant_ranks": []
+        "hit": true,
+        "first_relevant_rank": 3,
+        "reciprocal_rank": 0.333333,
+        "relevant_hits": 5,
+        "precision_at_10": 0.5,
+        "recall_at_10": 0.625,
+        "relevant_ranks": [
+          3,
+          4,
+          5,
+          7,
+          9
+        ]
       },
       "after_exploration": {
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B000JN5RDS",
-          "B000JN7MRC",
-          "B01EAYT3JA",
+          "B07VT99C38",
+          "B00G337MMM",
+          "B00QHCWZS0",
+          "B007GNI2VS",
+          "B007GNI43Y",
           "B01COJILKK",
           "B09FXJKV8R",
-          "B003KGQ22G",
           "B00FIY1XZ4",
-          "B0029ZBBA2",
           "B0029POAXC",
           "B008385JR0"
         ],
@@ -8289,15 +8300,15 @@
         "relevant_ranks": []
       },
       "session": {
-        "hit_by_turn_2": false,
-        "first_hit_turn": null,
-        "first_relevant_rank": null,
-        "first_hit_reciprocal_rank": 0.0,
-        "relevant_hits_across_20": 0,
-        "recall_across_20": 0.0,
+        "hit_by_turn_2": true,
+        "first_hit_turn": 1,
+        "first_relevant_rank": 3,
+        "first_hit_reciprocal_rank": 0.333333,
+        "relevant_hits_across_20": 5,
+        "recall_across_20": 0.625,
         "recommendation_overlap": 0
       },
-      "transition": "miss_both"
+      "transition": "initial_only"
     },
     {
       "case_id": "concept_winter_be09c81f6d_p2",
@@ -9183,9 +9194,9 @@
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
           "B017DRMZZU",
-          "B007SGR47Q",
           "B000UJDP80",
           "B00OOEB9CQ",
+          "B007SGR47Q",
           "B0766N7HWN",
           "B00DPDONTI",
           "B08CMMPJGN",
@@ -9195,13 +9206,13 @@
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 2,
-        "reciprocal_rank": 0.5,
+        "first_relevant_rank": 4,
+        "reciprocal_rank": 0.25,
         "relevant_hits": 4,
         "precision_at_10": 0.4,
         "recall_at_10": 0.333333,
         "relevant_ranks": [
-          2,
+          4,
           5,
           8,
           9
@@ -9242,18 +9253,19 @@
           "B07JGG2DZZ",
           "B07CZW4N6Z",
           "B015SBL9GE",
-          "B0183FH952"
+          "B07SNPQCJQ"
         ],
         "recommendation_count": 10,
         "hit": true,
         "first_relevant_rank": 1,
         "reciprocal_rank": 1.0,
-        "relevant_hits": 2,
-        "precision_at_10": 0.2,
-        "recall_at_10": 0.181818,
+        "relevant_hits": 3,
+        "precision_at_10": 0.3,
+        "recall_at_10": 0.272727,
         "relevant_ranks": [
           1,
-          2
+          2,
+          10
         ]
       },
       "after_exploration": {
@@ -9262,7 +9274,7 @@
         "recommendations": [
           "B07D1DGM33",
           "B0BF3MQ41K",
-          "B07SNPQCJQ",
+          "B0183FH952",
           "B0BB9NCZ97",
           "B0BVTBSPXT",
           "B076BTWX2Q",
@@ -9275,12 +9287,11 @@
         "hit": true,
         "first_relevant_rank": 2,
         "reciprocal_rank": 0.5,
-        "relevant_hits": 2,
-        "precision_at_10": 0.2,
-        "recall_at_10": 0.181818,
+        "relevant_hits": 1,
+        "precision_at_10": 0.1,
+        "recall_at_10": 0.090909,
         "relevant_ranks": [
-          2,
-          3
+          2
         ]
       },
       "session": {
@@ -9413,13 +9424,13 @@
           "B07L1XZHQ1",
           "B003LYBBQO",
           "B07DL3HTVV",
-          "B07YF1GS42",
           "B0B7SL9W6D",
+          "B07YF1GS42",
           "B0CH9D6Z78",
-          "B06VWVWQ4L",
-          "B06X8ZHV3C",
           "B002UZXWX0",
-          "B00150K3CE"
+          "B00150K3CE",
+          "B06VWVWQ4L",
+          "B06X8ZHV3C"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -9787,16 +9798,16 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
+          "B0BL39Y8JG",
           "B0BX6JK787",
           "B00HFIUFA0",
           "B0BWJYSBGL",
-          "B0BL39Y8JG",
           "B01AC3GD8W",
-          "B0BKW2MXRT",
-          "B08V88FV87",
-          "B08M5XHWSJ",
-          "B08NDXJQQB",
-          "B09KQXHM17"
+          "B09LCFJR57",
+          "B07YY6PZKD",
+          "B0BDDWSPYR",
+          "B07561K3NN",
+          "B09837RRL7"
         ],
         "recommendation_count": 10,
         "hit": false,
@@ -10165,8 +10176,8 @@
         "ask_attribute": null,
         "message": "I have enough information, so I'm showing you some different relevant alternatives.",
         "recommendations": [
-          "B08Z8J4WD5",
           "B00JRNWCPM",
+          "B08Z8J4WD5",
           "B0711SRTFW",
           "B07F9MCHW1",
           "B00OYJ909A",
@@ -10178,13 +10189,13 @@
         ],
         "recommendation_count": 10,
         "hit": true,
-        "first_relevant_rank": 1,
-        "reciprocal_rank": 1.0,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
         "relevant_hits": 1,
         "precision_at_10": 0.1,
         "recall_at_10": 0.25,
         "relevant_ranks": [
-          1
+          2
         ]
       },
       "session": {

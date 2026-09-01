@@ -220,6 +220,91 @@ class ExplorationTest(
             "long_tail",
         )
 
+    def test_exploration_prefers_higher_rating_as_last_resort_tie_break(
+        self,
+    ) -> None:
+
+        state = SessionState(
+            user_profile={}
+        )
+
+        state.category_text = (
+            "Robes"
+        )
+
+        state.evidence = [
+            Evidence(
+                turn=2,
+                text=(
+                    "100% Polyester; "
+                    "Tie closure"
+                ),
+            )
+        ]
+
+        candidates = [
+            {
+                "parent_asin":
+                    "lower_rated",
+
+                "title":
+                    "Fleece Robe",
+
+                "categories":
+                    "Robes",
+
+                "searchable_text":
+                    (
+                        "Robes "
+                        "100% Polyester "
+                        "Tie closure"
+                    ),
+
+                "rating_number":
+                    5,
+
+                "average_rating":
+                    3.2,
+            },
+            {
+                "parent_asin":
+                    "higher_rated",
+
+                "title":
+                    "Fleece Robe",
+
+                "categories":
+                    "Robes",
+
+                "searchable_text":
+                    (
+                        "Robes "
+                        "100% Polyester "
+                        "Tie closure"
+                    ),
+
+                "rating_number":
+                    5,
+
+                "average_rating":
+                    4.8,
+            },
+        ]
+
+        ranked = (
+            rerank_for_exploration(
+                candidates,
+                state,
+            )
+        )
+
+        self.assertEqual(
+            ranked[0][
+                "parent_asin"
+            ],
+            "higher_rated",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

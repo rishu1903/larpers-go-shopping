@@ -1,0 +1,209 @@
+{
+  "summary": {
+    "sample_count": 25,
+    "overall_pass_rate": 0.6,
+    "by_category": {
+      "multi_turn_state": {
+        "total": 6,
+        "passed": 4,
+        "pass_rate": 0.6667
+      },
+      "negation": {
+        "total": 2,
+        "passed": 0,
+        "pass_rate": 0.0
+      },
+      "negative_control": {
+        "total": 4,
+        "passed": 3,
+        "pass_rate": 0.75
+      },
+      "numeric_edge_case": {
+        "total": 2,
+        "passed": 0,
+        "pass_rate": 0.0
+      },
+      "paraphrase": {
+        "total": 3,
+        "passed": 0,
+        "pass_rate": 0.0
+      },
+      "template_replication": {
+        "total": 5,
+        "passed": 5,
+        "pass_rate": 1.0
+      },
+      "unseen_numeric": {
+        "total": 3,
+        "passed": 3,
+        "pass_rate": 1.0
+      }
+    },
+    "detection": {
+      "true_positive": 5,
+      "false_positive": 3,
+      "false_negative": 5,
+      "true_negative": 6,
+      "precision": 0.625,
+      "recall": 0.5,
+      "f1": 0.5556,
+      "false_positive_rate": 0.3333,
+      "false_negative_rate": 0.5
+    },
+    "negation_accuracy": 0.0,
+    "numeric_accuracy": 0.6,
+    "state_accuracy": 0.6667
+  },
+  "cases": [
+    {
+      "name": "template_approximate_budget",
+      "category": "template_replication",
+      "passed": true,
+      "detail": "parse_budget_constraint('budget around $80') -> None"
+    },
+    {
+      "name": "template_key_requirement_under",
+      "category": "template_replication",
+      "passed": true,
+      "detail": "parse_budget_constraint(\"I'm looking for Shoes. A key requirement is: under $80.\") -> BudgetConstraint(min_price=None, max_price=80.0)"
+    },
+    {
+      "name": "template_what_matters_approximate",
+      "category": "template_replication",
+      "passed": true,
+      "detail": "parse_budget_constraint('For that, what matters is: budget around $45.99.') -> None"
+    },
+    {
+      "name": "template_override_sentence_budget",
+      "category": "template_replication",
+      "passed": true,
+      "detail": "parse_budget_constraint('Actually, ignore my earlier preference. What I need is: under $60.') -> BudgetConstraint(min_price=None, max_price=60.0)"
+    },
+    {
+      "name": "template_no_preference_for_budget",
+      "category": "template_replication",
+      "passed": true,
+      "detail": "parse_budget_constraint(\"I don't have a preference for budget; please use your judgment.\") -> None"
+    },
+    {
+      "name": "paraphrase_cheaper_than",
+      "category": "paraphrase",
+      "passed": false,
+      "detail": "parse_budget_constraint('Show me something cheaper than $60.') -> None"
+    },
+    {
+      "name": "paraphrase_cap_of",
+      "category": "paraphrase",
+      "passed": false,
+      "detail": "parse_budget_constraint('I have a cap of $45 on this purchase.') -> None"
+    },
+    {
+      "name": "paraphrase_capped_at",
+      "category": "paraphrase",
+      "passed": false,
+      "detail": "parse_budget_constraint(\"I'm capped at $90 for this purchase.\") -> None"
+    },
+    {
+      "name": "unseen_numeric_decimal_under",
+      "category": "unseen_numeric",
+      "passed": true,
+      "detail": "parse_budget_constraint('Keep it under $73.42.') -> BudgetConstraint(min_price=None, max_price=73.42)"
+    },
+    {
+      "name": "unseen_numeric_large_comma_budget",
+      "category": "unseen_numeric",
+      "passed": true,
+      "detail": "parse_budget_constraint('My budget is $2,450.') -> BudgetConstraint(min_price=None, max_price=2450.0)"
+    },
+    {
+      "name": "unseen_numeric_over",
+      "category": "unseen_numeric",
+      "passed": true,
+      "detail": "parse_budget_constraint(\"I'd like something over $215.\") -> BudgetConstraint(min_price=215.0, max_price=None)"
+    },
+    {
+      "name": "numeric_edge_bare_decimal_budget",
+      "category": "numeric_edge_case",
+      "passed": false,
+      "detail": "parse_budget_constraint('Budget: $.75') -> None"
+    },
+    {
+      "name": "numeric_edge_bare_decimal_under",
+      "category": "numeric_edge_case",
+      "passed": false,
+      "detail": "parse_budget_constraint('Keep the price under $.99.') -> None"
+    },
+    {
+      "name": "negation_not_above",
+      "category": "negation",
+      "passed": false,
+      "detail": "parse_budget_constraint('Not above $50, please.') -> BudgetConstraint(min_price=50.0, max_price=None)"
+    },
+    {
+      "name": "negation_not_under",
+      "category": "negation",
+      "passed": false,
+      "detail": "parse_budget_constraint('Not under $80.') -> BudgetConstraint(min_price=None, max_price=80.0)"
+    },
+    {
+      "name": "negative_control_rating_stars",
+      "category": "negative_control",
+      "passed": true,
+      "detail": "parse_budget_constraint('This blanket is rated up to 5 stars.') -> None"
+    },
+    {
+      "name": "negative_control_can_count",
+      "category": "negative_control",
+      "passed": true,
+      "detail": "parse_budget_constraint('Holds up to 12 cans of soda.') -> None"
+    },
+    {
+      "name": "negative_control_cable_length",
+      "category": "negative_control",
+      "passed": true,
+      "detail": "parse_budget_constraint('Extends up to 6 feet of cable.') -> None"
+    },
+    {
+      "name": "negative_control_unrelated_money_context",
+      "category": "negative_control",
+      "passed": false,
+      "detail": "parse_budget_constraint('The cost is unclear until checkout, but it holds up to 10 items.') -> BudgetConstraint(min_price=None, max_price=10.0)"
+    },
+    {
+      "name": "state_accumulation_then_replace",
+      "category": "multi_turn_state",
+      "passed": true,
+      "detail": "final budget_constraint=BudgetConstraint(min_price=None, max_price=80.0) source_turn=2"
+    },
+    {
+      "name": "state_override_preserves_later_budget",
+      "category": "multi_turn_state",
+      "passed": true,
+      "detail": "final budget_constraint=BudgetConstraint(min_price=None, max_price=100.0) source_turn=2"
+    },
+    {
+      "name": "state_override_removes_turn_one_budget",
+      "category": "multi_turn_state",
+      "passed": true,
+      "detail": "final budget_constraint=None source_turn=None"
+    },
+    {
+      "name": "state_paraphrased_override_clears_budget",
+      "category": "multi_turn_state",
+      "passed": false,
+      "detail": "final budget_constraint=BudgetConstraint(min_price=None, max_price=100.0) source_turn=1"
+    },
+    {
+      "name": "state_blanket_removal_clears_budget",
+      "category": "multi_turn_state",
+      "passed": false,
+      "detail": "final budget_constraint=BudgetConstraint(min_price=None, max_price=100.0) source_turn=1"
+    },
+    {
+      "name": "state_removal_then_new_budget_reintroduced",
+      "category": "multi_turn_state",
+      "passed": true,
+      "detail": "final budget_constraint=BudgetConstraint(min_price=None, max_price=60.0) source_turn=3"
+    }
+  ]
+}

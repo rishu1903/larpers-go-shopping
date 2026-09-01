@@ -1,3 +1,13 @@
 numpy>=1.26,<3
 scikit-learn>=1.5,<2
 joblib>=1.4,<2
+
+# Optional: local semantic fallback for override
+# detection (src/override_semantic.py). The agent
+# still functions correctly without it (falls back to
+# regex-only override detection) -- see the "Override
+# Detection" section of README.md. Install CPU-only
+# torch first to avoid pulling large CUDA wheels:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+#   pip install sentence-transformers
+sentence-transformers>=3.0,<4
