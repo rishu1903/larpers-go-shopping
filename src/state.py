@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 import re
 
 from src.hard_constraints import (
+    REMOVE_BUDGET,
     BudgetConstraint,
     parse_budget_constraint,
 )
@@ -325,6 +326,21 @@ class SessionState:
                 if item.turn != 1
             ]
 
+            # V15: pre-override "already asked"
+            # bookkeeping is tied to the discarded
+            # context -- an attribute the agent
+            # happened to ask about before the
+            # override should remain askable
+            # afterward, since the override has
+            # changed what's actually informative
+            # to ask. state.no_preference is
+            # deliberately NOT cleared here: a
+            # shopper's stated attribute-indifference
+            # (e.g. "no preference for size") is
+            # plausibly still true after an override,
+            # unlike pure turn-tracking bookkeeping.
+            self.asked_attributes = set()
+
             # Budget is also mutable evidence.
             #
             # If the stale preference being
@@ -357,7 +373,17 @@ class SessionState:
             )
         )
 
-        if parsed_budget is not None:
+        if parsed_budget is REMOVE_BUDGET:
+
+            self.budget_constraint = (
+                None
+            )
+
+            self.budget_source_turn = (
+                None
+            )
+
+        elif parsed_budget is not None:
 
             self.budget_constraint = (
                 parsed_budget
