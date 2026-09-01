@@ -56,28 +56,6 @@ Official starter baseline:
 
 The current agent therefore reaches all 200 public targets while substantially improving ranking quality and recommendation speed relative to the starter implementation.
 
-### Integration Status
-
-`staging` is the integration branch. `main` is fully contained in it, so `main` is behind `staging` rather than diverged from it.
-
-Merged into `staging`:
-
-- `origin/main`
-- `origin/fix/override`
-- `origin/kaushal-retrieval-improvement`
-- `origin/feature/buying-override-technical-score`
-- `origin/feature/scenario-efficiency-improvements`
-- `origin/feature/ranking-generalization-improvements`
-- `origin/feature/hard-constraint-parser-hardening`
-- `origin/feature/semantic-exploration-fusion`
-- `origin/feature/end-to-end-shadow-ranking`
-- `origin/feature/shadow-robustness-eval`
-
-Not yet merged:
-
-- `origin/harshil/dev` — 5 commits, ~6,900 insertions (structured slot state, context distillation, negative constraints, failure-aware protected recovery). Conflicts against the current tip in `starter/agent.py`, `src/state.py` and `src/retrieval.py`; the shortlist-width call sits inside one of those conflict regions, so the resolution decides whether that policy survives.
-- `origin/fix/llm-context-extraction` — 2 commits, ~1,280 insertions (LLM extraction layer). Needs a rules decision before merging: `docs/submission_rules.md` notes that organizer policy may disable network access for official final scoring, and disallows code depending on undeclared external services.
-
 ---
 
 # Architecture
